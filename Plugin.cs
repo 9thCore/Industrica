@@ -2,7 +2,6 @@
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using Industrica.Items.Equipment;
 
 namespace Industrica
 {
@@ -29,7 +28,7 @@ namespace Industrica
 
         private void InitializePrefabs()
         {
-            YeetKnifePrefab.Register();
+
         }
     }
 }
