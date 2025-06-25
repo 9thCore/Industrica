@@ -2,11 +2,16 @@
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using Industrica.Buildable.SteamReactor;
+using Industrica.Item.Water;
+using Industrica.Save;
+using Nautilus.Handlers;
 
 namespace Industrica
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     [BepInDependency("com.snmodding.nautilus")]
+    [BepInDependency("com.9thcore.modularilybased")]
     public class Plugin : BaseUnityPlugin
     {
         public new static ManualLogSource Logger { get; private set; }
@@ -20,15 +25,21 @@ namespace Industrica
 
             // Initialize custom prefabs
             InitializePrefabs();
+            InitialiseLanguage();
 
             // register harmony patches, if there are any
             Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
             Logger.LogInfo($"Successfully loaded [{PluginInfo.PLUGIN_NAME} {PluginInfo.PLUGIN_VERSION}]! Happy engineering!");
         }
 
+        private void InitialiseLanguage()
+        {
+            LanguageHandler.RegisterLocalizationFolder("Localization");
+        }
+
         private void InitializePrefabs()
         {
-
+            SteamReactor.Register();
         }
     }
 }
