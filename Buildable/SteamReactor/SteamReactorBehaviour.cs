@@ -1,6 +1,7 @@
 ﻿using Industrica.Buildable.Stackable;
 using Industrica.ClassBase;
 using Industrica.Patch.Buildable.AlienContainmentUnit;
+using Industrica.Save;
 
 namespace Industrica.Buildable.SteamReactor
 {
@@ -14,10 +15,12 @@ namespace Industrica.Buildable.SteamReactor
         public WaterParkSteamer waterPark;
         private GenericHandTarget handTarget;
 
+        public SaveData save;
+
         public override bool CanGenerate => Constructed && waterPark != null && waterPark.Overheating();
         public override float MaxPower => 500f;
 
-        public new void Start()
+        public override void Start()
         {
             base.Start();
 
@@ -26,6 +29,8 @@ namespace Industrica.Buildable.SteamReactor
 
             handTarget = gameObject.GetComponentInChildren<GenericHandTarget>();
             handTarget.onHandHover.AddListener(OnHover);
+
+            save = new(this);
         }
 
         public void OnHover(HandTargetEventData data)
@@ -33,8 +38,7 @@ namespace Industrica.Buildable.SteamReactor
             HandReticle hand = HandReticle.main;
             hand.SetText(HandReticle.TextType.Hand, "IndustricaSteamReactor", false, GameInput.Button.None);
 
-
-            string subscript = Language.main.GetFormat("Use_IndustricaSteamReactor", PowerInt, MaxPowerInt);
+            string subscript = Language.main.GetFormat($"Use_IndustricaSteamReactor_{(CanGenerate ? "Enabled" : "Disabled")}", PowerInt, MaxPowerInt);
             hand.SetText(HandReticle.TextType.HandSubscript, subscript, true, GameInput.Button.None);
         }
 
@@ -57,6 +61,34 @@ namespace Industrica.Buildable.SteamReactor
             }
 
             waterPark = steamer;
+        }
+
+        public class SaveData : ComponentSaveData<SteamReactorBehaviour>
+        {
+            public float power;
+
+            public SaveData(SteamReactorBehaviour component) : base(component) { }
+
+            public override void Load()
+            {
+                TryLoad(SaveSystem.Instance.steamReactorSaveData);
+                Component.SetPower(power);
+            }
+
+            public override void Save()
+            {
+                power = Component.Power;
+            }
+
+            public override void CopyFromStorage(AbstractSaveData other)
+            {
+                if (other is not SaveData data)
+                {
+                    return;
+                }
+
+                power = data.power;
+            }
         }
     }
 }
