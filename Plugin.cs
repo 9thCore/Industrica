@@ -25,16 +25,22 @@ namespace Industrica
 
             // Initialize custom prefabs
             InitializePrefabs();
-            InitialiseLanguage();
+            InitializeLanguage();
+            InitializeSave();
 
             // register harmony patches, if there are any
             Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
             Logger.LogInfo($"Successfully loaded [{PluginInfo.PLUGIN_NAME} {PluginInfo.PLUGIN_VERSION}]! Happy engineering!");
         }
 
-        private void InitialiseLanguage()
+        private void InitializeLanguage()
         {
             LanguageHandler.RegisterLocalizationFolder("Localization");
+        }
+
+        private void InitializeSave()
+        {
+            SaveSystem.Register();
         }
 
         private void InitializePrefabs()
