@@ -2,7 +2,7 @@
 
 namespace Industrica.ClassBase
 {
-    public class BaseConstructable : MonoBehaviour
+    public abstract class BaseConstructable : MonoBehaviour
     {
         protected Constructable constructable;
 
