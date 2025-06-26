@@ -16,7 +16,11 @@
 
             powerSource = gameObject.EnsureComponent<PowerSource>();
             powerSource.maxPower = MaxPower;
-            powerSource.power = 0f;
+        }
+
+        public void SetPower(float power)
+        {
+            powerSource.SetPower(power);
         }
 
         public bool GeneratePower(float power, bool force, out float consumed)
