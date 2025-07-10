@@ -123,7 +123,10 @@ namespace Industrica.Patch.Buildable.AlienContainmentUnit
         {
             this.reactor = reactor;
             this.directReactorConnection = directReactorConnection;
-            above?.SetReactor(reactor, false);
+            if (above != null)
+            {
+                above.SetReactor(reactor, false);
+            }
         }
 
         public static WaterParkSteamer Attach(WaterParkGeometry module)
