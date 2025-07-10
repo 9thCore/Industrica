@@ -1,13 +1,14 @@
 ﻿using Industrica.Item.Network;
+using Industrica.Network.Container;
+using Industrica.Network.Container.Provider;
 using Industrica.Network.Filter;
-using Industrica.Network.Provider;
 using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
     public class PhysicalNetworkItemPort : PhysicalNetworkPort<Pickupable>, IPhysicalNetworkPort
     {
-        private IItemsContainer itemContainer;
+        private Container<Pickupable> itemContainer;
 
         public override TransferPipe.PipeType AllowedPipeType => TransferPipe.PipeType.Item;
 
@@ -19,17 +20,7 @@ namespace Industrica.Network.Physical
         public override void Start()
         {
             base.Start();
-            itemContainer = gameObject.GetComponentInParent<IContainerProvider<IItemsContainer>>().Container;
-        }
-
-        public override bool HasRoomFor(Pickupable value)
-        {
-            if (!CanInsert)
-            {
-                return false;
-            }
-
-            return itemContainer.HasRoomFor(value, null);
+            itemContainer = gameObject.GetComponentInParent<ContainerProvider<Pickupable>>().Container;
         }
 
         public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value)
@@ -40,27 +31,18 @@ namespace Industrica.Network.Physical
                 return false;
             }
 
-            foreach (InventoryItem item in itemContainer)
-            {
-                if (filter.Matches(item.item))
-                {
-                    value = item.item;
-                    return true;
-                }
-            }
-
-            value = default;
-            return false;
+            return itemContainer.TryExtract(filter, out value);
         }
 
         public override bool TryInsert(Pickupable value)
         {
-            if (!HasRoomFor(value))
+            if (!CanInsert)
             {
+                value = default;
                 return false;
             }
 
-            return itemContainer.AddItem(new InventoryItem(value));
+            return itemContainer.TryInsert(value);
         }
     }
 }
