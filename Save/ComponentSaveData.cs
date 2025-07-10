@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Industrica.Save
 {
-    public abstract class ComponentSaveData<T> : PrefabIdentifiableSaveData where T : MonoBehaviour
+    public abstract class ComponentSaveData<T> : IdentifiableSaveData where T : MonoBehaviour
     {
-        public override PrefabIdentifier GetIdentifier => Component.GetComponent<PrefabIdentifier>();
+        public override UniqueIdentifier GetUniqueIdentifier => Component.GetComponent<UniqueIdentifier>();
 
         [JsonIgnore]
         public T Component { get; protected set; }
