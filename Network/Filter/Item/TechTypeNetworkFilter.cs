@@ -1,6 +1,6 @@
 ﻿namespace Industrica.Network.Filter.Item
 {
-    public class SingleItemNetworkFilter : NetworkFilter<Pickupable>
+    public class TechTypeNetworkFilter : NetworkFilter<Pickupable>
     {
         public TechType techType;
 
