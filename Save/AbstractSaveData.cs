@@ -7,6 +7,8 @@ namespace Industrica.Save
 {
     public abstract class AbstractSaveData
     {
+        public abstract string SaveKey { get; }
+
         protected void LoadDataLate()
         {
             CoroutineHost.StartCoroutine(LoadLate());
@@ -18,20 +20,28 @@ namespace Industrica.Save
             Load();
         }
 
-        public virtual void TryLoad<S>(Dictionary<string, S> storage, string id) where S : AbstractSaveData
+        public virtual bool TryLoad<S>(Dictionary<string, S> storage) where S : AbstractSaveData
+        {
+            return TryLoad(storage, SaveKey);
+        }
+
+        public virtual bool TryLoad<S>(Dictionary<string, S> storage, string id) where S : AbstractSaveData
         {
             if (this is not S save)
             {
                 Plugin.Logger.LogError($"{this} is not of type {typeof(S)}, cannot load.");
-                return;
+                return false;
             }
 
+            bool flag = false;
             if (storage.TryGetValue(id, out S data))
             {
                 CopyFromStorage(data);
+                flag = true;
             }
 
             storage[id] = save;
+            return flag;
         }
 
         public abstract void Load();
