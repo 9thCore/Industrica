@@ -2,6 +2,6 @@
 {
     public interface IContainerProvider<T>
     {
-        public T Container { get; }
+        public IContainer<T> Container { get; }
     }
 }
