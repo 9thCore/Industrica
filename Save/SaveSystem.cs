@@ -1,4 +1,6 @@
 ﻿using Industrica.Buildable.SteamReactor;
+using Industrica.Item.Network;
+using Industrica.Utility;
 using Nautilus.Handlers;
 using Nautilus.Json;
 using Nautilus.Json.Attributes;
@@ -13,6 +15,7 @@ namespace Industrica.Save
         public static SaveSystem Instance { get; private set; }
 
         public Dictionary<string, SteamReactorBehaviour.SaveData> steamReactorSaveData = new();
+        public Dictionary<string, PlacedTransferPipe.SaveData> placedTransferPipeSaveData = new();
 
         public static void Register()
         {
@@ -23,6 +26,7 @@ namespace Industrica.Save
                 SaveSystem instance = args.Instance as SaveSystem;
 
                 instance.SaveStorage(instance.steamReactorSaveData);
+                instance.SaveStorage(instance.placedTransferPipeSaveData);
             };
         }
 
