@@ -81,6 +81,20 @@ namespace Industrica.Item.Network
 
             start.Connect(this);
             end.Connect(this);
+
+            if (start.GameObject.TryGetComponentInParent(out Base seabase)
+                && end.GameObject.TryGetComponentInParent(out Base secondSeabase)
+                && seabase == secondSeabase)
+            {
+                Transform parent = segmentParent.transform.parent;
+
+                segmentParent.transform.SetParent(seabase.transform);
+                segmentParent.GetComponentsInChildren<SkyApplier>().ForEach(applier =>
+                {
+                    applier.SetSky(Skies.BaseInterior);
+                });
+                segmentParent.transform.SetParent(parent);
+            }
         }
 
         public void OnDestroy()

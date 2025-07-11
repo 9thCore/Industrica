@@ -55,19 +55,14 @@ namespace Industrica.Item.Network
                 yield break;
             }
 
+            CreateEndCap(end);
+
             GameObject placedPipe = GameObject.Instantiate(result);
-
-            if (start.GameObject.TryGetComponentInParent(out Base seabase))
-            {
-                placedPipe.transform.SetParent(seabase.transform);
-            }
-
             placedPipe.transform.position = Vector3.Lerp(start.PipePosition, end.PipePosition, 0.5f);
 
             PlacedTransferPipe pipe = placedPipe.GetComponent<PlacedTransferPipe>();
             pipe.SetSegments(segmentParent, copy);
             pipe.Connect(start, end);
-            CreateEndCap(end);
 
             UnlinkSegments();
             Reset();
