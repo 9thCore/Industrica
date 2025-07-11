@@ -1,4 +1,5 @@
 ﻿using Industrica.Network.Physical;
+using Industrica.Network.Systems;
 using Industrica.Save;
 using Industrica.Utility;
 using Nautilus.Assets;
@@ -7,6 +8,7 @@ using Nautilus.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UWE;
 
 namespace Industrica.Item.Network
 {
@@ -19,6 +21,7 @@ namespace Industrica.Item.Network
         private List<TransferPipe.Segment> segments;
         private Transform stretchedPart, endCap;
         private bool disconnectQueued = false;
+        private SaveData save;
 
         public static void Register()
         {
@@ -61,7 +64,7 @@ namespace Industrica.Item.Network
         {
             stretchedPart = transform.Find("scaleThis");
             endCap = transform.Find("endcap");
-            new SaveData(this);
+            save = new(this);
         }
 
         public void SetSegments(GameObject segmentParent, List<TransferPipe.Segment> segments)
@@ -80,6 +83,14 @@ namespace Industrica.Item.Network
             end.Connect(this);
         }
 
+        public void OnDestroy()
+        {
+            if (save.Valid)
+            {
+                save.Save();
+            }
+        }
+
         public void Disconnect()
         {
             if (disconnectQueued)
@@ -90,6 +101,7 @@ namespace Industrica.Item.Network
             disconnectQueued = true;
             start.Disconnect();
             end.Disconnect();
+            save.Invalidate();
             GameObject.Destroy(gameObject);
         }
 
@@ -138,20 +150,16 @@ namespace Industrica.Item.Network
             Connect(startPort, endPort);
         }
 
-        public class SaveData : ComponentSaveData<PlacedTransferPipe>
+        public class SaveData : ComponentSaveData<SaveData, PlacedTransferPipe>
         {
             public string startID, endID;
             public List<Vector3> positions = new();
+            public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.placedTransferPipeData;
 
             public SaveData(PlacedTransferPipe component) : base(component) { }
 
             public override void Load()
             {
-                if (!TryLoad(SaveSystem.Instance.placedTransferPipeSaveData))
-                {
-                    return;
-                }
-
                 Component.Load(this);
             }
 
@@ -164,13 +172,8 @@ namespace Industrica.Item.Network
                 Component.segments.ForEach(s => positions.Add(s.Position));
             }
 
-            public override void CopyFromStorage(AbstractSaveData other)
+            public override void CopyFromStorage(SaveData data)
             {
-                if (other is not SaveData data)
-                {
-                    return;
-                }
-
                 positions = new(data.positions);
                 startID = data.startID;
                 endID = data.endID;

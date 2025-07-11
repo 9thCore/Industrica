@@ -1,11 +1,11 @@
 ﻿using Industrica.Buildable.SteamReactor;
 using Industrica.Item.Network;
-using Industrica.Utility;
 using Nautilus.Handlers;
 using Nautilus.Json;
 using Nautilus.Json.Attributes;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Industrica.Save
 {
@@ -14,8 +14,13 @@ namespace Industrica.Save
     {
         public static SaveSystem Instance { get; private set; }
 
-        public Dictionary<string, SteamReactorBehaviour.SaveData> steamReactorSaveData = new();
-        public Dictionary<string, PlacedTransferPipe.SaveData> placedTransferPipeSaveData = new();
+        public SaveData<SteamReactorBehaviour.SaveData> steamReactorData = new();
+        public SaveData<PlacedTransferPipe.SaveData> placedTransferPipeData = new();
+
+        private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
+            .GetFields(BindingFlags.Public | BindingFlags.Instance)
+            .Where(info => typeof(ISaveData).IsAssignableFrom(info.FieldType))
+            .Select(info => info.GetValue(this) as ISaveData);
 
         public static void Register()
         {
@@ -24,22 +29,63 @@ namespace Industrica.Save
             Instance.OnStartedSaving += (obj, args) =>
             {
                 SaveSystem instance = args.Instance as SaveSystem;
+                instance.AllSaveData.ForEach(data => data.Save());
+            };
 
-                instance.SaveStorage(instance.steamReactorSaveData);
-                instance.SaveStorage(instance.placedTransferPipeSaveData);
+            Instance.OnFinishedLoading += (obj, args) =>
+            {
+                SaveSystem instance = args.Instance as SaveSystem;
+                instance.AllSaveData.ForEach(data => data.Load());
             };
         }
 
-        public void SaveStorage<T>(Dictionary<string, T> storage) where T : AbstractSaveData
+        public class SaveData<S> : Dictionary<string, S>, ISaveData where S : AbstractSaveData<S>
         {
-            Cleanup(storage);
-            storage.ForEach(pair => pair.Value.Save());
+            private readonly Dictionary<string, S> dirty = new();
+
+            public bool TryLoad(S saveData)
+            {
+                bool flag = false;
+                if (dirty.TryGetValue(saveData.SaveKey, out S loadData))
+                {
+                    saveData.CopyFromStorage(loadData);
+                    flag = true;
+                }
+
+                dirty[saveData.SaveKey] = saveData;
+                return flag;
+            }
+
+            public void Save()
+            {
+                Cleanup();
+
+                Clear();
+                IEnumerable<string> validKeys = dirty.Where(pair => pair.Value.IncludeInSave()).Select(pair => pair.Key);
+                validKeys.ForEach(key =>
+                {
+                    dirty[key].UpdateSaveIfAble();
+                    Add(key, dirty[key]);
+                });
+            }
+
+            public void Load()
+            {
+                this.ForEach(pair => dirty.Add(pair.Key, pair.Value));
+                Clear();
+            }
+
+            private void Cleanup()
+            {
+                string[] invalidKeys = dirty.Where(pair => !pair.Value.Valid).Select(pair => pair.Key).ToArray();
+                invalidKeys.ForEach(key => dirty.Remove(key));
+            }
         }
 
-        public void Cleanup<T>(Dictionary<string, T> storage) where T : AbstractSaveData
+        private interface ISaveData
         {
-            string[] invalidKeys = storage.Where(pair => !pair.Value.ValidForSaving()).Select(pair => pair.Key).ToArray();
-            invalidKeys.ForEach(key => storage.Remove(key));
+            public void Save();
+            public void Load();
         }
     }
 }

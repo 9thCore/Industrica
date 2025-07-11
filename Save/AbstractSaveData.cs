@@ -1,13 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections;
 using UnityEngine;
 using UWE;
 
 namespace Industrica.Save
 {
-    public abstract class AbstractSaveData
+    public abstract class AbstractSaveData<S> where S : AbstractSaveData<S>
     {
+        [JsonIgnore]
+        public bool Valid { get; private set; } = true;
         public abstract string SaveKey { get; }
+        [JsonIgnore]
+        public abstract SaveSystem.SaveData<S> SaveStorage { get; }
+
+        public void Invalidate()
+        {
+            Valid = false;
+        }
 
         protected void LoadDataLate()
         {
@@ -17,36 +26,39 @@ namespace Industrica.Save
         private IEnumerator LoadLate()
         {
             yield return new WaitForEndOfFrame();
+
+            if (this is not S save)
+            {
+                Plugin.Logger.LogError($"Could not load data, as {this} is not of type {typeof(S).Name}");
+                yield break;
+            }
+
+            if (!SaveStorage.TryLoad(save))
+            {
+                yield break;
+            }
+
             Load();
         }
 
-        public virtual bool TryLoad<S>(Dictionary<string, S> storage) where S : AbstractSaveData
+        public virtual bool IncludeInSave()
         {
-            return TryLoad(storage, SaveKey);
+            return true;
         }
-
-        public virtual bool TryLoad<S>(Dictionary<string, S> storage, string id) where S : AbstractSaveData
+        
+        public void UpdateSaveIfAble()
         {
-            if (this is not S save)
+            if (!AbleToUpdateSave())
             {
-                Plugin.Logger.LogError($"{this} is not of type {typeof(S)}, cannot load.");
-                return false;
+                return;
             }
 
-            bool flag = false;
-            if (storage.TryGetValue(id, out S data))
-            {
-                CopyFromStorage(data);
-                flag = true;
-            }
-
-            storage[id] = save;
-            return flag;
+            Save();
         }
 
         public abstract void Load();
         public abstract void Save();
-        public abstract bool ValidForSaving();
-        public abstract void CopyFromStorage(AbstractSaveData other);
+        public abstract bool AbleToUpdateSave();
+        public abstract void CopyFromStorage(S data);
     }
 }

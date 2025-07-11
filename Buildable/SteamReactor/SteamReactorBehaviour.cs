@@ -15,7 +15,7 @@ namespace Industrica.Buildable.SteamReactor
         public WaterParkSteamer waterPark;
         private GenericHandTarget handTarget;
 
-        public SaveData save;
+        private SaveData save;
 
         public override bool CanGenerate => Constructed && waterPark != null && waterPark.Overheating();
         public override float MaxPower => 500f;
@@ -52,6 +52,14 @@ namespace Industrica.Buildable.SteamReactor
             GeneratePowerPerSecond(PowerPerSecond, false, out _);
         }
 
+        public void OnDestroy()
+        {
+            if (ConstructedAmount == 0f)
+            {
+                save.Invalidate();
+            }
+        }
+
         public void FoundModule(WaterParkGeometry geometry)
         {
             if (!geometry.TryGetComponent(out WaterParkSteamer steamer))
@@ -63,15 +71,15 @@ namespace Industrica.Buildable.SteamReactor
             waterPark = steamer;
         }
 
-        public class SaveData : ComponentSaveData<SteamReactorBehaviour>
+        public class SaveData : ComponentSaveData<SaveData, SteamReactorBehaviour>
         {
             public float power;
+            public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.steamReactorData;
 
             public SaveData(SteamReactorBehaviour component) : base(component) { }
 
             public override void Load()
             {
-                TryLoad(SaveSystem.Instance.steamReactorSaveData);
                 Component.SetPower(power);
             }
 
@@ -80,13 +88,8 @@ namespace Industrica.Buildable.SteamReactor
                 power = Component.Power;
             }
 
-            public override void CopyFromStorage(AbstractSaveData other)
+            public override void CopyFromStorage(SaveData data)
             {
-                if (other is not SaveData data)
-                {
-                    return;
-                }
-
                 power = data.power;
             }
         }

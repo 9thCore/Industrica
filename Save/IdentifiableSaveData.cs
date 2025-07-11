@@ -2,7 +2,7 @@
 
 namespace Industrica.Save
 {
-    public abstract class IdentifiableSaveData : AbstractSaveData
+    public abstract class IdentifiableSaveData<S> : AbstractSaveData<S> where S : AbstractSaveData<S>
     {
         [JsonIgnore]
         private UniqueIdentifier uniqueIdentifier;

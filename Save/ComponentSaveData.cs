@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Industrica.Save
 {
-    public abstract class ComponentSaveData<T> : IdentifiableSaveData where T : MonoBehaviour
+    public abstract class ComponentSaveData<S, T> : IdentifiableSaveData<S> where S : AbstractSaveData<S> where T : MonoBehaviour
     {
         public override UniqueIdentifier GetUniqueIdentifier => Component.GetComponent<UniqueIdentifier>();
 
@@ -20,9 +20,9 @@ namespace Industrica.Save
             }
         }
 
-        public override bool ValidForSaving()
+        public override bool AbleToUpdateSave()
         {
-            return Component != null;
+            return Valid && Component != null;
         }
     }
 }
