@@ -7,7 +7,7 @@ namespace Industrica.Network.Container
     {
         public abstract bool TryInsert(T value);
         public abstract bool TryExtract(NetworkFilter<T> filter, out T value);
-        public abstract IEnumerator<Pickupable> GetEnumerator();
+        public abstract IEnumerator<T> GetEnumerator();
 
     }
 }
