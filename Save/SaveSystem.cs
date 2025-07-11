@@ -41,7 +41,7 @@ namespace Industrica.Save
 
         public class SaveData<S> : Dictionary<string, S>, ISaveData where S : AbstractSaveData<S>
         {
-            private readonly Dictionary<string, S> dirty = new();
+            private Dictionary<string, S> dirty;
 
             public bool TryLoad(S saveData)
             {
@@ -71,7 +71,7 @@ namespace Industrica.Save
 
             public void Load()
             {
-                this.ForEach(pair => dirty.Add(pair.Key, pair.Value));
+                dirty = new(this);
                 Clear();
             }
 
