@@ -22,6 +22,7 @@ namespace Industrica.Item.Network
         [SerializeField]
         private GameObject craftModel;
         private bool holster = false;
+        private float placeDistance;
 
         public PortType NeededPort => neededPort;
         public bool Placing => start.IsAlive();
@@ -144,6 +145,14 @@ namespace Industrica.Item.Network
             UpdateLastSegment();
             UpdateTargettedConnection();
 
+            if (GameInput.GetButtonHeld(Builder.buttonRotateCW))
+            {
+                placeDistance = Mathf.Clamp(placeDistance + PlaceDistanceChange * Time.deltaTime, PlaceMinDistance, PlaceMaxDistance);
+            } else if (GameInput.GetButtonHeld(Builder.buttonRotateCCW))
+            {
+                placeDistance = Mathf.Clamp(placeDistance - PlaceDistanceChange * Time.deltaTime, PlaceMinDistance, PlaceMaxDistance);
+            }
+
             if (HoveringOccupiedConnection && GameInput.GetButtonHeld(GameInput.Button.RightHand))
             {
                 clearHoldElapsed += Time.deltaTime;
@@ -154,7 +163,8 @@ namespace Industrica.Item.Network
                     hover.Disconnect();
                     clearHoldElapsed = 0f;
                 }
-            } else
+            }
+            else
             {
                 clearHoldElapsed = 0f;
             }
@@ -271,12 +281,12 @@ namespace Industrica.Item.Network
                 return hover.PipePosition;
             }
 
-            if (Physics.Raycast(aim.position, aim.forward, out RaycastHit hit, PlaceMaxDistance, Builder.placeLayerMask, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(aim.position, aim.forward, out RaycastHit hit, placeDistance, Builder.placeLayerMask, QueryTriggerInteraction.Ignore))
             {
                 return hit.point;
             }
 
-            return aim.position + aim.forward * PlaceMaxDistance;
+            return aim.position + aim.forward * placeDistance;
         }
 
         public void Position(Segment segment, Vector3 start)
@@ -392,6 +402,7 @@ namespace Industrica.Item.Network
                 start = null;
             }
 
+            placeDistance = PlaceDefaultDistance;
             neededPort = PortType.None;
             clearHoldElapsed = 0f;
             hover = null;
@@ -401,6 +412,7 @@ namespace Industrica.Item.Network
 
         public override void OnDraw(Player p)
         {
+            Inventory.main.quickSlots.SetIgnoreScrollInput(true);
             holster = false;
             Reset();
             base.OnDraw(p);
@@ -408,6 +420,7 @@ namespace Industrica.Item.Network
 
         public override void OnHolster()
         {
+            Inventory.main.quickSlots.SetIgnoreScrollInput(false);
             holster = true;
             Reset();
             base.OnHolster();
@@ -445,12 +458,14 @@ namespace Industrica.Item.Network
         public static ConnectionRefresh OnConnectionRefresh;
 
         public const int MaxSegments = 20;
-        public const float PlaceMaxDistance = 2f;
+        public const float PlaceMinDistance = 1f;
+        public const float PlaceMaxDistance = 5f;
+        public const float PlaceDefaultDistance = 3f;
+        public const float PlaceDistanceChange = 16f;
         public const float PlacementTimeout = 0.1f;
         public const float MinPipeScale = 0.5f;
         public const float MaxPipeScale = 2f;
         public const float ClearHoldTime = 0.75f;
-        public const float ArbitraryHeight = 0.125f;
 
         public class Segment
         {
