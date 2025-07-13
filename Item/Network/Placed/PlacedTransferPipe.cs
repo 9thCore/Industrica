@@ -10,32 +10,30 @@ using System.Linq;
 using UnityEngine;
 using UWE;
 
-namespace Industrica.Item.Network
+namespace Industrica.Item.Network.Placed
 {
-    public class PlacedTransferPipe : MonoBehaviour
+    public abstract class PlacedTransferPipe<T> : MonoBehaviour
     {
-        public static PrefabInfo Info { get; private set; }
 
-        private IPhysicalNetworkPort start, end;
+        private PhysicalNetworkPort<T> start, end;
         private GameObject segmentParent;
         private List<TransferPipe.Segment> segments;
         private Transform stretchedPart, endCap;
         private bool disconnectQueued = false;
-        private SaveData save;
 
-        public static void Register()
+        public static PrefabInfo Register<P>(string classID) where P : PlacedTransferPipe<T>
         {
-            Info = PrefabInfo
-                .WithTechType("IndustricaPlacedTransferPipe", true);
+            PrefabInfo info = PrefabInfo
+                .WithTechType(classID, true);
 
-            var prefab = new CustomPrefab(Info);
-            var obj = new CloneTemplate(Info, TechType.Pipe);
+            var prefab = new CustomPrefab(info);
+            var obj = new CloneTemplate(info, TechType.Pipe);
 
             obj.ModifyPrefab += go =>
             {
-                PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Medium);
+                PrefabUtils.AddBasicComponents(go, info.ClassID, info.TechType, LargeWorldEntity.CellLevel.Medium);
                 OxygenPipe oxygen = go.GetComponent<OxygenPipe>();
-                PlacedTransferPipe pipe = go.EnsureComponent<PlacedTransferPipe>();
+                P pipe = go.EnsureComponent<P>();
                 FPModel model = go.GetComponent<FPModel>();
 
                 oxygen.stretchedPart.gameObject.SetActive(false);
@@ -43,28 +41,34 @@ namespace Industrica.Item.Network
                 oxygen.endCap.gameObject.SetActive(false);
                 oxygen.endCap.SetParent(go.transform);
 
-                GameObject.DestroyImmediate(oxygen.endCap.GetComponent<Collider>());
+                DestroyImmediate(oxygen.endCap.GetComponent<Collider>());
                 go.DestroyImmediateChildrenWith<Collider>(true);
-                GameObject.DestroyImmediate(oxygen.bottomSection.gameObject);
-                GameObject.DestroyImmediate(oxygen.craftModel.gameObject);
-                GameObject.DestroyImmediate(oxygen.plugOrigin.gameObject);
-                GameObject.DestroyImmediate(oxygen);
-                GameObject.DestroyImmediate(model.propModel);
-                GameObject.DestroyImmediate(model.viewModel);
-                GameObject.DestroyImmediate(model);
-                GameObject.DestroyImmediate(go.GetComponentInChildren<OxygenArea>());
-                GameObject.DestroyImmediate(go.GetComponent<FMOD_CustomLoopingEmitter>());
+                DestroyImmediate(oxygen.bottomSection.gameObject);
+                DestroyImmediate(oxygen.craftModel.gameObject);
+                DestroyImmediate(oxygen.plugOrigin.gameObject);
+                DestroyImmediate(oxygen);
+                DestroyImmediate(model.propModel);
+                DestroyImmediate(model.viewModel);
+                DestroyImmediate(model);
+                DestroyImmediate(go.GetComponentInChildren<OxygenArea>());
+                DestroyImmediate(go.GetComponent<FMOD_CustomLoopingEmitter>());
             };
 
             prefab.SetGameObject(obj);
             prefab.Register();
+
+            return info;
         }
+
+        protected abstract void CreateSave();
+        protected abstract void InvalidateSave();
+        protected abstract void OnObjectDestroySave();
 
         public void Start()
         {
             stretchedPart = transform.Find("scaleThis");
             endCap = transform.Find("endcap");
-            save = new(this);
+            CreateSave();
         }
 
         public void SetSegments(GameObject segmentParent, List<TransferPipe.Segment> segments)
@@ -76,11 +80,17 @@ namespace Industrica.Item.Network
 
         public void Connect(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
         {
-            this.start = start;
-            this.end = end;
+            if (start is not PhysicalNetworkPort<T> startCast
+                || end is not PhysicalNetworkPort<T> endCast)
+            {
+                return;
+            }
 
-            start.Connect(this);
-            end.Connect(this);
+            this.start = startCast;
+            this.end = endCast;
+
+            startCast.Connect(this);
+            endCast.Connect(this);
 
             if (start.GameObject.TryGetComponentInParent(out Base seabase)
                 && end.GameObject.TryGetComponentInParent(out Base secondSeabase)
@@ -113,10 +123,7 @@ namespace Industrica.Item.Network
 
         public void OnDestroy()
         {
-            if (save.Valid)
-            {
-                save.Save();
-            }
+            OnObjectDestroySave();
         }
 
         public void Disconnect()
@@ -129,8 +136,8 @@ namespace Industrica.Item.Network
             disconnectQueued = true;
             start.Disconnect();
             end.Disconnect();
-            save.Invalidate();
-            GameObject.Destroy(gameObject);
+            InvalidateSave();
+            Destroy(gameObject);
         }
 
         public TransferPipe.Segment CreateSegment(Vector3 start, Vector3 end)
@@ -140,32 +147,32 @@ namespace Industrica.Item.Network
             return segment;
         }
 
-        public void Load(SaveData data)
+        public void Load(string start, string end, List<Vector3> positions)
         {
-            if (!UniqueIdentifier.TryGetIdentifier(data.startID, out UniqueIdentifier startID)
-                || !UniqueIdentifier.TryGetIdentifier(data.endID, out UniqueIdentifier endID))
+            if (!UniqueIdentifier.TryGetIdentifier(start, out UniqueIdentifier startID)
+                || !UniqueIdentifier.TryGetIdentifier(end, out UniqueIdentifier endID))
             {
-                Plugin.Logger.LogError($"{this} was incorrectly setup, loaded invalid ids: {data.startID}, {data.endID}. Removing pipe");
-                GameObject.Destroy(gameObject);
+                Plugin.Logger.LogError($"{this} was incorrectly setup, loaded invalid ids: {start}, {end}. Removing pipe");
+                Destroy(gameObject);
                 return;
             }
 
             if (!startID.TryGetComponent(out IPhysicalNetworkPort startPort)
                 || !endID.TryGetComponent(out IPhysicalNetworkPort endPort))
             {
-                Plugin.Logger.LogError($"{this} was incorrectly setup, loaded ids: {data.startID}, {data.endID}, but they are not ports. Removing pipe");
-                GameObject.Destroy(gameObject);
+                Plugin.Logger.LogError($"{this} was incorrectly setup, loaded ids: {start}, {end}, but they are not ports. Removing pipe");
+                Destroy(gameObject);
                 return;
             }
 
             segments = new();
             segmentParent = GameObjectUtil.CreateChild(gameObject, nameof(segmentParent));
 
-            for (int i = 1; i < data.positions.Count; i++)
+            for (int i = 1; i < positions.Count; i++)
             {
-                CreateSegment(data.positions[i - 1], data.positions[i]);
+                CreateSegment(positions[i - 1], positions[i]);
             }
-            CreateSegment(data.positions.Last(), endPort.PipePosition);
+            CreateSegment(positions.Last(), endPort.PipePosition);
 
             TransferPipe.CreateEndCap(segmentParent.transform, endCap.gameObject, startPort);
             TransferPipe.CreateEndCap(segmentParent.transform, endCap.gameObject, endPort);
@@ -178,17 +185,22 @@ namespace Industrica.Item.Network
             Connect(startPort, endPort);
         }
 
-        public class SaveData : ComponentSaveData<SaveData, PlacedTransferPipe>
+        public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PlacedTransferPipe<T>
         {
             public string startID, endID;
             public List<Vector3> positions = new();
-            public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.placedTransferPipeData;
+            public BaseSaveData(C component) : base(component) { }
 
-            public SaveData(PlacedTransferPipe component) : base(component) { }
+            public override void CopyFromStorage(S data)
+            {
+                startID = data.startID;
+                endID = data.endID;
+                positions = data.positions;
+            }
 
             public override void Load()
             {
-                Component.Load(this);
+                Component.Load(startID, endID, positions);
             }
 
             public override void Save()
@@ -198,13 +210,6 @@ namespace Industrica.Item.Network
 
                 positions.Clear();
                 Component.segments.ForEach(s => positions.Add(s.Position));
-            }
-
-            public override void CopyFromStorage(SaveData data)
-            {
-                positions = new(data.positions);
-                startID = data.startID;
-                endID = data.endID;
             }
         }
     }

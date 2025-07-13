@@ -4,6 +4,7 @@ using HarmonyLib;
 using Industrica.Buildable.ConnectableTest;
 using Industrica.Buildable.SteamReactor;
 using Industrica.Item.Network;
+using Industrica.Item.Network.Placed;
 using Industrica.Network.Systems;
 using Industrica.Save;
 using Nautilus.Handlers;
@@ -48,7 +49,7 @@ namespace Industrica
         private void InitializePrefabs()
         {
             SteamReactor.Register();
-            PlacedTransferPipe.Register();
+            PlacedItemTransferPipe.Register();
             ItemTransferPipe.Register();
             ConnectorTest.Register();
             ItemPhysicalNetwork.RegisterPrefab();

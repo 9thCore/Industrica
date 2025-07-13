@@ -1,5 +1,6 @@
 ﻿using Industrica.ClassBase;
 using Industrica.Item.Network;
+using Industrica.Item.Network.Placed;
 using Industrica.Network.Container;
 using Industrica.Network.Filter;
 using Industrica.Network.Systems;
@@ -16,7 +17,7 @@ namespace Industrica.Network.Physical
         private bool lockHover = false;
         private Transform parent;
         private UniqueIdentifier identifier, networkIdentifier;
-        private PlacedTransferPipe connectedPipe = null;
+        private PlacedTransferPipe<T> connectedPipe = null;
         private PhysicalPortRepresentation physicalPort = null;
         private PhysicalNetwork<T> network;
         private PhysicalNetwork<T>.PhysicalConnection connection = null;
@@ -74,12 +75,7 @@ namespace Industrica.Network.Physical
 
         public virtual void OnDestroy()
         {
-            if (connection == null)
-            {
-                return;
-            }
-
-            connection.Deregister();
+            NetworkDisconnect();
         }
 
         public void Disconnect()
@@ -88,9 +84,23 @@ namespace Industrica.Network.Physical
             {
                 return;
             }
-
+            
             connectedPipe.Disconnect();
             connectedPipe = null;
+
+            NetworkDisconnect();
+        }
+
+        public void NetworkDisconnect()
+        {
+            if (connection == null)
+            {
+                return;
+            }
+
+            connection.Deregister();
+            network = null;
+            networkIdentifier = null;
         }
 
         protected void UpdateAuto()
@@ -162,7 +172,7 @@ namespace Industrica.Network.Physical
 
             if (!UniqueIdentifier.TryGetIdentifier(id, out UniqueIdentifier identifier))
             {
-                Plugin.Logger.LogWarning($"No network found");
+                Plugin.Logger.LogError($"No network ({id}) found. Cannot connect");
                 yield break;
             }
 
@@ -171,11 +181,9 @@ namespace Industrica.Network.Physical
             {
                 SetNetwork(network);
             }
-            
-            Plugin.Logger.LogWarning($"Connected to network: {network}");
         }
 
-        public virtual void Connect(PlacedTransferPipe pipe)
+        public virtual void Connect(PlacedTransferPipe<T> pipe)
         {
             connectedPipe = pipe;
         }

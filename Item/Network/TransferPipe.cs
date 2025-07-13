@@ -1,6 +1,8 @@
-﻿using Industrica.Network;
+﻿using Industrica.Item.Network.Placed;
+using Industrica.Network;
 using Industrica.Network.Physical;
 using Industrica.Utility;
+using Nautilus.Assets;
 using Nautilus.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,17 +43,16 @@ namespace Industrica.Item.Network
             craftModel = pipe.craftModel;
         }
 
-        public System.Collections.IEnumerator Create(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
+        public System.Collections.IEnumerator CreatePipe<T, S>(TechType pipeTechType, IPhysicalNetworkPort start, IPhysicalNetworkPort end) where T : PlacedTransferPipe<S>
         {
             List<Segment> copy = new(segments);
-            TechType spawnable = PlacedTransferPipe.Info.TechType;
-            CoroutineTask<GameObject> request = CraftData.GetPrefabForTechTypeAsync(spawnable);
+            CoroutineTask<GameObject> request = CraftData.GetPrefabForTechTypeAsync(pipeTechType);
             yield return request;
 
             GameObject result = request.GetResult();
             if (result == null)
             {
-                ErrorMessage.AddMessage($"Could not spawn {nameof(PlacedTransferPipe)}. Discarding");
+                ErrorMessage.AddMessage($"Could not spawn {typeof(T).Name}. Discarding");
                 Reset();
                 yield break;
             }
@@ -61,12 +62,17 @@ namespace Industrica.Item.Network
             GameObject placedPipe = GameObject.Instantiate(result);
             placedPipe.transform.position = Vector3.Lerp(start.PipePosition, end.PipePosition, 0.5f);
 
-            PlacedTransferPipe pipe = placedPipe.GetComponent<PlacedTransferPipe>();
+            T pipe = placedPipe.GetComponent<T>();
             pipe.SetSegments(segmentParent, copy);
             pipe.ConnectAndCreateNetwork(start, end);
 
             UnlinkSegments();
             Reset();
+        }
+
+        public System.Collections.IEnumerator CreateItemPipe(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
+        {
+            yield return CreatePipe<PlacedItemTransferPipe, Pickupable>(PlacedItemTransferPipe.Info.TechType, start, end);
         }
 
         public void StartConnection(IPhysicalNetworkPort connection)
@@ -106,7 +112,10 @@ namespace Industrica.Item.Network
             start.LockHover = false;
             start.OnHoverEnd();
             connection.OnHoverEnd();
-            CoroutineHost.StartCoroutine(Create(start, connection));
+            if (start.AllowedPipeType == PipeType.Item)
+            {
+                CoroutineHost.StartCoroutine(CreateItemPipe(start, connection));
+            }
         }
 
         public void Connect(IPhysicalNetworkPort connection)
