@@ -1,5 +1,6 @@
 ﻿using Industrica.Buildable.SteamReactor;
 using Industrica.Item.Network;
+using Industrica.Network.Physical;
 using Nautilus.Handlers;
 using Nautilus.Json;
 using Nautilus.Json.Attributes;
@@ -16,6 +17,7 @@ namespace Industrica.Save
 
         public SaveData<SteamReactorBehaviour.SaveData> steamReactorData = new();
         public SaveData<PlacedTransferPipe.SaveData> placedTransferPipeData = new();
+        public SaveData<PhysicalNetworkItemPort.SaveData> physicalNetworkItemPortData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)

@@ -97,6 +97,20 @@ namespace Industrica.Item.Network
             }
         }
 
+        public void ConnectAndCreateNetwork(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
+        {
+            Connect(start, end);
+
+            if (start.AllowedPipeType == TransferPipe.PipeType.Item)
+            {
+                CoroutineHost.StartCoroutine(ItemPhysicalNetwork.Create(network =>
+                {
+                    start.SetNetwork(network);
+                    end.SetNetwork(network);
+                }));
+            }
+        }
+
         public void OnDestroy()
         {
             if (save.Valid)

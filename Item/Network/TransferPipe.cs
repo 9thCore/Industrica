@@ -63,7 +63,7 @@ namespace Industrica.Item.Network
 
             PlacedTransferPipe pipe = placedPipe.GetComponent<PlacedTransferPipe>();
             pipe.SetSegments(segmentParent, copy);
-            pipe.Connect(start, end);
+            pipe.ConnectAndCreateNetwork(start, end);
 
             UnlinkSegments();
             Reset();

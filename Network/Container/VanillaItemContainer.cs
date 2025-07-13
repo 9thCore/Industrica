@@ -6,7 +6,6 @@ namespace Industrica.Network.Container
     public class VanillaItemContainer : Container<Pickupable>
     {
         private readonly IItemsContainer container;
-
         public VanillaItemContainer(IItemsContainer container)
         {
             this.container = container;
@@ -35,14 +34,34 @@ namespace Industrica.Network.Container
             return false;
         }
 
+        public override bool CanInsert(Pickupable value)
+        {
+            return container.AllowedToAdd(value, false) && container.HasRoomFor(value, null);
+        }
+
         public override bool TryInsert(Pickupable value)
         {
-            if (!container.AllowedToAdd(value, false))
+            if (!CanInsert(value))
             {
                 return false;
             }
 
             return container.AddItem(new InventoryItem(value));
+        }
+
+        public override bool Contains(NetworkFilter<Pickupable> filter, out bool canExtract)
+        {
+            foreach (Pickupable item in this)
+            {
+                if (filter.Matches(item))
+                {
+                    canExtract = container.AllowedToRemove(item, false);
+                    return true;
+                }
+            }
+
+            canExtract = default;
+            return false;
         }
     }
 }

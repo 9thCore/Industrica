@@ -1,14 +1,13 @@
-﻿using System;
-using System.Reflection;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Industrica.Buildable.ConnectableTest;
 using Industrica.Buildable.SteamReactor;
 using Industrica.Item.Network;
-using Industrica.Item.Water;
+using Industrica.Network.Systems;
 using Industrica.Save;
 using Nautilus.Handlers;
+using System.Reflection;
 
 namespace Industrica
 {
@@ -52,6 +51,7 @@ namespace Industrica
             PlacedTransferPipe.Register();
             ItemTransferPipe.Register();
             ConnectorTest.Register();
+            ItemPhysicalNetwork.RegisterPrefab();
         }
     }
 }

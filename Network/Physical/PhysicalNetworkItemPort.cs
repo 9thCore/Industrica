@@ -2,25 +2,28 @@
 using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
 using Industrica.Network.Filter;
+using Industrica.Save;
 using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalNetworkItemPort : PhysicalNetworkPort<Pickupable>, IPhysicalNetworkPort
+    public class PhysicalNetworkItemPort : PhysicalNetworkPort<Pickupable>
     {
         private Container<Pickupable> itemContainer;
+        public override Container<Pickupable> Container => itemContainer;
 
         public override TransferPipe.PipeType AllowedPipeType => TransferPipe.PipeType.Item;
 
-        public static PhysicalNetworkItemPort CreatePort(GameObject root, Vector3 position, Quaternion rotation, PortType type)
+        public static PhysicalNetworkItemPort CreatePort(GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
         {
-            return CreatePort<PhysicalNetworkItemPort>(root, position, rotation, type);
+            return CreatePort<PhysicalNetworkItemPort>(root, position, rotation, type, autoNetworkTransfer);
         }
 
         public override void Start()
         {
             base.Start();
             itemContainer = gameObject.GetComponentInParent<ContainerProvider<Pickupable>>().Container;
+            new SaveData(this);
         }
 
         public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value)
@@ -43,6 +46,12 @@ namespace Industrica.Network.Physical
             }
 
             return itemContainer.TryInsert(value);
+        }
+
+        public class SaveData : BaseSaveData<SaveData, PhysicalNetworkItemPort>
+        {
+            public SaveData(PhysicalNetworkItemPort component) : base(component) { }
+            public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.physicalNetworkItemPortData;
         }
     }
 }
