@@ -469,7 +469,7 @@ namespace Industrica.Item.Network
         public const int MaxSegments = 20;
         public const float PlaceMinDistance = 1f;
         public const float PlaceMaxDistance = 5f;
-        public const float PlaceDefaultDistance = 3f;
+        public const float PlaceDefaultDistance = 2f;
         public const float PlaceDistanceChange = 16f;
         public const float PlacementTimeout = 0.1f;
         public const float MinPipeScale = 0.5f;
