@@ -41,8 +41,19 @@ namespace Industrica.Buildable.ConnectableTest
                 PrefabUtils.AddStorageContainer(obj, "ConnectionStorage", "ConnectionStorageClassId", 4, 4);
                 obj.EnsureComponent<StorageContainerProvider>();
 
-                PhysicalNetworkItemPort.CreatePort(obj, Vector3.up * 1.05f + Vector3.forward, Quaternion.identity, PortType.Input, false);
-                PhysicalNetworkItemPort.CreatePort(obj, Vector3.up * 1.05f - Vector3.forward, Quaternion.identity, PortType.Output, false);
+                PhysicalNetworkItemPort.CreatePort(
+                    obj,
+                    Vector3.up * 1.05f + Vector3.forward,
+                    Quaternion.identity,
+                    PortType.Input,
+                    false);
+
+                PhysicalNetworkItemPort.CreatePort(
+                    obj,
+                    Vector3.up * 1.05f - Vector3.forward,
+                    Quaternion.identity,
+                    PortType.Output,
+                    false);
             };
 
             prefab.SetGameObject(template);
