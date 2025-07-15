@@ -7,7 +7,8 @@
 	"IndustricaPipe_Item": "Item pipe port",
 	"IndustricaPipe_Input": "Input port",
 	"IndustricaPipe_Output": "Output port",
-	"IndustricaPipe_InputAndOutput": "Input/Output port",
+	"IndustricaPipe_Place": "Place segment",
+	"IndustricaPipe_Place_Tooltip": "{0}/{1}",
 	"IndustricaPipe_Disconnect": "Disconnect pipe",
 	"IndustricaPipe_Disconnect_Tooltip": "Hold to disconnect",
 	"IndustricaPipe_WrongType_Item": "Must connect item pipe"

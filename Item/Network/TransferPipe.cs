@@ -150,6 +150,12 @@ namespace Industrica.Item.Network
 
         public void UpdateTool()
         {
+            if (segments.Count > 0)
+            {
+                HandReticle.main.SetText(HandReticle.TextType.Hand, "IndustricaPipe_Place", true, GameInput.Button.LeftHand);
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, Language.main.GetFormat("IndustricaPipe_Place_Tooltip", segments.Count, MaxSegments), false);
+            }
+
             placementTimeout -= Time.deltaTime;
             UpdateLastSegment();
             UpdateTargettedConnection();
@@ -472,7 +478,7 @@ namespace Industrica.Item.Network
         public const float PlaceDefaultDistance = 2f;
         public const float PlaceDistanceChange = 16f;
         public const float PlacementTimeout = 0.1f;
-        public const float MinPipeScale = 0.5f;
+        public const float MinPipeScale = 0.1f;
         public const float MaxPipeScale = 2f;
         public const float ClearHoldTime = 0.75f;
 
