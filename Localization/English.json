@@ -10,5 +10,9 @@
 	"IndustricaPipe_Place_Tooltip": "{0}/{1}",
 	"IndustricaPipe_Disconnect": "Disconnect pipe",
 	"IndustricaPipe_Disconnect_Tooltip": "Hold to disconnect",
-	"IndustricaPipe_WrongType_Item": "Must connect item pipe"
+	"IndustricaPipe_WrongType_Item": "Must connect item pipe",
+	"IndustricaItemPump": "Item pump",
+	"Tooltip_IndustricaItemPump": "Utility that can pull items from its input container and push them into its output container.\nRequires power to function.\nMultiple pumps connected in series multiplies effective throughput.\nWill not pull that which it cannot insert into the output container.",
+	"IndustricaItemPipe": "Item pipe",
+	"Tooltip_IndustricaItemPipe": "Pipe capable of transferring items over a distance.\nConnectable to ports on item containers or pumps, which are highlighted when using it.\nUses sci-fi technology to ensure it does not get consumed on pipe creation."
 }
