@@ -113,28 +113,24 @@ namespace Industrica.Network.Physical
 
             HandReticle.main.SetIcon(HandReticle.IconType.Hand);
 
-            string text = parent.AllowedPipeType switch
+            string type = parent.AllowedPipeType switch
             {
-                TransferPipe.PipeType.Item => "IndustricaPipe_Item",
+                TransferPipe.PipeType.Item => "Item",
                 _ => null
             };
+
+            string port = parent.Port switch
+            {
+                PortType.Input => "Input",
+                PortType.Output => "Output",
+                _ => null
+            };
+
+            string text = $"IndustricaPipe_{type}_{port}";
 
             if (!string.IsNullOrEmpty(text))
             {
                 HandReticle.main.SetText(HandReticle.TextType.Hand, text, true, GameInput.Button.LeftHand);
-            }
-
-            string subscript = parent.Port switch
-            {
-                PortType.Input => "IndustricaPipe_Input",
-                PortType.Output => "IndustricaPipe_Output",
-                PortType.InputAndOutput => "IndustricaPipe_InputAndOutput",
-                _ => null
-            };
-
-            if (!string.IsNullOrEmpty(subscript))
-            {
-                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, subscript, true);
             }
         }
 
