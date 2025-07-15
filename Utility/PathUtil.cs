@@ -1,6 +1,7 @@
 ﻿using Nautilus.Utility;
 using System.IO;
 using System.Reflection;
+using UnityEngine;
 
 namespace Industrica.Utility
 {
@@ -12,6 +13,9 @@ namespace Industrica.Utility
         private static string _assetPath;
         public static string AssetPath => _assetPath ??= Path.Combine(AssemblyPath, "Assets");
 
+        private static string _texturePath;
+        public static string TexturePath => _texturePath ??= Path.Combine(AssetPath, "Texture");
+
         public static Atlas.Sprite GetImage(string path)
         {
             string fullPath = Path.Combine(AssetPath, $"{path}.png");
@@ -20,6 +24,16 @@ namespace Industrica.Utility
                 throw new FileNotFoundException();
             }
             return ImageUtils.LoadSpriteFromFile(fullPath);
+        }
+
+        public static Texture GetTexture(string path)
+        {
+            string fullPath = Path.Combine(TexturePath, $"{path}.png");
+            if (!File.Exists(fullPath))
+            {
+                throw new FileNotFoundException();
+            }
+            return ImageUtils.LoadTextureFromFile(fullPath);
         }
     }
 }

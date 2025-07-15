@@ -7,38 +7,41 @@ using UnityEngine;
 
 namespace Industrica.Network.Systems
 {
-    public abstract class Network<T, R> : MonoBehaviour where R : Network<T, R>.NetworkConnection
+    public abstract class Network<T, R, W> : MonoBehaviour where R : Network<T, R, W>.NetworkConnection where W : Network<T, R, W>.ContainerWrapper<R>, new()
     {
         private float destroyTimer = 0f;
         private bool lockDestruction = false;
-        private readonly HashSet<R> input = new();
-        private readonly HashSet<R> output = new();
-        private bool IsEmpty => input.Count == 0 && output.Count == 0;
+        protected readonly W input = new();
+        protected readonly W output = new();
+        private bool IsEmpty => input.IsEmpty && output.IsEmpty;
 
         public bool LockDestruction { set => lockDestruction = value; }
 
         protected R Register(PortType port, R connection)
         {
-            if (port.HasFlag(PortType.Input))
+            switch (port)
             {
-                input.Add(connection);
+                case PortType.Input:
+                    input.Add(connection);
+                    break;
+                case PortType.Output:
+                    output.Add(connection);
+                    break;
             }
-            if (port.HasFlag(PortType.Output))
-            {
-                output.Add(connection);
-            }
+
             return connection;
         }
 
         protected void Deregister(PortType port, R connection)
         {
-            if (port.HasFlag(PortType.Input))
+            switch (port)
             {
-                input.Remove(connection);
-            }
-            if (port.HasFlag(PortType.Output))
-            {
-                output.Remove(connection);
+                case PortType.Input:
+                    input.Remove(connection);
+                    break;
+                case PortType.Output:
+                    output.Remove(connection);
+                    break;
             }
 
             StartDestroyTimer();
@@ -118,7 +121,7 @@ namespace Industrica.Network.Systems
 
         public static float DestroyTimeout = 5f;
 
-        public static IEnumerator CreateNetwork<N>(TechType tech, Action<N> postLoadAction) where N : Network<T, R>
+        public static IEnumerator CreateNetwork<N>(TechType tech, Action<N> postLoadAction) where N : Network<T, R, W>
         {
             CoroutineTask<GameObject> request = CraftData.GetPrefabForTechTypeAsync(tech, false);
             yield return request;
@@ -138,7 +141,7 @@ namespace Industrica.Network.Systems
         }
 
         public abstract record NetworkConnection(
-            Network<T, R> Network,
+            Network<T, R, W> Network,
             PortType Type,
             Container<T> Container)
         {
@@ -146,6 +149,14 @@ namespace Industrica.Network.Systems
             {
                 Network.Deregister(Type, this as R);
             }
+        }
+
+        public abstract class ContainerWrapper<C> where C : NetworkConnection
+        {
+            public abstract void Add(C c);
+            public abstract void Remove(C c);
+            public abstract bool IsEmpty { get; }
+            public abstract IEnumerator<C> GetEnumerator();
         }
     }
 }
