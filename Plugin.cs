@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using Industrica.Buildable.ConnectableTest;
 using Industrica.Buildable.Pump;
 using Industrica.Buildable.SteamReactor;
 using Industrica.Item.Network;
@@ -52,7 +51,6 @@ namespace Industrica
             SteamReactor.Register();
             PlacedItemTransferPipe.Register();
             ItemTransferPipe.Register();
-            ConnectorTest.Register();
             ItemPhysicalNetwork.RegisterPrefab();
             BuildableItemPump.Register();
         }
