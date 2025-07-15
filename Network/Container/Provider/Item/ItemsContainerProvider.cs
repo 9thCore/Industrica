@@ -1,4 +1,4 @@
-﻿namespace Industrica.Network.Container.Provider
+﻿namespace Industrica.Network.Container.Provider.Item
 {
     public abstract class ItemsContainerProvider : ContainerProvider<Pickupable>
     {

@@ -1,6 +1,6 @@
 ﻿using Industrica.Network.Physical.Pump;
 
-namespace Industrica.Network.Container.Provider
+namespace Industrica.Network.Container.Provider.Item
 {
     public class ItemPumpContainerProvider : ContainerProvider<Pickupable>
     {

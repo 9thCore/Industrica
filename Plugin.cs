@@ -6,7 +6,7 @@ using Industrica.Buildable.SteamReactor;
 using Industrica.Item.Network;
 using Industrica.Item.Network.Placed;
 using Industrica.Network.Systems;
-using Industrica.Patch.Buildable.Lockers;
+using Industrica.Patch.Buildable.Storage;
 using Industrica.Save;
 using Nautilus.Handlers;
 using System.Reflection;
@@ -55,7 +55,7 @@ namespace Industrica
             ItemPhysicalNetwork.RegisterPrefab();
             BuildableItemPump.Register();
 
-            PatchLockerNetworkPorts.PatchAll();
+            PatchVanillaContainerNetworkPorts.PatchAll();
         }
     }
 }

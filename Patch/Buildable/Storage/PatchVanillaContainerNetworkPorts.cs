@@ -1,17 +1,33 @@
-﻿using Industrica.Network.Container.Provider;
+﻿using Industrica.Network.Container.Provider.Item;
 using Industrica.Network.Physical;
 using Industrica.Utility;
 using UnityEngine;
 using UWE;
 
-namespace Industrica.Patch.Buildable.Lockers
+namespace Industrica.Patch.Buildable.Storage
 {
-    public static class PatchLockerNetworkPorts
+    public static class PatchVanillaContainerNetworkPorts
     {
         public static void PatchAll()
         {
             PatchLocker();
             PatchSmallLocker();
+            PatchFiltrationMachine();
+        }
+
+        private static void PatchFiltrationMachine()
+        {
+            CoroutineHost.StartCoroutine(PrefabUtil.RunOnPrefab(TechType.BaseFiltrationMachine, go =>
+            {
+                go.EnsureComponent<FiltrationMachineContainerProvider>();
+
+                PhysicalNetworkItemPort.CreatePort(
+                    go,
+                    Vector3.zero,
+                    Quaternion.identity,
+                    Network.PortType.Output,
+                    false);
+            }));
         }
 
         private static void PatchLocker()

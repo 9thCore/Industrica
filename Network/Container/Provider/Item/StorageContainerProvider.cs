@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Industrica.Network.Container.Provider
+namespace Industrica.Network.Container.Provider.Item
 {
     [RequireComponent(typeof(StorageContainer))]
     public class StorageContainerProvider : ItemsContainerProvider
