@@ -289,26 +289,29 @@ namespace Industrica.Item.Network
             segmentParent = GameObjectUtil.CreateChild(start.Parent.gameObject, nameof(segmentParent));
         }
 
-        public Vector3 GetPlacePosition(Transform aim)
+        public Vector3 GetPlacePosition(Transform aim, out bool skipLowClamp)
         {
             if (HoveringAvailableConnection && hover != start && CloseEnoughToLastSegment(hover.PipePosition))
             {
+                skipLowClamp = true;
                 return hover.PipePosition;
             }
 
             if (Physics.Raycast(aim.position, aim.forward, out RaycastHit hit, placeDistance, Builder.placeLayerMask, QueryTriggerInteraction.Ignore))
             {
+                skipLowClamp = false;
                 return hit.point;
             }
 
+            skipLowClamp = false;
             return aim.position + aim.forward * placeDistance;
         }
 
         public void Position(Segment segment, Vector3 start)
         {
             Transform aim = Builder.GetAimTransform();
-            Vector3 end = GetPlacePosition(aim);
-            Position(segment, start, end);
+            Vector3 end = GetPlacePosition(aim, out bool skipLowClamp);
+            Position(segment, start, end, skipLowClamp);
         }
 
         public static void Position(Segment segment, Vector3 start, Vector3 end, bool skipLowClamp = false)
@@ -346,7 +349,7 @@ namespace Industrica.Item.Network
         public bool CloseEnoughToConnectSegment(Segment segment, Vector3 target)
         {
             float distance = Vector3.SqrMagnitude(segment.Position - target);
-            return MinPipeScale * MinPipeScale <= distance && distance <= MaxPipeScale * MaxPipeScale;
+            return distance <= MaxPipeScale * MaxPipeScale;
         }
 
         public void UnlinkSegments()
@@ -478,7 +481,7 @@ namespace Industrica.Item.Network
         public const float PlaceDefaultDistance = 2f;
         public const float PlaceDistanceChange = 16f;
         public const float PlacementTimeout = 0.1f;
-        public const float MinPipeScale = 0.1f;
+        public const float MinPipeScale = 0.5f;
         public const float MaxPipeScale = 2f;
         public const float ClearHoldTime = 0.75f;
 
