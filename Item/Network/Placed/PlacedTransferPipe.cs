@@ -92,6 +92,9 @@ namespace Industrica.Item.Network.Placed
             startCast.Connect(this);
             endCast.Connect(this);
 
+            startCast.Connect(endCast);
+            endCast.Connect(startCast);
+
             if (start.GameObject.TryGetComponentInParent(out Base seabase)
                 && end.GameObject.TryGetComponentInParent(out Base secondSeabase)
                 && seabase == secondSeabase)

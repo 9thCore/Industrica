@@ -96,5 +96,21 @@ namespace Industrica.Utility
 
             return true;
         }
+
+        public static void SetupConstructableBounds(this GameObject prefab)
+        {
+            ConstructableBounds bounds = prefab.EnsureComponent<ConstructableBounds>();
+            Vector3 position = prefab.transform.position;
+            OrientedBounds oriented = new()
+            {
+                position = position,
+                rotation = prefab.transform.rotation
+            };
+            Bounds encapsulator = new(position, Vector3.zero);
+            prefab.GetComponentsInChildren<Renderer>().ForEach(r => encapsulator.Encapsulate(r.bounds));
+            oriented.extents = encapsulator.extents;
+            oriented.size = encapsulator.size;
+            bounds.bounds = oriented;
+        }
     }
 }

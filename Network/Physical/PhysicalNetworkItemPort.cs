@@ -28,7 +28,7 @@ namespace Industrica.Network.Physical
 
         public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value)
         {
-            if (!CanExtract)
+            if (!IsOutput)
             {
                 value = default;
                 return false;
@@ -39,9 +39,8 @@ namespace Industrica.Network.Physical
 
         public override bool TryInsert(Pickupable value)
         {
-            if (!CanInsert)
+            if (!IsInput)
             {
-                value = default;
                 return false;
             }
 

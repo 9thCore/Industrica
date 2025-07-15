@@ -7,6 +7,7 @@ using Industrica.Network.Systems;
 using Industrica.Save;
 using Industrica.Utility;
 using UnityEngine;
+using UWE;
 
 namespace Industrica.Network.Physical
 {
@@ -14,6 +15,9 @@ namespace Industrica.Network.Physical
     {
         public PortType port;
         public bool autoNetworkTransfer = false;
+        public PhysicalNetworkPort<T> ConnectedPort { get; private set; } = null;
+        public NetworkFilter<T> InsertFilter { get; private set; } = null;
+
         private bool lockHover = false;
         private Transform parent;
         private UniqueIdentifier identifier, networkIdentifier;
@@ -29,8 +33,6 @@ namespace Industrica.Network.Physical
 
         public bool IsInput => port.HasFlag(PortType.Input);
         public bool IsOutput => port.HasFlag(PortType.Output);
-        public bool CanInsert => IsInput;
-        public bool CanExtract => IsOutput;
         public PortType Port => port;
         public GameObject GameObject => gameObject;
         public Transform Transform => transform;
@@ -84,6 +86,8 @@ namespace Industrica.Network.Physical
             {
                 return;
             }
+
+            ConnectedPort = null;
             
             connectedPipe.Disconnect();
             connectedPipe = null;
@@ -122,7 +126,7 @@ namespace Industrica.Network.Physical
             OutputIntoNetwork();
         }
         
-        private void InputFromNetwork()
+        public void InputFromNetwork()
         {
             if (network == null
                 || !port.HasFlag(PortType.Input))
@@ -130,8 +134,8 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            insertFilter ??= new InsertableNetworkFilter<T>(Container);
-            if (!network.TryExtract(insertFilter, out T value))
+            InsertFilter ??= new InsertableNetworkFilter<T>(Container);
+            if (!network.TryExtract(InsertFilter, out T value))
             {
                 return;
             }
@@ -139,7 +143,7 @@ namespace Industrica.Network.Physical
             Container.TryInsert(value);
         }
 
-        private void OutputIntoNetwork()
+        public void OutputIntoNetwork()
         {
             if (network == null
                 || !port.HasFlag(PortType.Output))
@@ -156,7 +160,7 @@ namespace Industrica.Network.Physical
             }
         }
 
-        public virtual void SetNetwork<N>(N unvalidatedNetwork) 
+        public void SetNetwork<N>(N unvalidatedNetwork) 
         {
             if (unvalidatedNetwork is not PhysicalNetwork<T> network)
             {
@@ -169,7 +173,7 @@ namespace Industrica.Network.Physical
             connection = network.Register(port, this);
         }
 
-        public virtual System.Collections.IEnumerator SetNetworkID(string id)
+        public System.Collections.IEnumerator SetNetworkID(string id)
         {
             yield return new WaitForSecondsRealtime(1f);
 
@@ -186,12 +190,17 @@ namespace Industrica.Network.Physical
             }
         }
 
-        public virtual void Connect(PlacedTransferPipe<T> pipe)
+        public void Connect(PlacedTransferPipe<T> pipe)
         {
             connectedPipe = pipe;
         }
 
-        public virtual bool ShouldBeInteractable(TransferPipe pipe)
+        public void Connect(PhysicalNetworkPort<T> port)
+        {
+            ConnectedPort = port;
+        }
+
+        public bool ShouldBeInteractable(TransferPipe pipe)
         {
             return !pipe.Holstering && AllowedPipeType == pipe.type && CanConnectTo(pipe);
         }
@@ -237,7 +246,7 @@ namespace Industrica.Network.Physical
 
             public override void Load()
             {
-                Component.SetNetworkID(networkId);
+                CoroutineHost.StartCoroutine(Component.SetNetworkID(networkId));
             }
 
             public override void Save()
