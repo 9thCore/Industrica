@@ -99,6 +99,7 @@ namespace Industrica.Network.Physical
             }
 
             connection.Deregister();
+            connection = null;
             network = null;
             networkIdentifier = null;
         }
@@ -123,7 +124,8 @@ namespace Industrica.Network.Physical
         
         private void InputFromNetwork()
         {
-            if (!port.HasFlag(PortType.Input))
+            if (network == null
+                || !port.HasFlag(PortType.Input))
             {
                 return;
             }
@@ -139,7 +141,8 @@ namespace Industrica.Network.Physical
 
         private void OutputIntoNetwork()
         {
-            if (!port.HasFlag(PortType.Output))
+            if (network == null
+                || !port.HasFlag(PortType.Output))
             {
                 return;
             }
