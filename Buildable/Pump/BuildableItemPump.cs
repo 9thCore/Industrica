@@ -53,7 +53,7 @@ namespace Industrica.Buildable.Pump
                     Vector3.right * -0.4f,
                     Quaternion.Euler(0f, 0f, 90f),
                     PortType.Output,
-                    false);
+                    true);
 
                 renderer.materials[0].SetFloat("_LightmapStrength", 1f);
                 renderer.materials[1].SetTexture("_Illum", PhysicalNetworkItemPump.Texture);
