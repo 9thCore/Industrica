@@ -229,8 +229,8 @@ namespace Industrica.Network.Physical
 
         public abstract PipeType AllowedPipeType { get; }
         public abstract void CreateAndSetNetwork(Action<PhysicalNetwork<T>> action);
-        public abstract bool TryExtract(NetworkFilter<T> filter, out T value);
-        public abstract bool TryInsert(T value);
+        public abstract bool TryExtract(NetworkFilter<T> filter, out T value, bool simulate = false);
+        public abstract bool TryInsert(T value, bool simulate = false);
 
         public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PhysicalNetworkPort<T>
         {
