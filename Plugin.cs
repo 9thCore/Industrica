@@ -9,6 +9,7 @@ using Industrica.Patch.Vanilla;
 using Industrica.Save;
 using Nautilus.Handlers;
 using System.Reflection;
+using UnityEngine;
 
 namespace Industrica
 {
@@ -49,7 +50,7 @@ namespace Industrica
         private void InitializePrefabs()
         {
             PlacedItemTransferPipe.Register();
-            ItemTransferPipe.Register();
+            ItemTransportPipe.Register();
             ItemPhysicalNetwork.RegisterPrefab();
             BuildableItemPump.Register();
 

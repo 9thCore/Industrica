@@ -1,13 +1,11 @@
-﻿using Industrica.Utility;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalNetworkPortHandler : MonoBehaviour, IConstructable
+    public class PhysicalNetworkPortHandler<T> : MonoBehaviour, IConstructable
     {
-        private IPhysicalNetworkPort[] ports = null;
+        private PhysicalNetworkPort<T>[] ports = null;
         private int count = 0;
 
         public string GetClassID()
@@ -17,12 +15,12 @@ namespace Industrica.Network.Physical
 
         public void Start()
         {
-            ports = GetComponentsInChildren<IPhysicalNetworkPort>(true);
+            ports = GetComponentsInChildren<PhysicalNetworkPort<T>>(true);
         }
 
         public bool CanDeconstruct(out string reason)
         {
-            if (ports == null || ports.All(c => !c.IsAlive() || !c.Occupied))
+            if (ports == null || ports.All(c => c == null || !c.Occupied))
             {
                 reason = default;
                 return true;

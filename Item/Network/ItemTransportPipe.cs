@@ -1,15 +1,14 @@
-﻿using Industrica.Utility;
+﻿using Industrica.Network.Physical.Item;
+using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
-using Nautilus.Extensions;
 using Nautilus.Utility;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Industrica.Item.Network
 {
-    public static class ItemTransferPipe
+    public static class ItemTransportPipe
     {
         public static PrefabInfo Info { get; private set; }
 
@@ -29,11 +28,10 @@ namespace Industrica.Item.Network
             {
                 PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Far);
                 OxygenPipe pipe = go.GetComponent<OxygenPipe>();
-                TransferPipe tool = go.AddComponent<TransferPipe>();
+                ItemTransferPipe tool = go.AddComponent<ItemTransferPipe>();
 
                 ComponentUtil.Setup(tool, pipe);
                 tool.Setup(pipe);
-                tool.type = TransferPipe.PipeType.Item;
 
                 GameObject.DestroyImmediate(pipe.endCap.GetComponent<Collider>());
                 go.DestroyImmediateChildrenWith<Collider>(true);

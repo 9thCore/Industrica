@@ -1,5 +1,4 @@
 ﻿using Industrica.ClassBase;
-using Industrica.Item.Network;
 using Industrica.Item.Network.Placed;
 using Industrica.Network.Container;
 using Industrica.Network.Filter;
@@ -11,7 +10,7 @@ using UWE;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class PhysicalNetworkPort<T> : DestroyableMonoBehaviour, IPhysicalNetworkPort
+    public abstract class PhysicalNetworkPort<T> : MonoBehaviour
     {
         public PortType port;
         public bool autoNetworkTransfer = false;
@@ -22,7 +21,7 @@ namespace Industrica.Network.Physical
         private Transform parent;
         private UniqueIdentifier identifier, networkIdentifier;
         private PlacedTransferPipe<T> connectedPipe = null;
-        private PhysicalPortRepresentation physicalPort = null;
+        private PhysicalPortRepresentation<T> physicalPort = null;
         private PhysicalNetwork<T> network;
         private PhysicalNetwork<T>.PhysicalConnection connection = null;
         private float elapsedSinceLastAutoTransfer = 0f;
@@ -34,32 +33,32 @@ namespace Industrica.Network.Physical
         public bool IsInput => port.HasFlag(PortType.Input);
         public bool IsOutput => port.HasFlag(PortType.Output);
         public PortType Port => port;
-        public GameObject GameObject => gameObject;
         public Transform Transform => transform;
         public Vector3 EndCapPosition => transform.position + transform.up * 0.06f;
         public Vector3 PipePosition => transform.position + transform.up * 0.2f;
         public bool Occupied => connectedPipe != null;
         public Transform Parent => parent;
         public string Id => identifier.Id;
-        public string NetworkId => networkIdentifier.Id;
         public bool HasNetwork => network != null;
         public bool LockHover { set => lockHover = value; }
-        public bool AutoNetwork => autoNetworkTransfer;
 
-        protected static Derived CreatePort<Derived>(GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer) where Derived : PhysicalNetworkPort<T>
+        protected static P CreatePort<P, H, R>(GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
+            where P : PhysicalNetworkPort<T>
+            where H : PhysicalNetworkPortHandler<T>
+            where R : PhysicalPortRepresentation<T>
         {
-            PhysicalNetworkPortHandler counter = root.EnsureComponent<PhysicalNetworkPortHandler>();
+            H counter = root.EnsureComponent<H>();
 
-            GameObject portRoot = GameObjectUtil.CreateChild(root, typeof(Derived).Name, position: position, rotation: rotation);
+            GameObject portRoot = GameObjectUtil.CreateChild(root, typeof(P).Name, position: position, rotation: rotation);
 
             ChildObjectIdentifier identifier = portRoot.EnsureComponent<ChildObjectIdentifier>();
             identifier.ClassId = counter.GetClassID();
 
-            Derived component = portRoot.EnsureComponent<Derived>();
+            P component = portRoot.EnsureComponent<P>();
             component.port = type;
             component.autoNetworkTransfer = autoNetworkTransfer;
 
-            PhysicalPortRepresentation.CreatePort(portRoot);
+            PhysicalPortRepresentation<T>.CreatePort<R>(portRoot);
 
             return component;
         }
@@ -68,7 +67,7 @@ namespace Industrica.Network.Physical
         {
             parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
             identifier = gameObject.GetComponent<UniqueIdentifier>();
-            physicalPort = gameObject.GetComponentInChildren<PhysicalPortRepresentation>();
+            physicalPort = gameObject.GetComponentInChildren<PhysicalPortRepresentation<T>>();
         }
 
         public virtual void Update()
@@ -201,14 +200,14 @@ namespace Industrica.Network.Physical
             ConnectedPort = port;
         }
 
-        public bool ShouldBeInteractable(TransferPipe pipe)
+        public bool ShouldBeInteractable(TransferPipe<T> pipe)
         {
-            return !pipe.Holstering && AllowedPipeType == pipe.type && CanConnectTo(pipe);
+            return !pipe.Holstering && AllowedPipeType == pipe.Type && CanConnectTo(pipe);
         }
 
-        public bool CanConnectTo(TransferPipe pipe)
+        public bool CanConnectTo(TransferPipe<T> pipe)
         {
-            return pipe.ConnectedTo(this) || port.HasFlag(pipe.NeededPort);
+            return pipe.ConnectedTo(this) || port.HasFlag(pipe.neededPort);
         }
 
         public  virtual void OnHoverStart()
@@ -231,7 +230,8 @@ namespace Industrica.Network.Physical
             physicalPort.OnHoverEnd();
         }
 
-        public abstract TransferPipe.PipeType AllowedPipeType { get; }
+        public abstract PipeType AllowedPipeType { get; }
+        public abstract PhysicalPortRepresentation<T> CreateRepresentation();
         public abstract bool TryExtract(NetworkFilter<T> filter, out T value);
         public abstract bool TryInsert(T value);
 

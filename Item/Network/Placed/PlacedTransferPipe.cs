@@ -17,7 +17,7 @@ namespace Industrica.Item.Network.Placed
 
         private PhysicalNetworkPort<T> start, end;
         private GameObject segmentParent;
-        private List<TransferPipe.Segment> segments;
+        private List<TransferPipe<T>.Segment> segments;
         private Transform stretchedPart, endCap;
         private bool disconnectQueued = false;
         private Vector3 lastPlayerPosition = Vector3.zero;
@@ -97,7 +97,7 @@ namespace Industrica.Item.Network.Placed
             segmentParent.SetActive(flag);
         }
 
-        public void SetSegments(GameObject segmentParent, List<TransferPipe.Segment> segments)
+        public void SetSegments<S>(GameObject segmentParent, List<S> segments) where S : TransferPipe<T>.Segment
         {
             this.segmentParent = segmentParent;
             segmentParent.transform.SetParent(transform);
@@ -105,22 +105,16 @@ namespace Industrica.Item.Network.Placed
             UpdateRender();
         }
 
-        public void Connect(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
+        public void Connect(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
         {
-            if (start is not PhysicalNetworkPort<T> startCast
-                || end is not PhysicalNetworkPort<T> endCast)
-            {
-                return;
-            }
+            this.start = start;
+            this.end = end;
 
-            this.start = startCast;
-            this.end = endCast;
+            start.Connect(this);
+            end.Connect(this);
 
-            startCast.Connect(this);
-            endCast.Connect(this);
-
-            startCast.Connect(endCast);
-            endCast.Connect(startCast);
+            start.Connect(end);
+            end.Connect(start);
 
             if (start.Parent == end.Parent)
             {
@@ -128,11 +122,11 @@ namespace Industrica.Item.Network.Placed
             }
         }
 
-        public void ConnectAndCreateNetwork(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
+        public void ConnectAndCreateNetwork(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
         {
             Connect(start, end);
 
-            if (start.AllowedPipeType == TransferPipe.PipeType.Item)
+            if (start.AllowedPipeType == PipeType.Item)
             {
                 CoroutineHost.StartCoroutine(ItemPhysicalNetwork.Create(network =>
                 {
@@ -161,10 +155,10 @@ namespace Industrica.Item.Network.Placed
             Destroy(gameObject);
         }
 
-        public TransferPipe.Segment CreateSegment(Vector3 start, Vector3 end)
+        public TransferPipe<T>.Segment CreateSegment(Vector3 start, Vector3 end)
         {
-            TransferPipe.Segment segment = TransferPipe.CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments);
-            TransferPipe.Position(segment, start, end);
+            TransferPipe<T>.Segment segment = TransferPipe<T>.CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments);
+            TransferPipe<T>.Position(segment, start, end);
             return segment;
         }
 
@@ -178,8 +172,8 @@ namespace Industrica.Item.Network.Placed
                 return;
             }
 
-            if (!startID.TryGetComponent(out IPhysicalNetworkPort startPort)
-                || !endID.TryGetComponent(out IPhysicalNetworkPort endPort))
+            if (!startID.TryGetComponent(out PhysicalNetworkPort<T> startPort)
+                || !endID.TryGetComponent(out PhysicalNetworkPort<T> endPort))
             {
                 Plugin.Logger.LogError($"{this} was incorrectly setup, loaded ids: {start}, {end}, but they are not ports. Removing pipe");
                 Destroy(gameObject);
@@ -195,8 +189,8 @@ namespace Industrica.Item.Network.Placed
             }
             CreateSegment(positions.Last(), endPort.PipePosition);
 
-            TransferPipe.CreateEndCap(segmentParent.transform, endCap.gameObject, startPort);
-            TransferPipe.CreateEndCap(segmentParent.transform, endCap.gameObject, endPort);
+            TransferPipe<T>.CreateEndCap(segmentParent.transform, endCap.gameObject, startPort);
+            TransferPipe<T>.CreateEndCap(segmentParent.transform, endCap.gameObject, endPort);
 
             segmentParent.SetActive(false);
             SkyApplier applier = segmentParent.EnsureComponent<SkyApplier>();
