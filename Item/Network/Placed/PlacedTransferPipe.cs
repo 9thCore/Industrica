@@ -125,7 +125,17 @@ namespace Industrica.Item.Network.Placed
         public void ConnectAndCreateNetwork(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
         {
             Connect(start, end);
-            start.CreateAndSetNetwork(end.SetNetwork);
+            start.CreateAndSetNetwork(network =>
+            {
+                end.SetNetwork(network);
+                if (start.IsOutput)
+                {
+                    start.Sync(network);
+                } else
+                {
+                    end.Sync(network);
+                }
+            });
         }
 
         public void OnDestroy()

@@ -5,7 +5,7 @@ namespace Industrica.Network.Physical
 {
     public class PhysicalNetworkPortHandler<T> : MonoBehaviour, IConstructable
     {
-        private PhysicalNetworkPort<T>[] ports = null;
+        public PhysicalNetworkPort<T>[] Ports { get; private set; }
         private int count = 0;
 
         public string GetClassID()
@@ -15,12 +15,12 @@ namespace Industrica.Network.Physical
 
         public void Start()
         {
-            ports = GetComponentsInChildren<PhysicalNetworkPort<T>>(true);
+            Ports = GetComponentsInChildren<PhysicalNetworkPort<T>>(true);
         }
 
         public bool CanDeconstruct(out string reason)
         {
-            if (ports == null || ports.All(c => c == null || !c.Occupied))
+            if (Ports == null || Ports.All(c => c == null || !c.Occupied))
             {
                 reason = default;
                 return true;
