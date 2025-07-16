@@ -20,6 +20,7 @@ namespace Industrica.Item.Network.Placed
         private List<TransferPipe.Segment> segments;
         private Transform stretchedPart, endCap;
         private bool disconnectQueued = false;
+        private Vector3 lastPlayerPosition = Vector3.zero;
 
         public static PrefabInfo Register<P>(string classID) where P : PlacedTransferPipe<T>
         {
@@ -31,7 +32,7 @@ namespace Industrica.Item.Network.Placed
 
             obj.ModifyPrefab += go =>
             {
-                PrefabUtils.AddBasicComponents(go, info.ClassID, info.TechType, LargeWorldEntity.CellLevel.Medium);
+                PrefabUtils.AddBasicComponents(go, info.ClassID, info.TechType, LargeWorldEntity.CellLevel.Global);
                 OxygenPipe oxygen = go.GetComponent<OxygenPipe>();
                 P pipe = go.EnsureComponent<P>();
                 FPModel model = go.GetComponent<FPModel>();
@@ -69,6 +70,31 @@ namespace Industrica.Item.Network.Placed
             stretchedPart = transform.Find("scaleThis");
             endCap = transform.Find("endcap");
             CreateSave();
+            UpdateRender();
+        }
+
+        public void Update()
+        {
+            Vector3 playerPosition = Player.main.transform.position;
+            if (Vector3.SqrMagnitude(playerPosition - lastPlayerPosition) <= 1f)
+            {
+                return;
+            }
+            lastPlayerPosition = playerPosition;
+
+            UpdateRender();
+        }
+
+        private void UpdateRender()
+        {
+            if (segmentParent == null)
+            {
+                return;
+            }
+
+            Vector3 playerPosition = Player.main.transform.position;
+            bool flag = Vector3.SqrMagnitude(transform.position - playerPosition) <= MeshUnloadDistanceSquared;
+            segmentParent.SetActive(flag);
         }
 
         public void SetSegments(GameObject segmentParent, List<TransferPipe.Segment> segments)
@@ -76,6 +102,7 @@ namespace Industrica.Item.Network.Placed
             this.segmentParent = segmentParent;
             segmentParent.transform.SetParent(transform);
             this.segments = new(segments);
+            UpdateRender();
         }
 
         public void Connect(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
@@ -95,18 +122,9 @@ namespace Industrica.Item.Network.Placed
             startCast.Connect(endCast);
             endCast.Connect(startCast);
 
-            if (start.GameObject.TryGetComponentInParent(out Base seabase)
-                && end.GameObject.TryGetComponentInParent(out Base secondSeabase)
-                && seabase == secondSeabase)
+            if (start.Parent == end.Parent)
             {
-                Transform parent = segmentParent.transform.parent;
-
-                segmentParent.transform.SetParent(seabase.transform);
-                segmentParent.GetComponentsInChildren<SkyApplier>().ForEach(applier =>
-                {
-                    applier.SetSky(Skies.BaseInterior);
-                });
-                segmentParent.transform.SetParent(parent);
+                transform.SetParent(start.Parent, true);
             }
         }
 
@@ -215,5 +233,8 @@ namespace Industrica.Item.Network.Placed
                 Component.segments.ForEach(s => positions.Add(s.Position));
             }
         }
+
+        public const float MeshUnloadDistance = 60f;
+        public const float MeshUnloadDistanceSquared = MeshUnloadDistance * MeshUnloadDistance;
     }
 }
