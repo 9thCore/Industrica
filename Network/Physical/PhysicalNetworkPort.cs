@@ -19,10 +19,10 @@ namespace Industrica.Network.Physical
         public PortType port;
         public bool autoNetworkTransfer = false;
         public PhysicalNetworkPort<T> ConnectedPort { get; private set; } = null;
-        public NetworkFilter<T> InsertFilter { get; private set; } = null;
 
         private bool lockHover = false;
         private Transform parent;
+        private NetworkFilter<T> insertFilter, extractFilter = null;
         private PhysicalNetworkPortHandler<T> handler;
         private UniqueIdentifier identifier, networkIdentifier;
         private PlacedTransferPipe<T> connectedPipe = null;
@@ -128,8 +128,8 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            InsertFilter ??= new InsertableNetworkFilter<T>(Container);
-            if (!network.TryExtract(InsertFilter, out T value))
+            insertFilter ??= new InsertableNetworkFilter<T>(Container);
+            if (!network.TryExtract(insertFilter, out T value))
             {
                 return;
             }
@@ -145,12 +145,10 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            foreach (T value in Container)
+            extractFilter ??= new InsertableNetworkFilter<T>(ConnectedPort.Container);
+            if (Container.TryExtract(extractFilter, out T value))
             {
-                if (network.TryInsert(value))
-                {
-                    return;
-                }
+                network.TryInsert(value);
             }
         }
 
