@@ -10,7 +10,7 @@ namespace Industrica.Patch.Vanilla.Build
     {
         public static void Patch()
         {
-            CoroutineHost.StartCoroutine(PrefabUtil.RunOnPrefab(TechType.SmallLocker, go =>
+            PrefabUtil.RunOnPrefab(TechType.SmallLocker, go =>
             {
                 go.EnsureComponent<StorageContainerProvider>();
 
@@ -31,7 +31,7 @@ namespace Industrica.Patch.Vanilla.Build
                     Quaternion.Euler(0f, 0f, 90f),
                     Network.PortType.Output,
                     false);
-            }));
+            });
         }
     }
 }
