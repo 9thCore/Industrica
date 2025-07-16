@@ -6,6 +6,7 @@ namespace Industrica.Patch.Vanilla
     {
         public static void Patch()
         {
+            PatchNuclearReactor.Patch();
             PatchLocker.Patch();
             PatchWallLocker.Patch();
             PatchFiltrationMachine.Patch();
