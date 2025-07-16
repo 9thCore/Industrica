@@ -91,7 +91,27 @@ namespace Industrica.Network.Physical
         public void Animate(float progress)
         {
             interactable.localScale = Vector3.Lerp(UntargettedSize, TargettedSize, progress);
-            renderer.material.color = Color.Lerp(UntargettedColor, TargettedColor, progress);
+            renderer.material.color = Color.Lerp(GetUntargetColor(), GetTargetColor(), progress);
+        }
+
+        private Color GetUntargetColor()
+        {
+            if (parent.IsDestroyed())
+            {
+                return UntargettedColor;
+            }
+
+            return parent.AutoNetwork ? UntargettedAutoColor : UntargettedColor;
+        }
+
+        private Color GetTargetColor()
+        {
+            if (parent.IsDestroyed())
+            {
+                return TargettedColor;
+            }
+
+            return parent.AutoNetwork ? TargettedAutoColor : TargettedColor;
         }
 
         public void OnHoverStart()
@@ -126,17 +146,19 @@ namespace Industrica.Network.Physical
                 _ => null
             };
 
-            string text = $"IndustricaPipe_{type}_{port}";
+            HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaPipe_{type}_{port}", true, GameInput.Button.LeftHand);
 
-            if (!string.IsNullOrEmpty(text))
+            if (parent.AutoNetwork)
             {
-                HandReticle.main.SetText(HandReticle.TextType.Hand, text, true, GameInput.Button.LeftHand);
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, $"IndustricaPipe_Auto{port}", true);
             }
         }
 
         public static readonly Vector3 UntargettedSize = new Vector3(0.16f, 0.25f, 0.16f);
         public static readonly Vector3 TargettedSize = new Vector3(0.25f, 0.37f, 0.25f);
         public static readonly Color UntargettedColor = Color.white;
+        public static readonly Color UntargettedAutoColor = Color.yellow;
         public static readonly Color TargettedColor = Color.blue;
+        public static readonly Color TargettedAutoColor = Color.red;
     }
 }

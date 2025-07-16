@@ -4,6 +4,8 @@
 	"Use_IndustricaSteamReactor_Disabled": "Stored {0}/{1}, not generating",
 	"Use_IndustricaSteamReactor_Enabled": "Stored {0}/{1}, generating",
 	"IndustricaPort_CannotDeconstructConnected": "Cannot deconstruct storage while a pipe is attached to a port.",
+	"IndustricaPipe_AutoInput": "Automatically pulls input",
+	"IndustricaPipe_AutoOutput": "Automatically pushes output",
 	"IndustricaPipe_Item_Input": "Item input port",
 	"IndustricaPipe_Item_Output": "Item output port",
 	"IndustricaPipe_Place": "Place segment",

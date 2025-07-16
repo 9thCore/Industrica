@@ -17,6 +17,7 @@ namespace Industrica.Network.Physical
         public string Id { get; }
         public Transform Parent { get; }
         public bool LockHover { set; }
+        public bool AutoNetwork { get; }
         public void SetNetwork<N>(N network);
         public void Disconnect();
         public bool ShouldBeInteractable(TransferPipe pipe);
