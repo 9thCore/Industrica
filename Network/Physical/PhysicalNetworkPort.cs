@@ -66,7 +66,7 @@ namespace Industrica.Network.Physical
 
         public virtual void Start()
         {
-            parent = gameObject.TryGetComponentInParent(out Base seabase) ? seabase.transform : transform.parent;
+            parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
             identifier = gameObject.GetComponent<UniqueIdentifier>();
             physicalPort = gameObject.GetComponentInChildren<PhysicalPortRepresentation>();
         }
