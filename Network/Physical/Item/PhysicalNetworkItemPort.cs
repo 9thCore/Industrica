@@ -37,7 +37,7 @@ namespace Industrica.Network.Physical.Item
             new SaveData(this);
         }
 
-        public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value)
+        public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value, bool simulate = false)
         {
             if (!IsOutput)
             {
@@ -45,17 +45,17 @@ namespace Industrica.Network.Physical.Item
                 return false;
             }
 
-            return itemContainer.TryExtract(filter, out value);
+            return itemContainer.TryExtract(filter, out value, simulate);
         }
 
-        public override bool TryInsert(Pickupable value)
+        public override bool TryInsert(Pickupable value, bool simulate = false)
         {
             if (!IsInput)
             {
                 return false;
             }
 
-            return itemContainer.TryInsert(value);
+            return itemContainer.TryInsert(value, simulate);
         }
 
         public class SaveData : BaseSaveData<SaveData, PhysicalNetworkItemPort>
