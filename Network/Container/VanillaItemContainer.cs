@@ -11,6 +11,41 @@ namespace Industrica.Network.Container
             this.container = container;
         }
 
+        protected override void Add(Pickupable value)
+        {
+            container.AddItem(new InventoryItem(value));
+        }
+
+        public override int Count(NetworkFilter<Pickupable> filter)
+        {
+            int count = 0;
+
+            foreach (InventoryItem item in container)
+            {
+                if (filter.Matches(item.item))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        public override int CountRemovable(NetworkFilter<Pickupable> filter)
+        {
+            int count = 0;
+
+            foreach (InventoryItem item in container)
+            {
+                if (container.AllowedToRemove(item.item, false) && filter.Matches(item.item))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
         public override IEnumerator<Pickupable> GetEnumerator()
         {
             foreach (InventoryItem item in container)
@@ -19,14 +54,28 @@ namespace Industrica.Network.Container
             }
         }
 
-        public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value)
+        protected override void Remove(Pickupable value)
         {
-            foreach (Pickupable item in this)
+            if (value.inventoryItem == null)
             {
-                if (container.AllowedToRemove(item, false) && filter.Matches(item))
+                return;
+            }
+
+            container.RemoveItem(value.inventoryItem, true, false);
+        }
+
+        public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value, bool simulate = false)
+        {
+            foreach (InventoryItem item in container)
+            {
+                if (container.AllowedToRemove(item.item, false) && filter.Matches(item.item))
                 {
-                    value = item;
-                    return container.RemoveItem(item.inventoryItem, true, false);
+                    value = item.item;
+                    if (!simulate)
+                    {
+                        Remove(value);
+                    }
+                    return true;
                 }
             }
 
@@ -34,34 +83,20 @@ namespace Industrica.Network.Container
             return false;
         }
 
-        public override bool CanInsert(Pickupable value)
+        public override bool TryInsert(Pickupable value, bool simulate = false)
         {
-            return container.AllowedToAdd(value, false) && container.HasRoomFor(value, null);
-        }
-
-        public override bool TryInsert(Pickupable value)
-        {
-            if (!CanInsert(value))
+            if (!container.AllowedToAdd(value, false)
+                || !container.HasRoomFor(value, null))
             {
                 return false;
             }
 
-            return container.AddItem(new InventoryItem(value));
-        }
-
-        public override bool Contains(NetworkFilter<Pickupable> filter, out bool canExtract)
-        {
-            foreach (Pickupable item in this)
+            if (!simulate)
             {
-                if (filter.Matches(item))
-                {
-                    canExtract = container.AllowedToRemove(item, false);
-                    return true;
-                }
+                Add(value);
             }
 
-            canExtract = default;
-            return false;
+            return true;
         }
     }
 }
