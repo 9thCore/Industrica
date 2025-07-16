@@ -13,7 +13,7 @@ namespace Industrica.Network.Filter
 
         public override bool Matches(T value)
         {
-            return container.CanInsert(value);
+            return container.TryInsert(value, true);
         }
     }
 }

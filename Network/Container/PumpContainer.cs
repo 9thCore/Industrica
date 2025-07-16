@@ -14,25 +14,19 @@ namespace Industrica.Network.Container
             this.slot = slot;
         }
 
-        public override bool CanInsert(T value)
+        protected override void Add(T value)
         {
-            if (slot.output.ConnectedPort == null)
-            {
-                return false;
-            }
-
-            return slot.output.ConnectedPort.Container.CanInsert(value);
+            slot.InputSlot(value);
         }
 
-        public override bool Contains(NetworkFilter<T> filter, out bool canExtract)
+        public override int Count(NetworkFilter<T> filter)
         {
-            if (slot.input.ConnectedPort == null)
-            {
-                canExtract = default;
-                return false;
-            }
+            return 0;
+        }
 
-            return slot.input.ConnectedPort.Container.Contains(filter, out canExtract);
+        public override int CountRemovable(NetworkFilter<T> filter)
+        {
+            return 0;
         }
 
         public override IEnumerator<T> GetEnumerator()
@@ -40,7 +34,12 @@ namespace Industrica.Network.Container
             yield break;
         }
 
-        public override bool TryExtract(NetworkFilter<T> filter, out T value)
+        protected override void Remove(T value)
+        {
+            
+        }
+
+        public override bool TryExtract(NetworkFilter<T> filter, out T value, bool simulate = false)
         {
             if (slot.input.ConnectedPort == null)
             {
@@ -48,18 +47,23 @@ namespace Industrica.Network.Container
                 return false;
             }
 
-            return slot.input.ConnectedPort.Container.TryExtract(filter, out value);
+            return slot.input.ConnectedPort.Container.TryExtract(filter, out value, simulate);
         }
 
-        public override bool TryInsert(T value)
+        public override bool TryInsert(T value, bool simulate = false)
         {
-            if (!CanInsert(value))
+            if (slot.output.ConnectedPort == null)
             {
                 return false;
             }
 
-            slot.InputSlot(value);
-            return true;
+            if (slot.output.ConnectedPort.Container.TryInsert(value, true))
+            {
+                Add(value);
+                return true;
+            }
+
+            return false;
         }
     }
 }

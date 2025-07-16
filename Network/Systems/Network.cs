@@ -47,11 +47,11 @@ namespace Industrica.Network.Systems
             StartDestroyTimer();
         }
 
-        public bool TryInsert(T value)
+        public bool TryInsert(T value, bool simulate = false)
         {
             foreach (R connection in input)
             {
-                if (connection.Container.TryInsert(value))
+                if (connection.Container.TryInsert(value, simulate))
                 {
                     return true;
                 }
@@ -60,11 +60,11 @@ namespace Industrica.Network.Systems
             return false;
         }
 
-        public bool TryExtract(NetworkFilter<T> filter, out T value)
+        public bool TryExtract(NetworkFilter<T> filter, out T value, bool simulate = false)
         {
             foreach (R connection in output)
             {
-                if (connection.Container.TryExtract(filter, out value))
+                if (connection.Container.TryExtract(filter, out value, simulate))
                 {
                     return true;
                 }
@@ -74,18 +74,39 @@ namespace Industrica.Network.Systems
             return false;
         }
 
-        public bool Contains(NetworkFilter<T> filter, out bool canExtract)
+        public int Count(NetworkFilter<T> filter, PortType from)
         {
-            foreach (R connection in output)
+            int count = 0;
+
+            if (from.HasFlag(PortType.Input))
             {
-                if (connection.Container.Contains(filter, out canExtract))
+                foreach (R connection in input)
                 {
-                    return true;
+                    count += connection.Container.Count(filter);
                 }
             }
 
-            canExtract = default;
-            return false;
+            if (from.HasFlag(PortType.Output))
+            {
+                foreach (R connection in output)
+                {
+                    count += connection.Container.Count(filter);
+                }
+            }
+
+            return count;
+        }
+
+        public int CountRemovable(NetworkFilter<T> filter)
+        {
+            int count = 0;
+
+            foreach (R connection in output)
+            {
+                count += connection.Container.CountRemovable(filter);
+            }
+
+            return count;
         }
 
         public void StartDestroyTimer()
