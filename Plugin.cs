@@ -2,7 +2,6 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using Industrica.Buildable.Pump;
-using Industrica.Buildable.SteamReactor;
 using Industrica.Item.Network;
 using Industrica.Item.Network.Placed;
 using Industrica.Network.Systems;
@@ -49,7 +48,6 @@ namespace Industrica
 
         private void InitializePrefabs()
         {
-            SteamReactor.Register();
             PlacedItemTransferPipe.Register();
             ItemTransferPipe.Register();
             ItemPhysicalNetwork.RegisterPrefab();
