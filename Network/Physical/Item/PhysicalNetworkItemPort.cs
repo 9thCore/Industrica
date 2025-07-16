@@ -1,8 +1,11 @@
 ﻿using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
 using Industrica.Network.Filter;
+using Industrica.Network.Systems;
 using Industrica.Save;
+using System;
 using UnityEngine;
+using UWE;
 
 namespace Industrica.Network.Physical.Item
 {
@@ -18,9 +21,13 @@ namespace Industrica.Network.Physical.Item
             return CreatePort<PhysicalNetworkItemPort, PhysicalNetworkItemPortHandler, PhysicalItemPortRepresentation>(root, position, rotation, type, autoNetworkTransfer);
         }
 
-        public override PhysicalPortRepresentation<Pickupable> CreateRepresentation()
+        public override void CreateAndSetNetwork(Action<PhysicalNetwork<Pickupable>> action)
         {
-            return null;
+            CoroutineHost.StartCoroutine(ItemPhysicalNetwork.Create(network =>
+            {
+                SetNetwork(network);
+                action.Invoke(network);
+            }));
         }
 
         public override void Start()

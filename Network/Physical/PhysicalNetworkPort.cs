@@ -5,6 +5,7 @@ using Industrica.Network.Filter;
 using Industrica.Network.Systems;
 using Industrica.Save;
 using Industrica.Utility;
+using System;
 using UnityEngine;
 using UWE;
 
@@ -72,7 +73,7 @@ namespace Industrica.Network.Physical
 
         public virtual void Update()
         {
-            UpdateAuto();
+            //UpdateAuto();
         }
 
         public virtual void OnDestroy()
@@ -102,6 +103,7 @@ namespace Industrica.Network.Physical
                 return;
             }
 
+            network.OnPump -= UpdateAuto;
             connection.Deregister();
             connection = null;
             network = null;
@@ -160,15 +162,10 @@ namespace Industrica.Network.Physical
             }
         }
 
-        public void SetNetwork<N>(N unvalidatedNetwork) 
+        public void SetNetwork(PhysicalNetwork<T> network)
         {
-            if (unvalidatedNetwork is not PhysicalNetwork<T> network)
-            {
-                Plugin.Logger.LogError($"Attempted to set network that is not of type Network<{typeof(T).Name}>. Skipping");
-                return;
-            }
-
             this.network = network;
+            network.OnPump += UpdateAuto;
             networkIdentifier = network.GetComponent<UniqueIdentifier>();
             connection = network.Register(port, this);
         }
@@ -231,7 +228,7 @@ namespace Industrica.Network.Physical
         }
 
         public abstract PipeType AllowedPipeType { get; }
-        public abstract PhysicalPortRepresentation<T> CreateRepresentation();
+        public abstract void CreateAndSetNetwork(Action<PhysicalNetwork<T>> action);
         public abstract bool TryExtract(NetworkFilter<T> filter, out T value);
         public abstract bool TryInsert(T value);
 
