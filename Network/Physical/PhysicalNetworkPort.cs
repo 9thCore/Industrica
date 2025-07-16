@@ -44,6 +44,7 @@ namespace Industrica.Network.Physical
         public string NetworkId => networkIdentifier.Id;
         public bool HasNetwork => network != null;
         public bool LockHover { set => lockHover = value; }
+        public bool AutoNetwork => autoNetworkTransfer;
 
         protected static Derived CreatePort<Derived>(GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer) where Derived : PhysicalNetworkPort<T>
         {
