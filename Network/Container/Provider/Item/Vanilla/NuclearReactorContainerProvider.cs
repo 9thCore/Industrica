@@ -1,4 +1,4 @@
-﻿namespace Industrica.Network.Container.Provider.Item
+﻿namespace Industrica.Network.Container.Provider.Item.Vanilla
 {
     public class NuclearReactorContainerProvider : ItemsContainerProvider
     {

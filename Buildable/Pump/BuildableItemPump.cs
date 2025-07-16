@@ -1,5 +1,5 @@
 ﻿using Industrica.Network;
-using Industrica.Network.Container.Provider.Item;
+using Industrica.Network.Container.Provider.Item.Industrica;
 using Industrica.Network.Physical.Item;
 using Industrica.Utility;
 using Nautilus.Assets;
