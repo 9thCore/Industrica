@@ -6,6 +6,9 @@ using Industrica.Network.Systems;
 using Industrica.Save;
 using Industrica.Utility;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UWE;
 
@@ -20,13 +23,13 @@ namespace Industrica.Network.Physical
 
         private bool lockHover = false;
         private Transform parent;
+        private PhysicalNetworkPortHandler<T> handler;
         private UniqueIdentifier identifier, networkIdentifier;
         private PlacedTransferPipe<T> connectedPipe = null;
         private PhysicalPortRepresentation<T> physicalPort = null;
         private PhysicalNetwork<T> network;
         private PhysicalNetwork<T>.PhysicalConnection connection = null;
-        private float elapsedSinceLastAutoTransfer = 0f;
-        private NetworkFilter<T> insertFilter = null;
+        private IEnumerable<PhysicalNetworkPort<T>> siblings = null;
 
         public abstract Container<T> Container { get; }
         public virtual float AutoNetworkingInterval => 5f;
@@ -48,12 +51,12 @@ namespace Industrica.Network.Physical
             where H : PhysicalNetworkPortHandler<T>
             where R : PhysicalPortRepresentation<T>
         {
-            H counter = root.EnsureComponent<H>();
+            H handler = root.EnsureComponent<H>();
 
             GameObject portRoot = GameObjectUtil.CreateChild(root, typeof(P).Name, position: position, rotation: rotation);
 
             ChildObjectIdentifier identifier = portRoot.EnsureComponent<ChildObjectIdentifier>();
-            identifier.ClassId = counter.GetClassID();
+            identifier.ClassId = handler.GetClassID();
 
             P component = portRoot.EnsureComponent<P>();
             component.port = type;
@@ -69,11 +72,7 @@ namespace Industrica.Network.Physical
             parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
             identifier = gameObject.GetComponent<UniqueIdentifier>();
             physicalPort = gameObject.GetComponentInChildren<PhysicalPortRepresentation<T>>();
-        }
-
-        public virtual void Update()
-        {
-            //UpdateAuto();
+            handler = gameObject.GetComponentInParent<PhysicalNetworkPortHandler<T>>();
         }
 
         public virtual void OnDestroy()
@@ -116,13 +115,6 @@ namespace Industrica.Network.Physical
             {
                 return;
             }
-
-            elapsedSinceLastAutoTransfer += DayNightCycle.main.deltaTime;
-            if (elapsedSinceLastAutoTransfer < AutoNetworkingInterval)
-            {
-                return;
-            }
-            elapsedSinceLastAutoTransfer -= AutoNetworkingInterval;
 
             InputFromNetwork();
             OutputIntoNetwork();
@@ -170,7 +162,7 @@ namespace Industrica.Network.Physical
             connection = network.Register(port, this);
         }
 
-        public System.Collections.IEnumerator SetNetworkID(string id)
+        public IEnumerator SetNetworkID(string id)
         {
             yield return new WaitForSecondsRealtime(1f);
 
@@ -225,6 +217,14 @@ namespace Industrica.Network.Physical
             }
 
             physicalPort.OnHoverEnd();
+        }
+
+        public void Sync(PhysicalNetwork<T> network)
+        {
+            siblings ??= handler.Ports.Where(p => p.Container == Container && p.port == port);
+
+            siblings.Where(p => p.HasNetwork)
+                .ForEach(p => network.Sync(p.network));
         }
 
         public abstract PipeType AllowedPipeType { get; }
