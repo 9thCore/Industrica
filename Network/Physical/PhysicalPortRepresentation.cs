@@ -1,5 +1,4 @@
-﻿using Industrica.Item.Network;
-using Industrica.Network.BaseModule;
+﻿using Industrica.Network.BaseModule;
 using Industrica.Utility;
 using Nautilus.Utility;
 using rail;
@@ -8,13 +7,13 @@ using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalPortRepresentation : MonoBehaviour
+    public class PhysicalPortRepresentation<T> : MonoBehaviour
     {
         private readonly SmoothValue hoverInterpolation = new(initialDuration: 0.25f);
         private Transform interactable;
         private GameObject interactableGO;
         private Renderer renderer;
-        private IPhysicalNetworkPort parent;
+        private PhysicalNetworkPort<T> parent;
         private Constructable constructable;
         private IBaseModuleConstructionProvider provider;
 
@@ -31,10 +30,10 @@ namespace Industrica.Network.Physical
             }
         }
 
-        public static void CreatePort(GameObject portRoot)
+        public static void CreatePort<P>(GameObject portRoot) where P : PhysicalPortRepresentation<T>
         {
-            GameObject representation = GameObjectUtil.CreateChild(portRoot, nameof(PhysicalPortRepresentation));
-            representation.EnsureComponent<PhysicalPortRepresentation>();
+            GameObject representation = GameObjectUtil.CreateChild(portRoot, nameof(PhysicalPortRepresentation<T>));
+            representation.EnsureComponent<P>();
 
             GameObject interactable = GameObjectUtil.CreateChild(representation, "Interactable", primitive: PrimitiveType.Cube);
             interactable.SetActive(false);
@@ -47,7 +46,7 @@ namespace Industrica.Network.Physical
 
         public void Start()
         {
-            parent = GetComponentInParent<IPhysicalNetworkPort>();
+            parent = GetComponentInParent<PhysicalNetworkPort<T>>();
 
             renderer = GetComponentInChildren<Renderer>(true);
             interactable = renderer.transform;
@@ -87,18 +86,18 @@ namespace Industrica.Network.Physical
 
         public void OnEnable()
         {
-            TransferPipe.OnConnectionRefresh += RefreshConnection;
+            TransferPipe<T>.OnConnectionRefresh += RefreshConnection;
         }
 
         public void OnDisable()
         {
-            TransferPipe.OnConnectionRefresh -= RefreshConnection;
+            TransferPipe<T>.OnConnectionRefresh -= RefreshConnection;
         }
 
-        public void RefreshConnection(TransferPipe pipe)
+        public void RefreshConnection(TransferPipe<T> pipe)
         {
             if (Constructed < 1f
-                || parent.IsDestroyed())
+                || parent == null)
             {
                 interactableGO.SetActive(false);
                 return;
@@ -127,22 +126,22 @@ namespace Industrica.Network.Physical
 
         private Color GetUntargetColor()
         {
-            if (parent.IsDestroyed())
+            if (parent == null)
             {
                 return UntargettedColor;
             }
 
-            return parent.AutoNetwork ? UntargettedAutoColor : UntargettedColor;
+            return parent.autoNetworkTransfer ? UntargettedAutoColor : UntargettedColor;
         }
 
         private Color GetTargetColor()
         {
-            if (parent.IsDestroyed())
+            if (parent == null)
             {
                 return TargettedColor;
             }
 
-            return parent.AutoNetwork ? TargettedAutoColor : TargettedColor;
+            return parent.autoNetworkTransfer ? TargettedAutoColor : TargettedColor;
         }
 
         public void OnHoverStart()
@@ -157,7 +156,7 @@ namespace Industrica.Network.Physical
 
         public void OnHover()
         {
-            if (parent.IsDestroyed())
+            if (parent == null)
             {
                 return;
             }
@@ -166,7 +165,7 @@ namespace Industrica.Network.Physical
 
             string type = parent.AllowedPipeType switch
             {
-                TransferPipe.PipeType.Item => "Item",
+                PipeType.Item => "Item",
                 _ => null
             };
 
@@ -179,7 +178,7 @@ namespace Industrica.Network.Physical
 
             HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaPipe_{type}_{port}", true, GameInput.Button.LeftHand);
 
-            if (parent.AutoNetwork)
+            if (parent.autoNetworkTransfer)
             {
                 HandReticle.main.SetText(HandReticle.TextType.HandSubscript, $"IndustricaPipe_Auto{port}", true);
             }

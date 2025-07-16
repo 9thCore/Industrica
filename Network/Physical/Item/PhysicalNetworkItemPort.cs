@@ -1,22 +1,26 @@
-﻿using Industrica.Item.Network;
-using Industrica.Network.Container;
+﻿using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
 using Industrica.Network.Filter;
 using Industrica.Save;
 using UnityEngine;
 
-namespace Industrica.Network.Physical
+namespace Industrica.Network.Physical.Item
 {
     public class PhysicalNetworkItemPort : PhysicalNetworkPort<Pickupable>
     {
         private Container<Pickupable> itemContainer;
         public override Container<Pickupable> Container => itemContainer;
 
-        public override TransferPipe.PipeType AllowedPipeType => TransferPipe.PipeType.Item;
+        public override PipeType AllowedPipeType => PipeType.Item;
 
         public static PhysicalNetworkItemPort CreatePort(GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
         {
-            return CreatePort<PhysicalNetworkItemPort>(root, position, rotation, type, autoNetworkTransfer);
+            return CreatePort<PhysicalNetworkItemPort, PhysicalNetworkItemPortHandler, PhysicalItemPortRepresentation>(root, position, rotation, type, autoNetworkTransfer);
+        }
+
+        public override PhysicalPortRepresentation<Pickupable> CreateRepresentation()
+        {
+            return null;
         }
 
         public override void Start()

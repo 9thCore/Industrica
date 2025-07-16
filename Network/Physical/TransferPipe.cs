@@ -1,39 +1,33 @@
 ﻿using Industrica.Item.Network.Placed;
-using Industrica.Network;
-using Industrica.Network.Physical;
 using Industrica.Utility;
-using Nautilus.Assets;
 using Nautilus.Utility;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UWE;
 
-namespace Industrica.Item.Network
+namespace Industrica.Network.Physical
 {
-    public class TransferPipe : PlayerTool
+    public abstract class TransferPipe<T> : PlayerTool
     {
-        private IPhysicalNetworkPort start;
-        private IPhysicalNetworkPort hover;
+        private PhysicalNetworkPort<T> start, hover;
         private GameObject segmentParent;
         private float placementTimeout = 0f;
         private float clearHoldElapsed = 0f;
-        private PortType neededPort = PortType.None;
-        [SerializeField]
-        private Transform stretchedPart, endCap;
-        [SerializeField]
-        private GameObject craftModel;
         private bool holster = false;
         private float placeDistance;
 
-        public PortType NeededPort => neededPort;
-        public bool Placing => start.IsAlive();
+        public PortType neededPort = PortType.None;
+        public Transform stretchedPart, endCap;
+        public GameObject craftModel;
+
+        public bool Placing => start != null;
         public bool Holstering => holster;
-        public bool HoveringAvailableConnection => hover.IsAlive() && !hover.Occupied;
-        public bool HoveringOccupiedConnection => hover.IsAlive() && hover.Occupied;
+        public bool HoveringAvailableConnection => hover != null && !hover.Occupied;
+        public bool HoveringOccupiedConnection => hover != null && hover.Occupied;
         public bool CanPlace => placementTimeout <= 0f;
 
-        public PipeType type = PipeType.None;
         public List<Segment> segments = new(capacity: MaxSegments);
 
         public void Setup(OxygenPipe pipe)
@@ -43,7 +37,7 @@ namespace Industrica.Item.Network
             craftModel = pipe.craftModel;
         }
 
-        public System.Collections.IEnumerator CreatePipe<T, S>(TechType pipeTechType, IPhysicalNetworkPort start, IPhysicalNetworkPort end) where T : PlacedTransferPipe<S>
+        public IEnumerator CreatePipe<P>(TechType pipeTechType, PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end) where P : PlacedTransferPipe<T>
         {
             List<Segment> copy = new(segments);
             CoroutineTask<GameObject> request = CraftData.GetPrefabForTechTypeAsync(pipeTechType);
@@ -59,10 +53,10 @@ namespace Industrica.Item.Network
 
             CreateEndCap(end);
 
-            GameObject placedPipe = GameObject.Instantiate(result);
+            GameObject placedPipe = Instantiate(result);
             placedPipe.transform.position = Vector3.Lerp(start.PipePosition, end.PipePosition, 0.5f);
 
-            T pipe = placedPipe.GetComponent<T>();
+            P pipe = placedPipe.GetComponent<P>();
             pipe.SetSegments(segmentParent, copy);
             pipe.ConnectAndCreateNetwork(start, end);
 
@@ -70,12 +64,7 @@ namespace Industrica.Item.Network
             Reset();
         }
 
-        public System.Collections.IEnumerator CreateItemPipe(IPhysicalNetworkPort start, IPhysicalNetworkPort end)
-        {
-            yield return CreatePipe<PlacedItemTransferPipe, Pickupable>(PlacedItemTransferPipe.Info.TechType, start, end);
-        }
-
-        public void StartConnection(IPhysicalNetworkPort connection)
+        public void StartConnection(PhysicalNetworkPort<T> connection)
         {
             connection.LockHover = true;
             start = connection;
@@ -94,9 +83,9 @@ namespace Industrica.Item.Network
             CreateEndCap(connection);
         }
 
-        public void EndConnection(IPhysicalNetworkPort connection)
+        public void EndConnection(PhysicalNetworkPort<T> connection)
         {
-            if (start.IsDestroyed())
+            if (start == null)
             {
                 Plugin.Logger.LogError($"Start of connection was removed while connecting, cannot finish pipe");
                 Reset();
@@ -112,13 +101,10 @@ namespace Industrica.Item.Network
             start.LockHover = false;
             start.OnHoverEnd();
             connection.OnHoverEnd();
-            if (start.AllowedPipeType == PipeType.Item)
-            {
-                CoroutineHost.StartCoroutine(CreateItemPipe(start, connection));
-            }
+            CoroutineHost.StartCoroutine(CreatePipe(start, connection));
         }
 
-        public void Connect(IPhysicalNetworkPort connection)
+        public void Connect(PhysicalNetworkPort<T> connection)
         {
             if (!Placing)
             {
@@ -134,7 +120,7 @@ namespace Industrica.Item.Network
             EndConnection(connection);
         }
 
-        public bool ConnectedTo(IPhysicalNetworkPort connection)
+        public bool ConnectedTo(PhysicalNetworkPort<T> connection)
         {
             return start == connection;
         }
@@ -188,7 +174,7 @@ namespace Industrica.Item.Network
         public void UpdateTargettedConnection()
         {
             if (!TryGetTarget(out GameObject target)
-                || !target.TryGetComponentInParent(out IPhysicalNetworkPort connection))
+                || !target.TryGetComponentInParent(out PhysicalNetworkPort<T> connection))
             {
                 Hover(null);
                 return;
@@ -245,7 +231,7 @@ namespace Industrica.Item.Network
         {
             GameObject segmentRoot = GameObjectUtil.CreateChild(parent.gameObject, nameof(segmentRoot));
 
-            GameObject stretchedPart = GameObject.Instantiate(stretchedPartPrefab);
+            GameObject stretchedPart = Instantiate(stretchedPartPrefab);
             stretchedPart.transform.SetParent(segmentRoot.transform);
 
             Segment segment = new Segment(segmentRoot, stretchedPart, segments.Count() == 0);
@@ -253,7 +239,7 @@ namespace Industrica.Item.Network
             return segment;
         }
 
-        public GameObject CreateEndCap(IPhysicalNetworkPort port)
+        public GameObject CreateEndCap(PhysicalNetworkPort<T> port)
         {
             GameObject cap = CreateEndCap(segmentParent.transform, endCap.gameObject, port);
             cap.SetActive(false);
@@ -262,9 +248,9 @@ namespace Industrica.Item.Network
             return cap;
         }
 
-        public static GameObject CreateEndCap(Transform parent, GameObject endCapPrefab, IPhysicalNetworkPort port)
+        public static GameObject CreateEndCap(Transform parent, GameObject endCapPrefab, PhysicalNetworkPort<T> port)
         {
-            GameObject endCap = GameObject.Instantiate(endCapPrefab);
+            GameObject endCap = Instantiate(endCapPrefab);
             endCap.transform.SetParent(parent);
             endCap.SetActive(true);
 
@@ -275,7 +261,7 @@ namespace Industrica.Item.Network
 
         public void EnsureSegmentParent()
         {
-            if (start.IsDestroyed()
+            if (start == null
                 || segmentParent != null)
             {
                 return;
@@ -356,7 +342,7 @@ namespace Industrica.Item.Network
         {
             if (segmentParent != null)
             {
-                GameObject.Destroy(segmentParent);
+                Destroy(segmentParent);
                 UnlinkSegments();
             }
             
@@ -369,23 +355,23 @@ namespace Industrica.Item.Network
             placementTimeout = PlacementTimeout;
         }
 
-        public void Hover(IPhysicalNetworkPort connection)
+        public void Hover(PhysicalNetworkPort<T> connection)
         {
             if (hover == connection)
             {
-                if (hover.IsAlive())
+                if (hover != null)
                 {
                     hover.OnHover();
                 }
                 return;
             }
 
-            if (hover.IsAlive())
+            if (hover != null)
             {
                 hover.OnHoverEnd();
             }
             hover = connection;
-            if (hover.IsAlive())
+            if (hover != null)
             {
                 hover.OnHoverStart();
             }
@@ -408,7 +394,7 @@ namespace Industrica.Item.Network
 
         public void Reset()
         {
-            if (start.IsAlive())
+            if (start != null)
             {
                 start.LockHover = false;
                 start.OnHoverEnd();
@@ -461,14 +447,11 @@ namespace Industrica.Item.Network
             return false;
         }
 
-        public enum PipeType
-        {
-            None,
-            Item
-        }
-
-        public delegate void ConnectionRefresh(TransferPipe pipe);
+        public delegate void ConnectionRefresh(TransferPipe<T> pipe);
         public static ConnectionRefresh OnConnectionRefresh;
+
+        public abstract PipeType Type { get; }
+        public abstract IEnumerator CreatePipe(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end);
 
         public const int MaxSegments = 20;
         public const float PlaceMinDistance = 1f;
@@ -534,7 +517,7 @@ namespace Industrica.Item.Network
             private GameObject CreateBend()
             {
                 GameObject end = GameObjectUtil.CreateChild(segmentRoot, "bend", PrimitiveType.Sphere, scale: Vector3.one * 0.0575f);
-                GameObject.Destroy(end.GetComponent<Collider>());
+                Destroy(end.GetComponent<Collider>());
                 end.GetComponent<Renderer>().material.color = new Color32(225, 224, 222, 255);
                 MaterialUtils.ApplySNShaders(end, shininess: 6.2f);
                 return end;

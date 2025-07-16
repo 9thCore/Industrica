@@ -1,5 +1,5 @@
 ﻿using Industrica.Item.Network.Placed;
-using Industrica.Network.Physical;
+using Industrica.Network.Physical.Item;
 using Nautilus.Handlers;
 using Nautilus.Json;
 using Nautilus.Json.Attributes;

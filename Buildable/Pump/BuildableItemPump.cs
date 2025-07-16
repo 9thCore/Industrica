@@ -1,7 +1,6 @@
 ﻿using Industrica.Network;
 using Industrica.Network.Container.Provider.Item;
-using Industrica.Network.Physical;
-using Industrica.Network.Physical.Pump;
+using Industrica.Network.Physical.Item;
 using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;

@@ -4,7 +4,7 @@ using Nautilus.Extensions;
 using System.Linq;
 using UnityEngine;
 
-namespace Industrica.Network.Physical.Pump
+namespace Industrica.Network.Physical
 {
     public abstract class PhysicalNetworkPump<T, P> : MonoBehaviour where P : PumpSlot<T>
     {
