@@ -8,6 +8,7 @@ namespace Industrica.Patch.Vanilla
         {
             PatchLocker.Patch();
             PatchWallLocker.Patch();
+            PatchFiltrationMachine.Patch();
         }
     }
 }

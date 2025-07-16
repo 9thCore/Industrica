@@ -12,6 +12,11 @@ namespace Industrica.Utility
             CoroutineHost.StartCoroutine(RunOnPrefabAsync(techType, action));
         }
 
+        public static void RunOnPrefab(string classID, Action<GameObject> action)
+        {
+            CoroutineHost.StartCoroutine(RunOnPrefabAsync(classID, action));
+        }
+
         private static IEnumerator RunOnPrefabAsync(TechType techType, Action<GameObject> action)
         {
             CoroutineTask<GameObject> task = CraftData.GetPrefabForTechTypeAsync(techType);
@@ -21,6 +26,20 @@ namespace Industrica.Utility
             if (result == null)
             {
                 Plugin.Logger.LogError($"Could not find prefab of {nameof(TechType)} {techType}, could not run action.");
+                yield break;
+            }
+
+            action.Invoke(result);
+        }
+
+        private static IEnumerator RunOnPrefabAsync(string classID, Action<GameObject> action)
+        {
+            IPrefabRequest request = PrefabDatabase.GetPrefabAsync(classID);
+            yield return request;
+
+            if (!request.TryGetPrefab(out GameObject result))
+            {
+                Plugin.Logger.LogError($"Could not find prefab of {nameof(classID)} {classID}, could not run action.");
                 yield break;
             }
 

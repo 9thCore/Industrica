@@ -1,4 +1,5 @@
 ﻿using Industrica.Item.Network;
+using Industrica.Network.BaseModule;
 using Industrica.Utility;
 using Nautilus.Utility;
 using rail;
@@ -15,6 +16,20 @@ namespace Industrica.Network.Physical
         private Renderer renderer;
         private IPhysicalNetworkPort parent;
         private Constructable constructable;
+        private IBaseModuleConstructionProvider provider;
+
+        private float Constructed
+        {
+            get
+            {
+                if (constructable != null)
+                {
+                    return constructable.constructedAmount;
+                }
+
+                return provider.ConstructedAmount;
+            }
+        }
 
         public static void CreatePort(GameObject portRoot)
         {
@@ -39,6 +54,16 @@ namespace Industrica.Network.Physical
             interactableGO = renderer.gameObject;
 
             constructable = GetComponentInParent<Constructable>();
+
+            if (constructable == null)
+            {
+                provider = GetComponentInParent<IBaseModuleConstructionProvider>();
+                if (provider == null)
+                {
+                    gameObject.SetActive(false);
+                    throw new InvalidOperationException();
+                }
+            }
 
             hoverInterpolation.OnFinish += HoverAnimationFinish;
 
@@ -66,7 +91,7 @@ namespace Industrica.Network.Physical
 
         public void RefreshConnection(TransferPipe pipe)
         {
-            if (!constructable.constructed
+            if (Constructed < 1f
                 || parent.IsDestroyed())
             {
                 interactableGO.SetActive(false);
