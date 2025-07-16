@@ -208,12 +208,7 @@ namespace Industrica.Item.Network
         {
             if (DoesOverrideHand())
             {
-                if (!Targeting.GetTarget(Player.main.gameObject, 2f, out target, out _))
-                {
-                    return false;
-                }
-
-                return true;
+                return Targeting.GetTarget(Player.main.gameObject, 2f, out target, out _);
             }
 
             target = Player.main.guiHand.GetActiveTarget();

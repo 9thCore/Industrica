@@ -38,7 +38,7 @@ namespace Industrica.Network.Physical
 
             GameObject interactable = GameObjectUtil.CreateChild(representation, "Interactable", primitive: PrimitiveType.Cube);
             interactable.SetActive(false);
-            interactable.layer = LayerID.Useable;
+            interactable.GetComponent<Collider>().isTrigger = true;
             MaterialUtils.ApplySNShaders(interactable, 8f, 0f, 0f);
 
             interactable.EnsureComponent<GenericHandTarget>();
@@ -72,6 +72,12 @@ namespace Industrica.Network.Physical
 
         public void Update()
         {
+            // lol
+            if (interactableGO.layer != Layer)
+            {
+                interactableGO.layer = Layer;
+            }
+
             hoverInterpolation.Update();
             if (hoverInterpolation.IsChanging())
             {
@@ -178,6 +184,8 @@ namespace Industrica.Network.Physical
                 HandReticle.main.SetText(HandReticle.TextType.HandSubscript, $"IndustricaPipe_Auto{port}", true);
             }
         }
+
+        public static readonly int Layer = LayerID.Useable;
 
         public static readonly Vector3 UntargettedSize = new Vector3(0.16f, 0.25f, 0.16f);
         public static readonly Vector3 TargettedSize = new Vector3(0.25f, 0.37f, 0.25f);
