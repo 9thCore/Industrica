@@ -1,4 +1,4 @@
-﻿namespace Industrica.Network.BaseModule
+﻿namespace Industrica.Network.BaseModule.Vanilla
 {
     public class NuclearReactorConstructionProvider : BaseModuleConstructionProvider<BaseNuclearReactor>
     {

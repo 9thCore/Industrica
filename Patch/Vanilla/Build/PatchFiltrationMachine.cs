@@ -1,5 +1,5 @@
-﻿using Industrica.Network.BaseModule;
-using Industrica.Network.Container.Provider.Item;
+﻿using Industrica.Network.BaseModule.Vanilla;
+using Industrica.Network.Container.Provider.Item.Vanilla;
 using Industrica.Network.Physical.Item;
 using Industrica.Utility;
 using UnityEngine;
