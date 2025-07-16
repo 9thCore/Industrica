@@ -125,15 +125,7 @@ namespace Industrica.Item.Network.Placed
         public void ConnectAndCreateNetwork(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
         {
             Connect(start, end);
-
-            if (start.AllowedPipeType == PipeType.Item)
-            {
-                CoroutineHost.StartCoroutine(ItemPhysicalNetwork.Create(network =>
-                {
-                    start.SetNetwork(network);
-                    end.SetNetwork(network);
-                }));
-            }
+            start.CreateAndSetNetwork(end.SetNetwork);
         }
 
         public void OnDestroy()
