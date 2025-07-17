@@ -9,7 +9,6 @@ using Industrica.Patch.Vanilla;
 using Industrica.Save;
 using Nautilus.Handlers;
 using System.Reflection;
-using UnityEngine;
 
 namespace Industrica
 {
