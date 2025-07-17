@@ -16,32 +16,27 @@ namespace Industrica.Network.Physical
 {
     public abstract class PhysicalNetworkPort<T> : MonoBehaviour
     {
-        public PortType port;
-        public bool autoNetworkTransfer = false;
+        public PortType Port { get; private set; }
+        public bool AutoNetworkTransfer { get; private set; } = false;
         public PhysicalNetworkPort<T> ConnectedPort { get; private set; } = null;
+        public Transform Parent { get; private set; } = null;
 
         private bool lockHover = false;
-        private Transform parent;
+        
         private NetworkFilter<T> insertFilter, extractFilter = null;
         private PhysicalNetworkPortHandler<T> handler;
         private UniqueIdentifier identifier, networkIdentifier;
-        private PlacedTransferPipe<T> connectedPipe = null;
         private PhysicalPortRepresentation<T> physicalPort = null;
         private PhysicalNetwork<T> network;
         private PhysicalNetwork<T>.PhysicalConnection connection = null;
         private IEnumerable<PhysicalNetworkPort<T>> siblings = null;
 
         public abstract Container<T> Container { get; }
-        public virtual float AutoNetworkingInterval => 5f;
 
-        public bool IsInput => port.HasFlag(PortType.Input);
-        public bool IsOutput => port.HasFlag(PortType.Output);
-        public PortType Port => port;
-        public Transform Transform => transform;
+        public bool IsInput => Port.HasFlag(PortType.Input);
+        public bool IsOutput => Port.HasFlag(PortType.Output);
         public Vector3 EndCapPosition => transform.position + transform.up * 0.06f;
         public Vector3 PipePosition => transform.position + transform.up * 0.2f;
-        public bool Occupied => connectedPipe != null;
-        public Transform Parent => parent;
         public string Id => identifier.Id;
         public bool HasNetwork => network != null;
         public bool LockHover { set => lockHover = value; }
@@ -59,8 +54,8 @@ namespace Industrica.Network.Physical
             identifier.ClassId = handler.GetClassID();
 
             P component = portRoot.EnsureComponent<P>();
-            component.port = type;
-            component.autoNetworkTransfer = autoNetworkTransfer;
+            component.Port = type;
+            component.AutoNetworkTransfer = autoNetworkTransfer;
 
             PhysicalPortRepresentation<T>.CreatePort<R>(portRoot);
 
@@ -69,7 +64,7 @@ namespace Industrica.Network.Physical
 
         public virtual void Start()
         {
-            parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
+            Parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
             identifier = gameObject.GetComponent<UniqueIdentifier>();
             physicalPort = gameObject.GetComponentInChildren<PhysicalPortRepresentation<T>>();
             handler = gameObject.GetComponentInParent<PhysicalNetworkPortHandler<T>>();
@@ -82,16 +77,7 @@ namespace Industrica.Network.Physical
 
         public void Disconnect()
         {
-            if (connectedPipe == null)
-            {
-                return;
-            }
-
             ConnectedPort = null;
-            
-            connectedPipe.Disconnect();
-            connectedPipe = null;
-
             NetworkDisconnect();
         }
 
@@ -111,7 +97,7 @@ namespace Industrica.Network.Physical
 
         protected void UpdateAuto()
         {
-            if (!autoNetworkTransfer || connection == null)
+            if (!AutoNetworkTransfer || connection == null)
             {
                 return;
             }
@@ -123,7 +109,7 @@ namespace Industrica.Network.Physical
         public void InputFromNetwork()
         {
             if (network == null
-                || !port.HasFlag(PortType.Input))
+                || !Port.HasFlag(PortType.Input))
             {
                 return;
             }
@@ -140,7 +126,7 @@ namespace Industrica.Network.Physical
         public void OutputIntoNetwork()
         {
             if (network == null
-                || !port.HasFlag(PortType.Output))
+                || !Port.HasFlag(PortType.Output))
             {
                 return;
             }
@@ -157,7 +143,7 @@ namespace Industrica.Network.Physical
             this.network = network;
             network.OnPump += UpdateAuto;
             networkIdentifier = network.GetComponent<UniqueIdentifier>();
-            connection = network.Register(port, this);
+            connection = network.Register(Port, this);
         }
 
         public IEnumerator SetNetworkID(string id)
@@ -177,11 +163,6 @@ namespace Industrica.Network.Physical
             }
         }
 
-        public void Connect(PlacedTransferPipe<T> pipe)
-        {
-            connectedPipe = pipe;
-        }
-
         public void Connect(PhysicalNetworkPort<T> port)
         {
             ConnectedPort = port;
@@ -194,7 +175,7 @@ namespace Industrica.Network.Physical
 
         public bool CanConnectTo(TransferPipe<T> pipe)
         {
-            return pipe.ConnectedTo(this) || port.HasFlag(pipe.neededPort);
+            return pipe.ConnectedTo(this) || Port.HasFlag(pipe.neededPort);
         }
 
         public  virtual void OnHoverStart()
@@ -219,7 +200,7 @@ namespace Industrica.Network.Physical
 
         public void Sync(PhysicalNetwork<T> network)
         {
-            siblings ??= handler.Ports.Where(p => p.Container == Container && p.port == port);
+            siblings ??= handler.Ports.Where(p => p.Container == Container && p.Port == Port);
 
             siblings.Where(p => p.HasNetwork)
                 .ForEach(p => network.Sync(p.network));
