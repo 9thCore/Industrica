@@ -56,6 +56,7 @@ namespace Industrica.Network.Physical
             P component = portRoot.EnsureComponent<P>();
             component.port = type;
             component.hasPumpModule = autoNetworkTransfer;
+            component.identifier = component.GetComponent<UniqueIdentifier>();
 
             PhysicalPortRepresentation<T>.CreatePort<R>(portRoot);
 
@@ -65,7 +66,6 @@ namespace Industrica.Network.Physical
         public virtual void Start()
         {
             parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
-            identifier = GetComponent<UniqueIdentifier>();
             physicalPort = GetComponentInChildren<PhysicalPortRepresentation<T>>();
 
             if (hasPumpModule)
