@@ -115,6 +115,11 @@ namespace Industrica.Network.Systems
             elapsedSincePump = network.elapsedSincePump;
         }
 
+        public void Start()
+        {
+            StartDestroyTimer();
+        }
+
         public void StartDestroyTimer()
         {
             destroyTimer = DestroyTimeout;
@@ -160,8 +165,8 @@ namespace Industrica.Network.Systems
             OnPump?.Invoke();
         }
 
-        public static float PumpInterval = 5f;
-        public static float DestroyTimeout = 5f;
+        public const float PumpInterval = 5f;
+        public const float DestroyTimeout = 5f;
 
         public delegate void PumpNotification();
         public event PumpNotification OnPump;
