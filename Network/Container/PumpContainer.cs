@@ -41,23 +41,23 @@ namespace Industrica.Network.Container
 
         public override bool TryExtract(NetworkFilter<T> filter, out T value, bool simulate = false)
         {
-            if (slot.input.ConnectedPort == null)
+            if (slot.input.connectedPort == null)
             {
                 value = default;
                 return false;
             }
 
-            return slot.input.ConnectedPort.Container.TryExtract(filter, out value, simulate);
+            return slot.input.connectedPort.Container.TryExtract(filter, out value, simulate);
         }
 
         public override bool TryInsert(T value, bool simulate = false)
         {
-            if (slot.output.ConnectedPort == null)
+            if (slot.output.connectedPort == null)
             {
                 return false;
             }
 
-            if (slot.output.ConnectedPort.Container.TryInsert(value, true))
+            if (slot.output.connectedPort.Container.TryInsert(value, true))
             {
                 Add(value);
                 return true;

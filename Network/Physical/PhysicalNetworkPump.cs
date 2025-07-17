@@ -28,26 +28,9 @@ namespace Industrica.Network.Physical
             .Where(p => p.IsInput)
             .First());
 
-        private float elapsedSinceLastPump = 0f;
-
-        public void Update()
-        {
-            elapsedSinceLastPump += DayNightCycle.main.deltaTime;
-            if (elapsedSinceLastPump < PumpInterval)
-            {
-                return;
-            }
-
-            elapsedSinceLastPump -= PumpInterval;
-
-            
-        }
-
         protected void OnInput(T value)
         {
-            Output.ConnectedPort.TryInsert(value);
+            Output.connectedPort.TryInsert(value);
         }
-
-        public const float PumpInterval = 5f;
     }
 }

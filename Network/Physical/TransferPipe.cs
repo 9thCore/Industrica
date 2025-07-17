@@ -24,8 +24,8 @@ namespace Industrica.Network.Physical
 
         public bool Placing => start != null;
         public bool Holstering => holster;
-        public bool HoveringAvailableConnection => hover != null && !hover.Occupied;
-        public bool HoveringOccupiedConnection => hover != null && hover.Occupied;
+        public bool HoveringAvailableConnection => hover != null && !hover.HasNetwork;
+        public bool HoveringOccupiedConnection => hover != null && hover.HasNetwork;
         public bool CanPlace => placementTimeout <= 0f;
 
         public List<Segment> segments = new(capacity: MaxSegments);
@@ -70,7 +70,7 @@ namespace Industrica.Network.Physical
             start = connection;
             CreateSegment();
 
-            neededPort = connection.Port switch
+            neededPort = connection.port switch
             {
                 PortType.Input => PortType.Output,
                 PortType.Output => PortType.Input,
@@ -161,7 +161,8 @@ namespace Industrica.Network.Physical
 
                 if (clearHoldElapsed > ClearHoldTime)
                 {
-                    hover.Disconnect();
+                    hover.connectedPort.NetworkDisconnect();
+                    hover.NetworkDisconnect();
                     clearHoldElapsed = 0f;
                 }
             }
@@ -180,7 +181,7 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            if (connection.Occupied)
+            if (connection.HasNetwork)
             {
                 Hover(connection);
                 OnHoverOccupied();
@@ -255,7 +256,7 @@ namespace Industrica.Network.Physical
             endCap.SetActive(true);
 
             endCap.transform.position = port.EndCapPosition;
-            endCap.transform.rotation = Quaternion.LookRotation(port.Transform.up);
+            endCap.transform.rotation = Quaternion.LookRotation(port.transform.up);
             return endCap;
         }
 
@@ -267,7 +268,7 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            segmentParent = GameObjectUtil.CreateChild(start.Parent.gameObject, nameof(segmentParent));
+            segmentParent = GameObjectUtil.CreateChild(start.parent.gameObject, nameof(segmentParent));
         }
 
         public Vector3 GetPlacePosition(Transform aim, out bool skipLowClamp)
