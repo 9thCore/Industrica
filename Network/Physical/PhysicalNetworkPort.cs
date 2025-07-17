@@ -1,4 +1,5 @@
-﻿using Industrica.Network.Container;
+﻿using Industrica.Item.Network.Placed;
+using Industrica.Network.Container;
 using Industrica.Network.Filter;
 using Industrica.Network.Systems;
 using Industrica.Save;
@@ -24,6 +25,7 @@ namespace Industrica.Network.Physical
         public PhysicalPortRepresentation<T> physicalPort = null;
         public PhysicalNetwork<T>.PhysicalConnection connection = null;
         public PhysicalNetworkPortPump<T> pump;
+        public PlacedTransferPipe<T> transferPipe = null;
 
         public abstract Container<T> Container { get; }
         public abstract PipeType AllowedPipeType { get; }
@@ -63,8 +65,8 @@ namespace Industrica.Network.Physical
         public virtual void Start()
         {
             parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
-            identifier = gameObject.GetComponent<UniqueIdentifier>();
-            physicalPort = gameObject.GetComponentInChildren<PhysicalPortRepresentation<T>>();
+            identifier = GetComponent<UniqueIdentifier>();
+            physicalPort = GetComponentInChildren<PhysicalPortRepresentation<T>>();
 
             if (hasPumpModule)
             {
@@ -79,11 +81,14 @@ namespace Industrica.Network.Physical
 
         public virtual void NetworkDisconnect()
         {
-            if (connection == null)
+            if (transferPipe == null)
             {
                 return;
             }
 
+            PlacedTransferPipe<T> copy = transferPipe;
+            transferPipe = null;
+            copy.Disconnect();
             pump?.NetworkDisconnect();
             connection.Deregister();
             connection = null;
@@ -114,6 +119,11 @@ namespace Industrica.Network.Physical
             {
                 SetNetwork(network);
             }
+        }
+
+        public void Connect(PlacedTransferPipe<T> pipe)
+        {
+            transferPipe = pipe;
         }
 
         public void Connect(PhysicalNetworkPort<T> port)

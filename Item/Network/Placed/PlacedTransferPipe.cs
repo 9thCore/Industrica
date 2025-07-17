@@ -111,6 +111,9 @@ namespace Industrica.Item.Network.Placed
             start.Connect(end);
             end.Connect(start);
 
+            start.Connect(this);
+            end.Connect(this);
+
             if (start.parent == end.parent)
             {
                 transform.SetParent(start.parent, true);
