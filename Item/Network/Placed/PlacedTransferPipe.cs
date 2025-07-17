@@ -13,10 +13,11 @@ namespace Industrica.Item.Network.Placed
 {
     public abstract class PlacedTransferPipe<T> : MonoBehaviour
     {
+        public Transform stretchedPart, endCap;
+
         private PhysicalNetworkPort<T> start, end;
         private GameObject segmentParent;
         private List<TransferPipe<T>.Segment> segments;
-        private Transform stretchedPart, endCap;
         private bool disconnectQueued = false;
         private Vector3 lastPlayerPosition = Vector3.zero;
 
@@ -39,6 +40,9 @@ namespace Industrica.Item.Network.Placed
                 oxygen.stretchedPart.SetParent(go.transform);
                 oxygen.endCap.gameObject.SetActive(false);
                 oxygen.endCap.SetParent(go.transform);
+
+                pipe.stretchedPart = oxygen.stretchedPart;
+                pipe.endCap = oxygen.endCap;
 
                 DestroyImmediate(oxygen.endCap.GetComponent<Collider>());
                 go.DestroyImmediateChildrenWith<Collider>(true);
@@ -65,8 +69,6 @@ namespace Industrica.Item.Network.Placed
 
         public void Start()
         {
-            stretchedPart = transform.Find("scaleThis");
-            endCap = transform.Find("endcap");
             CreateSave();
             UpdateRender();
         }
