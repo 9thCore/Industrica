@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalNetworkPortPump<T>
+    public class PhysicalNetworkPortPump<T> where T : class
     {
         private readonly PhysicalNetworkPort<T> parent;
 

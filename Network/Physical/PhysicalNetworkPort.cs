@@ -11,14 +11,14 @@ using UWE;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class PhysicalNetworkPort<T> : MonoBehaviour
+    public abstract class PhysicalNetworkPort<T> : MonoBehaviour where T : class
     {
         private bool lockHover = false;
 
         public UniqueIdentifier identifier;
+        public bool hasPumpModule = false;
+        public PortType port;
 
-        internal bool hasPumpModule = false;
-        internal PortType port;
         internal PhysicalNetworkPort<T> connectedPort = null;
         internal Transform parent = null;
         internal PhysicalNetwork<T> network;

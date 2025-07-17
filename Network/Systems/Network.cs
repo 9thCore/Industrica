@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Industrica.Network.Systems
 {
-    public abstract class Network<T, R, W> : MonoBehaviour where R : Network<T, R, W>.NetworkConnection where W : Network<T, R, W>.ContainerWrapper<R>, new()
+    public abstract class Network<T, R, W> : MonoBehaviour where R : Network<T, R, W>.NetworkConnection where W : Network<T, R, W>.ContainerWrapper<R>, new() where T : class
     {
         private float destroyTimer = 0f;
         private float elapsedSincePump = 0f;

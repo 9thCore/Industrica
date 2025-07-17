@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Industrica.Network.Container
 {
-    public class PumpContainer<T> : Container<T>
+    public class PumpContainer<T> : Container<T> where T : class
     {
         private readonly PumpSlot<T> slot;
 

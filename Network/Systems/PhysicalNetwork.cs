@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Industrica.Network.Systems
 {
-    public class PhysicalNetwork<T> : Network<T, PhysicalNetwork<T>.PhysicalConnection, PhysicalNetwork<T>.SingleContainerWrapper>
+    public class PhysicalNetwork<T> : Network<T, PhysicalNetwork<T>.PhysicalConnection, PhysicalNetwork<T>.SingleContainerWrapper> where T : class
     {
         public PhysicalConnection Register(PortType type, PhysicalNetworkPort<T> port)
         {
