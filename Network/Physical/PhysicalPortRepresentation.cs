@@ -9,10 +9,11 @@ namespace Industrica.Network.Physical
 {
     public class PhysicalPortRepresentation<T> : MonoBehaviour
     {
+        public Renderer renderer;
+
         private readonly SmoothValue hoverInterpolation = new(initialDuration: 0.25f);
         private Transform interactable;
         private GameObject interactableGO;
-        private Renderer renderer;
         private PhysicalNetworkPort<T> parent;
         private Constructable constructable;
         private IBaseModuleConstructionProvider provider;
@@ -33,7 +34,6 @@ namespace Industrica.Network.Physical
         public static void CreatePort<P>(GameObject portRoot) where P : PhysicalPortRepresentation<T>
         {
             GameObject representation = GameObjectUtil.CreateChild(portRoot, nameof(PhysicalPortRepresentation<T>));
-            representation.EnsureComponent<P>();
 
             GameObject interactable = GameObjectUtil.CreateChild(representation, "Interactable", primitive: PrimitiveType.Cube);
             interactable.SetActive(false);
@@ -42,13 +42,14 @@ namespace Industrica.Network.Physical
 
             interactable.EnsureComponent<GenericHandTarget>();
             interactable.EnsureComponent<SkyApplier>().renderers = interactable.GetComponents<Renderer>();
+
+            representation.EnsureComponent<P>().renderer = representation.GetComponentInChildren<Renderer>(true);
         }
 
         public void Start()
         {
             parent = GetComponentInParent<PhysicalNetworkPort<T>>();
 
-            renderer = GetComponentInChildren<Renderer>(true);
             interactable = renderer.transform;
             interactableGO = renderer.gameObject;
 

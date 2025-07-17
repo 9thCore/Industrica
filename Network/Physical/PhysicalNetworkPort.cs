@@ -6,7 +6,6 @@ using Industrica.Save;
 using Industrica.Utility;
 using System;
 using System.Collections;
-using System.ComponentModel;
 using UnityEngine;
 using UWE;
 
@@ -16,16 +15,18 @@ namespace Industrica.Network.Physical
     {
         private bool lockHover = false;
 
-        public bool hasPumpModule = false;
-        public PortType port;
-        public PhysicalNetworkPort<T> connectedPort = null;
-        public Transform parent = null;
-        public PhysicalNetwork<T> network;
-        public UniqueIdentifier identifier, networkIdentifier;
-        public PhysicalPortRepresentation<T> physicalPort = null;
-        public PhysicalNetwork<T>.PhysicalConnection connection = null;
-        public PhysicalNetworkPortPump<T> pump;
-        public PlacedTransferPipe<T> transferPipe = null;
+        public UniqueIdentifier identifier;
+
+        internal bool hasPumpModule = false;
+        internal PortType port;
+        internal PhysicalNetworkPort<T> connectedPort = null;
+        internal Transform parent = null;
+        internal PhysicalNetwork<T> network;
+        internal UniqueIdentifier networkIdentifier;
+        internal PhysicalPortRepresentation<T> physicalPort = null;
+        internal PhysicalNetwork<T>.PhysicalConnection connection = null;
+        internal PhysicalNetworkPortPump<T> pump;
+        internal PlacedTransferPipe<T> transferPipe = null;
 
         public abstract Container<T> Container { get; }
         public abstract PipeType AllowedPipeType { get; }
