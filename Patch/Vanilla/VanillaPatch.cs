@@ -10,7 +10,6 @@ namespace Industrica.Patch.Vanilla
             PatchNuclearReactor.Patch();
             PatchLocker.Patch();
             PatchWallLocker.Patch();
-            PatchFiltrationMachine.Patch();
         }
     }
 }
