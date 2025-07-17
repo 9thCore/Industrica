@@ -8,13 +8,11 @@ using Nautilus.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UWE;
 
 namespace Industrica.Item.Network.Placed
 {
     public abstract class PlacedTransferPipe<T> : MonoBehaviour
     {
-
         private PhysicalNetworkPort<T> start, end;
         private GameObject segmentParent;
         private List<TransferPipe<T>.Segment> segments;
@@ -110,32 +108,19 @@ namespace Industrica.Item.Network.Placed
             this.start = start;
             this.end = end;
 
-            start.Connect(this);
-            end.Connect(this);
-
             start.Connect(end);
             end.Connect(start);
 
-            if (start.Parent == end.Parent)
+            if (start.parent == end.parent)
             {
-                transform.SetParent(start.Parent, true);
+                transform.SetParent(start.parent, true);
             }
         }
 
         public void ConnectAndCreateNetwork(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
         {
             Connect(start, end);
-            start.CreateAndSetNetwork(network =>
-            {
-                end.SetNetwork(network);
-                if (start.IsOutput)
-                {
-                    start.Sync(network);
-                } else
-                {
-                    end.Sync(network);
-                }
-            });
+            start.CreateAndSetNetwork(end.SetNetwork);
         }
 
         public void OnDestroy()
@@ -151,8 +136,8 @@ namespace Industrica.Item.Network.Placed
             }
 
             disconnectQueued = true;
-            start.Disconnect();
-            end.Disconnect();
+            start.NetworkDisconnect();
+            end.NetworkDisconnect();
             InvalidateSave();
             Destroy(gameObject);
         }

@@ -20,7 +20,7 @@ namespace Industrica.Network.Physical
 
         public bool CanDeconstruct(out string reason)
         {
-            if (Ports == null || Ports.All(c => c == null || !c.Occupied))
+            if (Ports == null || Ports.All(c => c == null || !c.HasNetwork))
             {
                 reason = default;
                 return true;

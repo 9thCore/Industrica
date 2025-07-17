@@ -131,7 +131,7 @@ namespace Industrica.Network.Physical
                 return UntargettedColor;
             }
 
-            return parent.AutoNetworkTransfer ? UntargettedAutoColor : UntargettedColor;
+            return parent.hasPumpModule ? UntargettedAutoColor : UntargettedColor;
         }
 
         private Color GetTargetColor()
@@ -141,7 +141,7 @@ namespace Industrica.Network.Physical
                 return TargettedColor;
             }
 
-            return parent.AutoNetworkTransfer ? TargettedAutoColor : TargettedColor;
+            return parent.hasPumpModule ? TargettedAutoColor : TargettedColor;
         }
 
         public void OnHoverStart()
@@ -169,7 +169,7 @@ namespace Industrica.Network.Physical
                 _ => null
             };
 
-            string port = parent.Port switch
+            string port = parent.port switch
             {
                 PortType.Input => "Input",
                 PortType.Output => "Output",
@@ -178,7 +178,7 @@ namespace Industrica.Network.Physical
 
             HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaPipe_{type}_{port}", true, GameInput.Button.LeftHand);
 
-            if (parent.AutoNetworkTransfer)
+            if (parent.hasPumpModule)
             {
                 HandReticle.main.SetText(HandReticle.TextType.HandSubscript, $"IndustricaPipe_Auto{port}", true);
             }
