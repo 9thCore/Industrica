@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalPortRepresentation<T> : MonoBehaviour
+    public class PhysicalPortRepresentation<T> : MonoBehaviour where T : class
     {
         public Renderer renderer;
 

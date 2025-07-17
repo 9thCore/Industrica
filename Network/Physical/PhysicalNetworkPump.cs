@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class PhysicalNetworkPump<T, P> : MonoBehaviour where P : PumpSlot<T>
+    public abstract class PhysicalNetworkPump<T, P> : MonoBehaviour where P : PumpSlot<T> where T : class
     {
         private static Texture _texture = null;
         public static Texture Texture => _texture ??= PathUtil.GetTexture("Pump/monitor");

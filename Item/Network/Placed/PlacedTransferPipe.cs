@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Industrica.Item.Network.Placed
 {
-    public abstract class PlacedTransferPipe<T> : MonoBehaviour
+    public abstract class PlacedTransferPipe<T> : MonoBehaviour where T : class
     {
         public Transform stretchedPart, endCap;
 

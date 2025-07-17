@@ -9,7 +9,7 @@ using UWE;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class TransferPipe<T> : PlayerTool
+    public abstract class TransferPipe<T> : PlayerTool where T : class
     {
         private PhysicalNetworkPort<T> start, hover;
         private GameObject segmentParent;

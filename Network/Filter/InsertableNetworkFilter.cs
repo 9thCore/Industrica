@@ -2,7 +2,7 @@
 
 namespace Industrica.Network.Filter
 {
-    public class InsertableNetworkFilter<T> : NetworkFilter<T>
+    public class InsertableNetworkFilter<T> : NetworkFilter<T> where T : class
     {
         private readonly Container<T> container;
 

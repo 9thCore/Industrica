@@ -2,7 +2,7 @@
 
 namespace Industrica.Container
 {
-    public abstract class PumpSlot<T>
+    public abstract class PumpSlot<T> where T : class
     {
         public readonly PhysicalNetworkPort<T> input, output;
 

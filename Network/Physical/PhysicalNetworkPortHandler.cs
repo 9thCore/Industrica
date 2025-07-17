@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalNetworkPortHandler<T> : MonoBehaviour, IConstructable
+    public class PhysicalNetworkPortHandler<T> : MonoBehaviour, IConstructable where T : class
     {
         public PhysicalNetworkPort<T>[] Ports { get; private set; }
         private int count = 0;

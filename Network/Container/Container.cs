@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Industrica.Network.Container
 {
-    public abstract class Container<T>
+    public abstract class Container<T> where T : class
     {
         public abstract int Count(NetworkFilter<T> filter);
         public abstract int CountRemovable(NetworkFilter<T> filter);
