@@ -77,6 +77,7 @@ namespace Industrica.Save
 
             private void Cleanup()
             {
+                dirty.ForEach(pair => pair.Value.InvalidateIfNotValid());
                 string[] invalidKeys = dirty.Where(pair => !pair.Value.Valid).Select(pair => pair.Key).ToArray();
                 invalidKeys.ForEach(key => dirty.Remove(key));
             }

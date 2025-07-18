@@ -1,5 +1,4 @@
-﻿using Industrica.Network.Physical;
-using Industrica.Save;
+﻿using Industrica.Save;
 using Nautilus.Assets;
 
 namespace Industrica.Item.Network.Placed
