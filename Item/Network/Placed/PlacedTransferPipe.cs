@@ -1,5 +1,4 @@
 ﻿using Industrica.Network.Physical;
-using Industrica.Network.Systems;
 using Industrica.Save;
 using Industrica.Utility;
 using Nautilus.Assets;
@@ -217,6 +216,16 @@ namespace Industrica.Item.Network.Placed
 
                 positions.Clear();
                 Component.segments.ForEach(s => positions.Add(s.Position));
+            }
+
+            public override void InvalidateIfNotValid()
+            {
+                if (Component.start == null
+                    || Component.end == null
+                    || positions.Count == 0)
+                {
+                    Invalidate();
+                }
             }
         }
 

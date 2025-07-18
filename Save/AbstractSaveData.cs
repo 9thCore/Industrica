@@ -41,6 +41,11 @@ namespace Industrica.Save
             Load();
         }
 
+        public virtual void InvalidateIfNotValid()
+        {
+
+        }
+
         public virtual bool IncludeInSave()
         {
             return true;
