@@ -31,7 +31,7 @@ namespace Industrica.Network.Physical
             }
         }
 
-        public static void CreatePort<P>(GameObject portRoot) where P : PhysicalPortRepresentation<T>
+        public static P CreatePort<P>(GameObject portRoot) where P : PhysicalPortRepresentation<T>
         {
             GameObject representation = GameObjectUtil.CreateChild(portRoot, nameof(PhysicalPortRepresentation<T>));
 
@@ -43,7 +43,9 @@ namespace Industrica.Network.Physical
             interactable.EnsureComponent<GenericHandTarget>();
             interactable.EnsureComponent<SkyApplier>().renderers = interactable.GetComponents<Renderer>();
 
-            representation.EnsureComponent<P>().renderer = representation.GetComponentInChildren<Renderer>(true);
+            P component = representation.EnsureComponent<P>();
+            component.renderer = representation.GetComponentInChildren<Renderer>(true);
+            return component;
         }
 
         public void Start()

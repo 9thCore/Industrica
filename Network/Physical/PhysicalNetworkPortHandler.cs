@@ -1,26 +1,32 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
+using UWE;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalNetworkPortHandler<T> : MonoBehaviour, IConstructable where T : class
+    public abstract class PhysicalNetworkPortHandler<T> : MonoBehaviour, IConstructable where T : class
     {
-        public PhysicalNetworkPort<T>[] Ports { get; private set; }
         private int count = 0;
+
+        public abstract void Fetch();
+        public abstract bool CanDeconstructPorts();
+
+        public IEnumerator QueueFetch()
+        {
+            yield return null;
+            Fetch();
+            yield break;
+        }
 
         public string GetClassID()
         {
             return $"PhysicalNetworkPort{count++}";
         }
 
-        public void Start()
-        {
-            Ports = GetComponentsInChildren<PhysicalNetworkPort<T>>(true);
-        }
-
         public bool CanDeconstruct(out string reason)
         {
-            if (Ports == null || Ports.All(c => c == null || !c.HasNetwork))
+            if (!CanDeconstructPorts())
             {
                 reason = default;
                 return true;

@@ -41,14 +41,16 @@ namespace Industrica.Buildable.Pump
                 }
 
                 PhysicalNetworkItemPort.CreatePort(
-                    obj,
+                    prefab: obj,
+                    root: obj,
                     Vector3.right * 0.4f,
                     Quaternion.Euler(0f, 0f, 270f),
                     PortType.Input,
                     true);
 
                 PhysicalNetworkItemPort.CreatePort(
-                    obj,
+                    prefab: obj,
+                    root: obj,
                     Vector3.right * -0.4f,
                     Quaternion.Euler(0f, 0f, 90f),
                     PortType.Output,

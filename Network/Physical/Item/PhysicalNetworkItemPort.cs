@@ -11,14 +11,17 @@ namespace Industrica.Network.Physical.Item
 {
     public class PhysicalNetworkItemPort : PhysicalNetworkPort<Pickupable>
     {
+        public PhysicalNetworkItemPortHandler handler;
+        public PhysicalItemPortRepresentation representation;
+
         private Container<Pickupable> itemContainer;
         public override Container<Pickupable> Container => itemContainer;
 
         public override PipeType AllowedPipeType => PipeType.Item;
 
-        public static PhysicalNetworkItemPort CreatePort(GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
+        public static PhysicalNetworkItemPort CreatePort(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
         {
-            return CreatePort<PhysicalNetworkItemPort, PhysicalNetworkItemPortHandler, PhysicalItemPortRepresentation>(root, position, rotation, type, autoNetworkTransfer);
+            return CreatePort<PhysicalNetworkItemPort>(prefab, root, position, rotation, type, autoNetworkTransfer);
         }
 
         public override void CreateAndSetNetwork(Action<PhysicalNetwork<Pickupable>> action)
@@ -28,6 +31,47 @@ namespace Industrica.Network.Physical.Item
                 SetNetwork(network);
                 action.Invoke(network);
             }));
+        }
+
+        public override void CreateRepresentation()
+        {
+            representation = PhysicalItemPortRepresentation.CreatePort<PhysicalItemPortRepresentation>(gameObject);
+        }
+
+        public override void EnsureHandlerAndFetchPorts(GameObject prefab)
+        {
+            handler = prefab.EnsureComponent<PhysicalNetworkItemPortHandler>();
+            CoroutineHost.StartCoroutine(handler.QueueFetch());
+        }
+
+        public override string GetClassIDFromHandler()
+        {
+            return handler.GetClassID();
+        }
+
+        public override void OnHoverStart()
+        {
+            representation.OnHoverStart();
+        }
+
+        public override void OnHover()
+        {
+            representation.OnHover();
+        }
+
+        public override void OnHoverEnd()
+        {
+            if (lockHover)
+            {
+                return;
+            }
+
+            representation.OnHoverEnd();
+        }
+
+        public override PhysicalNetworkPortPump<Pickupable> CreatePump()
+        {
+            return new PhysicalNetworkPortPump<Pickupable>(this, handler);
         }
 
         public override void Start()

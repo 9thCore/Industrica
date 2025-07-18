@@ -13,7 +13,7 @@ namespace Industrica.Network.Physical
 {
     public abstract class PhysicalNetworkPort<T> : MonoBehaviour where T : class
     {
-        private bool lockHover = false;
+        protected bool lockHover = false;
 
         public UniqueIdentifier identifier;
         public bool hasPumpModule = false;
@@ -23,7 +23,6 @@ namespace Industrica.Network.Physical
         internal Transform parent = null;
         internal PhysicalNetwork<T> network;
         internal UniqueIdentifier networkIdentifier;
-        internal PhysicalPortRepresentation<T> physicalPort = null;
         internal PhysicalNetwork<T>.PhysicalConnection connection = null;
         internal PhysicalNetworkPortPump<T> pump;
         internal PlacedTransferPipe<T> transferPipe = null;
@@ -33,6 +32,13 @@ namespace Industrica.Network.Physical
         public abstract void CreateAndSetNetwork(Action<PhysicalNetwork<T>> action);
         public abstract bool TryExtract(NetworkFilter<T> filter, out T value, bool simulate = false);
         public abstract bool TryInsert(T value, bool simulate = false);
+        public abstract void EnsureHandlerAndFetchPorts(GameObject prefab);
+        public abstract string GetClassIDFromHandler();
+        public abstract void CreateRepresentation();
+        public abstract void OnHoverStart();
+        public abstract void OnHover();
+        public abstract void OnHoverEnd();
+        public abstract PhysicalNetworkPortPump<T> CreatePump();
 
         public bool IsInput => port == PortType.Input;
         public bool IsOutput => port == PortType.Output;
@@ -42,36 +48,31 @@ namespace Industrica.Network.Physical
         public bool HasNetwork => network != null;
         public bool LockHover { set => lockHover = value; }
 
-        protected static P CreatePort<P, H, R>(GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
+        protected static P CreatePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
             where P : PhysicalNetworkPort<T>
-            where H : PhysicalNetworkPortHandler<T>
-            where R : PhysicalPortRepresentation<T>
         {
-            H handler = root.EnsureComponent<H>();
-
             GameObject portRoot = GameObjectUtil.CreateChild(root, typeof(P).Name, position: position, rotation: rotation);
 
             ChildObjectIdentifier identifier = portRoot.EnsureComponent<ChildObjectIdentifier>();
-            identifier.ClassId = handler.GetClassID();
 
             P component = portRoot.EnsureComponent<P>();
             component.port = type;
             component.hasPumpModule = autoNetworkTransfer;
-            component.identifier = component.GetComponent<UniqueIdentifier>();
+            component.identifier = identifier;
+            component.EnsureHandlerAndFetchPorts(prefab);
+            component.CreateRepresentation();
 
-            PhysicalPortRepresentation<T>.CreatePort<R>(portRoot);
-
+            identifier.ClassId = component.GetClassIDFromHandler();
             return component;
         }
 
         public virtual void Start()
         {
             parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
-            physicalPort = GetComponentInChildren<PhysicalPortRepresentation<T>>();
 
             if (hasPumpModule)
             {
-                pump = new PhysicalNetworkPortPump<T>(this);
+                pump = CreatePump();
             }
         }
 
@@ -140,26 +141,6 @@ namespace Industrica.Network.Physical
         public bool CanConnectTo(TransferPipe<T> pipe)
         {
             return pipe.ConnectedTo(this) || port.HasFlag(pipe.neededPort);
-        }
-
-        public  virtual void OnHoverStart()
-        {
-            physicalPort.OnHoverStart();
-        }
-
-        public virtual void OnHover()
-        {
-            physicalPort.OnHover();
-        }
-
-        public virtual void OnHoverEnd()
-        {
-            if (lockHover)
-            {
-                return;
-            }
-
-            physicalPort.OnHoverEnd();
         }
 
         public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PhysicalNetworkPort<T>

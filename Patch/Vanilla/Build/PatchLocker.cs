@@ -22,28 +22,32 @@ namespace Industrica.Patch.Vanilla.Build
                 Vector3 leftSide = -rightSide;
 
                 PhysicalNetworkItemPort.CreatePort(
-                    go,
+                    prefab: go,
+                    root: go,
                     rightSide + topSection + front,
                     rotation,
                     Network.PortType.Input,
                     false);
 
                 PhysicalNetworkItemPort.CreatePort(
-                    go,
+                    prefab: go,
+                    root: go,
                     leftSide + topSection + front,
                     rotation,
                     Network.PortType.Input,
                     false);
 
                 PhysicalNetworkItemPort.CreatePort(
-                    go,
+                    prefab: go,
+                    root: go,
                     rightSide + bottomSection + front,
                     rotation,
                     Network.PortType.Output,
                     false);
 
                 PhysicalNetworkItemPort.CreatePort(
-                    go,
+                    prefab: go,
+                    root: go,
                     leftSide + bottomSection + front,
                     rotation,
                     Network.PortType.Output,
