@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Industrica.Network.Physical;
+using System.Linq;
 using UnityEngine;
 
 namespace Industrica.Network
@@ -6,13 +7,6 @@ namespace Industrica.Network
     public abstract class PortHandler : MonoBehaviour, IConstructable
     {
         private int count = 0;
-
-        public IEnumerator QueueFetch()
-        {
-            yield return null;
-            Fetch();
-            yield break;
-        }
 
         public string GetClassID()
         {
@@ -31,7 +25,7 @@ namespace Industrica.Network
 
         public bool CanDeconstruct(out string reason)
         {
-            if (!CanDeconstructPorts())
+            if (CanDeconstructPorts())
             {
                 reason = default;
                 return true;
@@ -41,7 +35,6 @@ namespace Industrica.Network
             return false;
         }
 
-        public abstract void Fetch();
         public abstract bool CanDeconstructPorts();
     }
 }

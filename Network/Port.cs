@@ -25,16 +25,16 @@ namespace Industrica.Network
             P component = portRoot.EnsureComponent<P>();
             component.port = type;
             component.identifier = identifier;
-            component.EnsureHandlerAndFetchPorts(prefab);
-            component.CreateRepresentation();
+            component.EnsureHandlerAndRegister(prefab);
+            component.CreateRepresentation(prefab);
 
             identifier.ClassId = component.GetClassIDFromHandler();
             return component;
         }
 
         public abstract string GetClassIDFromHandler();
-        public abstract void EnsureHandlerAndFetchPorts(GameObject prefab);
-        public abstract void CreateRepresentation();
+        public abstract void EnsureHandlerAndRegister(GameObject prefab);
+        public abstract void CreateRepresentation(GameObject prefab);
         public abstract void OnHoverStart();
         public abstract void OnHover();
         public abstract void OnHoverEnd();

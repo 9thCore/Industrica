@@ -33,15 +33,15 @@ namespace Industrica.Network.Physical.Item
             }));
         }
 
-        public override void CreateRepresentation()
+        public override void CreateRepresentation(GameObject prefab)
         {
-            representation = PhysicalItemPortRepresentation.Create(gameObject);
+            representation = PhysicalItemPortRepresentation.Create(prefab, this, gameObject);
         }
 
-        public override void EnsureHandlerAndFetchPorts(GameObject prefab)
+        public override void EnsureHandlerAndRegister(GameObject prefab)
         {
             handler = prefab.EnsureComponent<PhysicalNetworkItemPortHandler>();
-            CoroutineHost.StartCoroutine(handler.QueueFetch());
+            handler.Register(this);
         }
 
         public override string GetClassIDFromHandler()
