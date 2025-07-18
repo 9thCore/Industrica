@@ -1,19 +1,20 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Industrica.Network.Physical.Item
 {
     public class PhysicalNetworkItemPortHandler : PhysicalNetworkPortHandler<Pickupable>
     {
-        public PhysicalNetworkItemPort[] ports;
+        public List<PhysicalNetworkItemPort> ports = new();
 
         public override bool CanDeconstructPorts()
         {
-            return ports == null || ports.All(c => c == null || !c.HasNetwork);
+            return CanDeconstruct(ports);
         }
 
-        public override void Fetch()
+        public override void Register(PhysicalNetworkPort<Pickupable> port)
         {
-            ports = GetComponentsInChildren<PhysicalNetworkItemPort>(true);
+            ports.Add(port as PhysicalNetworkItemPort);
         }
     }
 }

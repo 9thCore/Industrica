@@ -3,15 +3,36 @@ using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public class PhysicalPortRepresentation<T> : PortRepresentation<PhysicalNetworkPort<T>> where T : class
+    public abstract class PhysicalPortRepresentation<T, P> : PortRepresentation<P> where T : class where P : PhysicalNetworkPort<T>
     {
-        public override Color TargetColor => TargettedColor;
+        public void OnEnable()
+        {
+            TransferPipe<T>.OnConnectionRefresh += RefreshConnection;
+        }
 
-        public override Color NotTargetColor => UntargettedColor;
+        public void OnDisable()
+        {
+            TransferPipe<T>.OnConnectionRefresh -= RefreshConnection;
+        }
 
-        public override Vector3 TargetSize => TargettedSize;
+        public void RefreshConnection(TransferPipe<T> pipe)
+        {
+            if (Constructed < 1f
+                || parent == null)
+            {
+                interactableGO.SetActive(false);
+                return;
+            }
 
-        public override Vector3 NotTargetSize => UntargettedSize;
+            if (!parent.ShouldBeInteractable(pipe))
+            {
+                interactableGO.SetActive(false);
+                OnHoverEnd();
+                return;
+            }
+
+            interactableGO.SetActive(true);
+        }
 
         public override void OnHover()
         {
@@ -37,6 +58,14 @@ namespace Industrica.Network.Physical
 
             HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaPipe_{type}_{port}", true, GameInput.Button.LeftHand);
         }
+
+        public override Color TargetColor => TargettedColor;
+
+        public override Color NotTargetColor => UntargettedColor;
+
+        public override Vector3 TargetSize => TargettedSize;
+
+        public override Vector3 NotTargetSize => UntargettedSize;
 
         public static readonly Vector3 UntargettedSize = new Vector3(0.16f, 0.25f, 0.16f);
         public static readonly Vector3 TargettedSize = new Vector3(0.25f, 0.37f, 0.25f);
