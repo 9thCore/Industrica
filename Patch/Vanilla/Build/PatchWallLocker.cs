@@ -19,14 +19,16 @@ namespace Industrica.Patch.Vanilla.Build
                 Vector3 leftSide = -rightSide;
 
                 PhysicalNetworkItemPort.CreatePort(
-                    go,
+                    prefab: go,
+                    root: go,
                     leftSide + topAndFront,
                     Quaternion.Euler(0f, 0f, 270f),
                     Network.PortType.Input,
                     false);
 
                 PhysicalNetworkItemPort.CreatePort(
-                    go,
+                    prefab: go,
+                    root: go,
                     rightSide + topAndFront,
                     Quaternion.Euler(0f, 0f, 90f),
                     Network.PortType.Output,

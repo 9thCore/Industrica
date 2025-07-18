@@ -1,7 +1,6 @@
 ﻿using Industrica.Network.Filter;
 using Industrica.Network.Systems;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Industrica.Network.Physical
 {
@@ -13,10 +12,10 @@ namespace Industrica.Network.Physical
         public NetworkFilter<T> insertFilter, extractFilter = null;
         public IEnumerable<PhysicalNetworkPort<T>> siblings, inverse = null;
 
-        public PhysicalNetworkPortPump(PhysicalNetworkPort<T> port)
+        public PhysicalNetworkPortPump(PhysicalNetworkPort<T> port, PhysicalNetworkPortHandler<T> handler)
         {
             parent = port;
-            handler = port.gameObject.GetComponentInParent<PhysicalNetworkPortHandler<T>>();
+            this.handler = handler;
         }
 
         public void SetNetwork(PhysicalNetwork<T> network)

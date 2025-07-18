@@ -16,7 +16,8 @@ namespace Industrica.Patch.Vanilla.Build
                 go.EnsureComponent<BioReactorContainerProvider>();
 
                 PhysicalNetworkItemPort.CreatePort(
-                    go,
+                    prefab: go,
+                    root: go,
                     new Vector3(1.53f, -0.61f, 0f),
                     Quaternion.Euler(0f, 0f, 315f),
                     Network.PortType.Input,
