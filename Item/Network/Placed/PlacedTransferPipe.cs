@@ -178,7 +178,7 @@ namespace Industrica.Item.Network.Placed
             {
                 CreateSegment(positions[i - 1], positions[i]);
             }
-            CreateSegment(positions.Last(), endPort.PipePosition);
+            CreateSegment(positions.Last(), endPort.SegmentPosition);
 
             TransferPipe<T>.CreateEndCap(segmentParent.transform, endCap.gameObject, startPort);
             TransferPipe<T>.CreateEndCap(segmentParent.transform, endCap.gameObject, endPort);

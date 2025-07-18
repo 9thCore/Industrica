@@ -54,7 +54,7 @@ namespace Industrica.Network.Physical
             CreateEndCap(end);
 
             GameObject placedPipe = Instantiate(result);
-            placedPipe.transform.position = Vector3.Lerp(start.PipePosition, end.PipePosition, 0.5f);
+            placedPipe.transform.position = Vector3.Lerp(start.SegmentPosition, end.SegmentPosition, 0.5f);
 
             P pipe = placedPipe.GetComponent<P>();
             pipe.SetSegments(segmentParent, copy);
@@ -92,7 +92,7 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            if (!CloseEnoughToLastSegment(connection.PipePosition))
+            if (!CloseEnoughToLastSegment(connection.SegmentPosition))
             {
                 CreateSegment();
                 return;
@@ -220,7 +220,7 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            Vector3 startPos = segments.Select(c => c.EndPosition).DefaultIfEmpty(start.PipePosition).Last();
+            Vector3 startPos = segments.Select(c => c.EndPosition).DefaultIfEmpty(start.SegmentPosition).Last();
 
             EnsureSegmentParent();
             Segment segment = CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments);
@@ -273,10 +273,10 @@ namespace Industrica.Network.Physical
 
         public Vector3 GetPlacePosition(Transform aim, out bool skipLowClamp)
         {
-            if (HoveringAvailableConnection && hover != start && CloseEnoughToLastSegment(hover.PipePosition))
+            if (HoveringAvailableConnection && hover != start && CloseEnoughToLastSegment(hover.SegmentPosition))
             {
                 skipLowClamp = true;
-                return hover.PipePosition;
+                return hover.SegmentPosition;
             }
 
             if (Physics.Raycast(aim.position, aim.forward, out RaycastHit hit, placeDistance, Builder.placeLayerMask, QueryTriggerInteraction.Ignore))

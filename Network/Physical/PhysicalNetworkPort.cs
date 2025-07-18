@@ -11,13 +11,9 @@ using UWE;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class PhysicalNetworkPort<T> : MonoBehaviour where T : class
+    public abstract class PhysicalNetworkPort<T> : Port where T : class
     {
-        protected bool lockHover = false;
-
-        public UniqueIdentifier identifier;
         public bool hasPumpModule = false;
-        public PortType port;
 
         internal PhysicalNetworkPort<T> connectedPort = null;
         internal Transform parent = null;
@@ -32,37 +28,18 @@ namespace Industrica.Network.Physical
         public abstract void CreateAndSetNetwork(Action<PhysicalNetwork<T>> action);
         public abstract bool TryExtract(NetworkFilter<T> filter, out T value, bool simulate = false);
         public abstract bool TryInsert(T value, bool simulate = false);
-        public abstract void EnsureHandlerAndFetchPorts(GameObject prefab);
-        public abstract string GetClassIDFromHandler();
-        public abstract void CreateRepresentation();
-        public abstract void OnHoverStart();
-        public abstract void OnHover();
-        public abstract void OnHoverEnd();
         public abstract PhysicalNetworkPortPump<T> CreatePump();
 
-        public bool IsInput => port == PortType.Input;
-        public bool IsOutput => port == PortType.Output;
         public Vector3 EndCapPosition => transform.position + transform.up * 0.06f;
-        public Vector3 PipePosition => transform.position + transform.up * 0.2f;
+        public override Vector3 SegmentPosition => transform.position + transform.up * 0.2f;
         public string Id => identifier.Id;
         public bool HasNetwork => network != null;
-        public bool LockHover { set => lockHover = value; }
 
         protected static P CreatePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
             where P : PhysicalNetworkPort<T>
         {
-            GameObject portRoot = GameObjectUtil.CreateChild(root, typeof(P).Name, position: position, rotation: rotation);
-
-            ChildObjectIdentifier identifier = portRoot.EnsureComponent<ChildObjectIdentifier>();
-
-            P component = portRoot.EnsureComponent<P>();
-            component.port = type;
+            P component = CreateBasePort<P>(prefab, root, position, rotation, type);
             component.hasPumpModule = autoNetworkTransfer;
-            component.identifier = identifier;
-            component.EnsureHandlerAndFetchPorts(prefab);
-            component.CreateRepresentation();
-
-            identifier.ClassId = component.GetClassIDFromHandler();
             return component;
         }
 
