@@ -35,7 +35,7 @@ namespace Industrica.Network.Physical.Item
 
         public override void CreateRepresentation()
         {
-            representation = PhysicalItemPortRepresentation.CreatePort<PhysicalItemPortRepresentation>(gameObject);
+            representation = PhysicalItemPortRepresentation.Create(gameObject);
         }
 
         public override void EnsureHandlerAndFetchPorts(GameObject prefab)
