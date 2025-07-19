@@ -14,6 +14,7 @@ namespace Industrica.Network.Physical.Item
 
         public override PortHandler CopyTo(GameObject prefab)
         {
+            ports ??= new();
             PhysicalNetworkItemPortHandler handler = prefab.EnsureComponent<PhysicalNetworkItemPortHandler>();
             handler.ports = ports;
             return handler;
