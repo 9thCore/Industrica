@@ -1,4 +1,5 @@
-﻿using Industrica.Utility;
+﻿using Industrica.Network.BaseModule;
+using Industrica.Utility;
 using UnityEngine;
 
 namespace Industrica.Network
@@ -20,21 +21,23 @@ namespace Industrica.Network
         {
             GameObject portRoot = GameObjectUtil.CreateChild(root, typeof(P).Name, position: position, rotation: rotation);
 
+            BaseModuleProvider provider = prefab.GetComponent<BaseModuleProvider>();
+
             ChildObjectIdentifier identifier = portRoot.EnsureComponent<ChildObjectIdentifier>();
 
             P component = portRoot.EnsureComponent<P>();
             component.port = type;
             component.identifier = identifier;
-            component.EnsureHandlerAndRegister(prefab);
-            component.CreateRepresentation(prefab);
+            component.EnsureHandlerAndRegister(prefab, provider);
+            component.CreateRepresentation(prefab, provider);
 
             identifier.ClassId = component.GetClassIDFromHandler();
             return component;
         }
 
         public abstract string GetClassIDFromHandler();
-        public abstract void EnsureHandlerAndRegister(GameObject prefab);
-        public abstract void CreateRepresentation(GameObject prefab);
+        public abstract void EnsureHandlerAndRegister(GameObject prefab, BaseModuleProvider provider);
+        public abstract void CreateRepresentation(GameObject prefab, BaseModuleProvider provider);
         public abstract void OnHoverStart();
         public abstract void OnHover();
         public abstract void OnHoverEnd();

@@ -10,7 +10,7 @@ namespace Industrica.Network
         public Renderer renderer;
         public T parent;
         public Constructable constructable;
-        public BaseModuleConstructionProvider provider;
+        public BaseModuleProvider provider;
 
         protected readonly SmoothValue hoverInterpolation = new(initialDuration: 0.25f);
         protected Transform interactable;
@@ -34,7 +34,7 @@ namespace Industrica.Network
             }
         }
 
-        public static P Create<P>(GameObject prefab, T parent, GameObject portRoot) where P : PortRepresentation<T>
+        public static P Create<P>(GameObject prefab, T parent, BaseModuleProvider provider, GameObject portRoot) where P : PortRepresentation<T>
         {
             GameObject representation = GameObjectUtil.CreateChild(portRoot, typeof(P).Name);
 
@@ -50,10 +50,12 @@ namespace Industrica.Network
             component.renderer = representation.GetComponentInChildren<Renderer>(true);
             component.parent = parent;
 
-            component.constructable = prefab.GetComponent<Constructable>();
-            if (component.constructable == null)
+            if (provider != null)
             {
-                component.provider = prefab.GetComponent<BaseModuleConstructionProvider>();
+                component.provider = provider;
+            } else
+            {
+                component.constructable = prefab.GetComponent<Constructable>();
             }
 
             return component;
