@@ -1,5 +1,4 @@
 ﻿using Industrica.Network.BaseModule;
-using System.Collections;
 using UnityEngine;
 
 namespace Industrica.Network
@@ -7,10 +6,7 @@ namespace Industrica.Network
     public abstract class PortHandler : MonoBehaviour, IConstructable
     {
         public BaseModuleProvider provider;
-        private bool keepTryingToAddGeometryProvider = false;
-        private bool queuedGeometryPatch = false;
         private int count = 0;
-        private PortHandler geometryHandler;
 
         public void WithBaseModule(BaseModuleProvider provider)
         {
@@ -21,30 +17,8 @@ namespace Industrica.Network
         {
             if (provider != null)
             {
-                keepTryingToAddGeometryProvider = provider.TryAddHandler(this, out geometryHandler);
+                provider.AddGeometryHandler(this);
             }
-        }
-
-        public void Update()
-        {
-            // Refresh the geometry's component if it gets removed (module deconstructed), but wait until it's constructed again
-            if (!keepTryingToAddGeometryProvider
-                || provider == null
-                || geometryHandler != null)
-            {
-                return;
-            }
-
-            if (queuedGeometryPatch
-                && provider.ConstructedAmount >= 1f)
-            {
-                keepTryingToAddGeometryProvider = provider.TryAddHandler(this, out geometryHandler);
-                queuedGeometryPatch = false;
-                return;
-            }
-
-            // Introduce a one-frame delay
-            queuedGeometryPatch = true;
         }
 
         public string GetClassID()
