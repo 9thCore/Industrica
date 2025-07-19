@@ -8,7 +8,6 @@ using Industrica.Network.Systems;
 using Industrica.Patch.Vanilla;
 using Industrica.Save;
 using Nautilus.Handlers;
-using System.Reflection;
 
 namespace Industrica
 {
@@ -19,7 +18,7 @@ namespace Industrica
     {
         public new static ManualLogSource Logger { get; private set; }
 
-        private static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
+        private static Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
 
         private void Awake()
         {
@@ -31,8 +30,6 @@ namespace Industrica
             InitializeLanguage();
             InitializeSave();
 
-            // register harmony patches, if there are any
-            Harmony.CreateAndPatchAll(Assembly, $"{PluginInfo.PLUGIN_GUID}");
             Logger.LogInfo($"Successfully loaded [{PluginInfo.PLUGIN_NAME} {PluginInfo.PLUGIN_VERSION}]! Happy engineering!");
         }
 
@@ -53,7 +50,7 @@ namespace Industrica
             ItemPhysicalNetwork.RegisterPrefab();
             BuildableItemPump.Register();
 
-            VanillaPatch.Patch();
+            VanillaPatch.Patch(harmony);
         }
     }
 }

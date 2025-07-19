@@ -3,18 +3,16 @@
     public class BioReactorConstructionProvider : BaseModuleProvider<BaseBioReactor>
     {
         public override float ConstructedAmount => Module._constructed;
-        public override bool TryAddHandler(PortHandler handler, out PortHandler result)
+        public override void AddGeometryHandler(PortHandler handler)
         {
             BaseBioReactorGeometry geometry = Module.GetModel();
             if (geometry == null)
             {
                 Plugin.Logger.LogError($"Could not fetch the geometry of {gameObject.name}??? Cannot apply construction patch.");
-                result = default;
-                return false;
+                return;
             }
 
-            result = handler.CopyTo(geometry.gameObject);
-            return true;
+            handler.CopyTo(geometry.gameObject);
         }
     }
 }

@@ -1,13 +1,14 @@
-﻿using Industrica.Patch.Vanilla.Build;
+﻿using HarmonyLib;
+using Industrica.Patch.Vanilla.Build;
 
 namespace Industrica.Patch.Vanilla
 {
     public static class VanillaPatch
     {
-        public static void Patch()
+        public static void Patch(Harmony harmony)
         {
-            PatchBioReactor.Patch();
-            PatchNuclearReactor.Patch();
+            PatchBioReactor.Patch(harmony);
+            PatchNuclearReactor.Patch(harmony);
             PatchLocker.Patch();
             PatchWallLocker.Patch();
         }
