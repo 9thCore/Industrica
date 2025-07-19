@@ -1,4 +1,5 @@
-﻿using Industrica.Network.Container;
+﻿using Industrica.Network.BaseModule;
+using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
 using Industrica.Network.Filter;
 using Industrica.Network.Systems;
@@ -33,15 +34,16 @@ namespace Industrica.Network.Physical.Item
             }));
         }
 
-        public override void CreateRepresentation(GameObject prefab)
+        public override void CreateRepresentation(GameObject prefab, BaseModuleProvider provider)
         {
-            representation = PhysicalItemPortRepresentation.Create(prefab, this, gameObject);
+            representation = PhysicalItemPortRepresentation.Create(prefab, this, provider, gameObject);
         }
 
-        public override void EnsureHandlerAndRegister(GameObject prefab)
+        public override void EnsureHandlerAndRegister(GameObject prefab, BaseModuleProvider provider)
         {
             handler = prefab.EnsureComponent<PhysicalNetworkItemPortHandler>();
             handler.Register(this);
+            handler.WithBaseModule(provider);
         }
 
         public override string GetClassIDFromHandler()
