@@ -31,7 +31,7 @@ namespace Industrica.Item.Network.Placed
             }
         }
 
-        public class SaveData : BaseSaveData<SaveData, PlacedItemTransferPipe>
+        public class SaveData : TransferPipeSaveData<SaveData, PlacedItemTransferPipe>
         {
             public SaveData(PlacedItemTransferPipe component) : base(component) { }
             public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.placedItemTransferPipeData;

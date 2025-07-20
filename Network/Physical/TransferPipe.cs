@@ -1,40 +1,23 @@
 ﻿using Industrica.Item.Network.Placed;
-using Industrica.Utility;
-using Nautilus.Utility;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UWE;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class TransferPipe<T> : PlayerTool where T : class
+    public abstract class TransferPipe<T> : ConnectionTool<PhysicalNetworkPort<T>> where T : class
     {
-        private PhysicalNetworkPort<T> start, hover;
-        private GameObject segmentParent;
-        private float placementTimeout = 0f;
-        private float clearHoldElapsed = 0f;
-        private bool holster = false;
-        private float placeDistance;
+        public Transform endCap;
 
-        public PortType neededPort = PortType.None;
-        public Transform stretchedPart, endCap;
-        public GameObject craftModel;
-
-        public bool Placing => start != null;
-        public bool Holstering => holster;
-        public bool HoveringAvailableConnection => hover != null && !hover.HasNetwork;
-        public bool HoveringOccupiedConnection => hover != null && hover.HasNetwork;
-        public bool CanPlace => placementTimeout <= 0f;
-
-        public List<Segment> segments = new(capacity: MaxSegments);
+        public abstract PipeType Type { get; }
+        public abstract IEnumerator CreatePipe(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end);
 
         public void Setup(OxygenPipe pipe)
         {
             stretchedPart = pipe.stretchedPart;
-            endCap = pipe.endCap;
             craftModel = pipe.craftModel;
+            endCap = pipe.endCap;
         }
 
         public IEnumerator CreatePipe<P>(TechType pipeTechType, PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end) where P : PlacedTransferPipe<T>
@@ -64,180 +47,59 @@ namespace Industrica.Network.Physical
             Reset();
         }
 
-        public void StartConnection(PhysicalNetworkPort<T> connection)
+        public override GameObject ParentOfSegmentParent => start.parent.gameObject;
+        public override float MaxSegmentLength => MaxPipeLength;
+
+        public override void StartConnection(PhysicalNetworkPort<T> connection)
         {
             connection.LockHover = true;
             start = connection;
             CreateSegment();
-
-            neededPort = connection.port switch
-            {
-                PortType.Input => PortType.Output,
-                PortType.Output => PortType.Input,
-                PortType.InputAndOutput => PortType.InputAndOutput,
-                _ => PortType.None
-            };
-
-            OnConnectionRefresh?.Invoke(this);
-
             CreateEndCap(connection);
+            RestrictPlaceablePorts(connection.port);
         }
 
-        public void EndConnection(PhysicalNetworkPort<T> connection)
+        public override void EndConnection(PhysicalNetworkPort<T> connection)
         {
-            if (start == null)
-            {
-                Plugin.Logger.LogError($"Start of connection was removed while connecting, cannot finish pipe");
-                Reset();
-                return;
-            }
-
-            if (!CloseEnoughToLastSegment(connection.SegmentPosition))
-            {
-                CreateSegment();
-                return;
-            }
-
             start.LockHover = false;
             start.OnHoverEnd();
             connection.OnHoverEnd();
             CoroutineHost.StartCoroutine(CreatePipe(start, connection));
         }
 
-        public void Connect(PhysicalNetworkPort<T> connection)
+        public override void Position(Segment segment, Vector3 start)
         {
-            if (!Placing)
-            {
-                StartConnection(connection);
-                return;
-            }
-
-            if (connection == start)
-            {
-                return;
-            }
-
-            EndConnection(connection);
+            Transform aim = Builder.GetAimTransform();
+            Vector3 end = GetPlacePosition(aim, out bool skipLowClamp);
+            Position(segment, start, end, skipLowClamp);
         }
 
-        public bool ConnectedTo(PhysicalNetworkPort<T> connection)
+        public override void Reset()
         {
-            return start == connection;
+            if (start != null)
+            {
+                start.LockHover = false;
+                start.OnHoverEnd();
+                start = null;
+            }
+
+            placeDistance = PlaceDefaultDistance;
+            neededPort = PortType.None;
+            clearHoldElapsed = 0f;
+            hover = null;
+            ClearSegments();
+            OnConnectionRefresh?.Invoke(this);
         }
 
-        public void Update()
+        public override bool Available(PhysicalNetworkPort<T> port)
         {
-            if (usingPlayer != null)
-            {
-                UpdateTool();
-                return;
-            }
+            return !port.HasNetwork;
         }
 
-        public void UpdateTool()
+        public override void Disconnect(PhysicalNetworkPort<T> port)
         {
-            if (segments.Count > 0)
-            {
-                HandReticle.main.SetText(HandReticle.TextType.Hand, "IndustricaPipe_Place", true, GameInput.Button.LeftHand);
-                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, Language.main.GetFormat("IndustricaPipe_Place_Tooltip", segments.Count, MaxSegments), false);
-            }
-
-            placementTimeout -= Time.deltaTime;
-            UpdateLastSegment();
-            UpdateTargettedConnection();
-
-            if (GameInput.GetButtonHeld(Builder.buttonRotateCW))
-            {
-                placeDistance = Mathf.Clamp(placeDistance + PlaceDistanceChange * Time.deltaTime, PlaceMinDistance, PlaceMaxDistance);
-            } else if (GameInput.GetButtonHeld(Builder.buttonRotateCCW))
-            {
-                placeDistance = Mathf.Clamp(placeDistance - PlaceDistanceChange * Time.deltaTime, PlaceMinDistance, PlaceMaxDistance);
-            }
-
-            if (HoveringOccupiedConnection && GameInput.GetButtonHeld(GameInput.Button.RightHand))
-            {
-                clearHoldElapsed += Time.deltaTime;
-                HandReticle.main.SetProgress(clearHoldElapsed / ClearHoldTime);
-
-                if (clearHoldElapsed > ClearHoldTime)
-                {
-                    hover.connectedPort.NetworkDisconnect();
-                    hover.NetworkDisconnect();
-                    clearHoldElapsed = 0f;
-                }
-            }
-            else
-            {
-                clearHoldElapsed = 0f;
-            }
-        }
-
-        public void UpdateTargettedConnection()
-        {
-            if (!TryGetTarget(out GameObject target)
-                || !target.TryGetComponentInParent(out PhysicalNetworkPort<T> connection))
-            {
-                Hover(null);
-                return;
-            }
-
-            if (connection.HasNetwork)
-            {
-                Hover(connection);
-                OnHoverOccupied();
-                return;
-            }
-
-            Hover(connection);
-        }
-
-        public bool TryGetTarget(out GameObject target)
-        {
-            if (DoesOverrideHand())
-            {
-                return Targeting.GetTarget(Player.main.gameObject, 2f, out target, out _);
-            }
-
-            target = Player.main.guiHand.GetActiveTarget();
-            return target != null;
-        }
-
-        public void UpdateLastSegment()
-        {
-            if (segments.Count == 0)
-            {
-                return;
-            }
-
-            Segment segment = segments.Last();
-            Position(segment, segment.Position);
-        }
-
-        public void CreateSegment()
-        {
-            if (!CanPlace || segments.Count >= MaxSegments)
-            {
-                return;
-            }
-
-            Vector3 startPos = segments.Select(c => c.EndPosition).DefaultIfEmpty(start.SegmentPosition).Last();
-
-            EnsureSegmentParent();
-            Segment segment = CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments);
-            Position(segment, startPos);
-            ResetPlacementTimeout();
-        }
-
-        public static Segment CreateSegment(Transform parent, GameObject stretchedPartPrefab, List<Segment> segments)
-        {
-            GameObject segmentRoot = GameObjectUtil.CreateChild(parent.gameObject, nameof(segmentRoot));
-
-            GameObject stretchedPart = Instantiate(stretchedPartPrefab);
-            stretchedPart.transform.SetParent(segmentRoot.transform);
-
-            Segment segment = new Segment(segmentRoot, stretchedPart, segments.Count() == 0);
-            segments.Add(segment);
-            return segment;
+            port.connectedPort.NetworkDisconnect();
+            port.NetworkDisconnect();
         }
 
         public GameObject CreateEndCap(PhysicalNetworkPort<T> port)
@@ -260,269 +122,15 @@ namespace Industrica.Network.Physical
             return endCap;
         }
 
-        public void EnsureSegmentParent()
-        {
-            if (start == null
-                || segmentParent != null)
-            {
-                return;
-            }
-
-            segmentParent = GameObjectUtil.CreateChild(start.parent.gameObject, nameof(segmentParent));
-        }
-
-        public Vector3 GetPlacePosition(Transform aim, out bool skipLowClamp)
-        {
-            if (HoveringAvailableConnection && hover != start && CloseEnoughToLastSegment(hover.SegmentPosition))
-            {
-                skipLowClamp = true;
-                return hover.SegmentPosition;
-            }
-
-            if (Physics.Raycast(aim.position, aim.forward, out RaycastHit hit, placeDistance, Builder.placeLayerMask, QueryTriggerInteraction.Ignore))
-            {
-                skipLowClamp = false;
-                return hit.point;
-            }
-
-            skipLowClamp = false;
-            return aim.position + aim.forward * placeDistance;
-        }
-
-        public void Position(Segment segment, Vector3 start)
-        {
-            Transform aim = Builder.GetAimTransform();
-            Vector3 end = GetPlacePosition(aim, out bool skipLowClamp);
-            Position(segment, start, end, skipLowClamp);
-        }
-
         public static void Position(Segment segment, Vector3 start, Vector3 end, bool skipLowClamp = false)
         {
-            segment.Position = start;
-
-            Vector3 offset = end - start;
-            Vector3 direction = Vector3.Normalize(offset);
-            float distance = skipLowClamp
-                ? Mathf.Min(offset.magnitude, MaxPipeScale)
-                : Mathf.Clamp(offset.magnitude, MinPipeScale, MaxPipeScale);
-
-            segment.Resize(distance);
-
-            if (direction == Vector3.zero)
-            {
-                segment.UpdateEnds();
-                return;
-            }
-
-            segment.Rotation = Quaternion.LookRotation(direction, Vector3.up);
-            segment.UpdateEnds();
-        }
-
-        public bool CloseEnoughToLastSegment(Vector3 target)
-        {
-            if (segments.Count == 0)
-            {
-                return false;
-            }
-
-            return CloseEnoughToConnectSegment(segments.Last(), target);
-        }
-
-        public bool CloseEnoughToConnectSegment(Segment segment, Vector3 target)
-        {
-            float distance = Vector3.SqrMagnitude(segment.Position - target);
-            return distance <= MaxPipeScale * MaxPipeScale;
-        }
-
-        public void UnlinkSegments()
-        {
-            segmentParent = null;
-        }
-
-        public void ClearSegments()
-        {
-            if (segmentParent != null)
-            {
-                Destroy(segmentParent);
-                UnlinkSegments();
-            }
-            
-            segments.Clear();
-            placementTimeout = 0f;
-        }
-
-        public void ResetPlacementTimeout()
-        {
-            placementTimeout = PlacementTimeout;
-        }
-
-        public void Hover(PhysicalNetworkPort<T> connection)
-        {
-            if (hover == connection)
-            {
-                if (hover != null)
-                {
-                    hover.OnHover();
-                }
-                return;
-            }
-
-            if (hover != null)
-            {
-                hover.OnHoverEnd();
-            }
-            hover = connection;
-            if (hover != null)
-            {
-                hover.OnHoverStart();
-            }
-        }
-
-        public void OnHoverOccupied()
-        {
-            if (clearHoldElapsed == 0f)
-            {
-                HandReticle.main.SetIcon(HandReticle.IconType.Hand);
-            } else
-            {
-                HandReticle.main.UpdateProgress();
-                HandReticle.main.SetIcon(HandReticle.IconType.Progress);
-            }
-
-            HandReticle.main.SetText(HandReticle.TextType.Hand, "IndustricaPipe_Disconnect", true, GameInput.Button.RightHand);
-            HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "IndustricaPipe_Disconnect_Tooltip", true);
-        }
-
-        public void Reset()
-        {
-            if (start != null)
-            {
-                start.LockHover = false;
-                start.OnHoverEnd();
-                start = null;
-            }
-
-            placeDistance = PlaceDefaultDistance;
-            neededPort = PortType.None;
-            clearHoldElapsed = 0f;
-            hover = null;
-            ClearSegments();
-            OnConnectionRefresh?.Invoke(this);
-        }
-
-        public override void OnDraw(Player p)
-        {
-            Inventory.main.quickSlots.SetIgnoreScrollInput(true);
-            holster = false;
-            Reset();
-            base.OnDraw(p);
-        }
-
-        public override void OnHolster()
-        {
-            Inventory.main.quickSlots.SetIgnoreScrollInput(false);
-            holster = true;
-            Reset();
-            base.OnHolster();
-        }
-
-        public override bool DoesOverrideHand()
-        {
-            return HoveringAvailableConnection || Placing;
-        }
-
-        public override bool OnLeftHandDown()
-        {
-            if (HoveringAvailableConnection)
-            {
-                Connect(hover);
-                return true;
-            }
-
-            if (Placing)
-            {
-                CreateSegment();
-                return true;
-            }
-
-            return false;
+            Position(segment, start, end, MinPipeLength, MaxPipeLength, skipLowClamp);
         }
 
         public delegate void ConnectionRefresh(TransferPipe<T> pipe);
         public static ConnectionRefresh OnConnectionRefresh;
 
-        public abstract PipeType Type { get; }
-        public abstract IEnumerator CreatePipe(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end);
-
-        public const int MaxSegments = 20;
-        public const float PlaceMinDistance = 1f;
-        public const float PlaceMaxDistance = 5f;
-        public const float PlaceDefaultDistance = 2f;
-        public const float PlaceDistanceChange = 16f;
-        public const float PlacementTimeout = 0.1f;
-        public const float MinPipeScale = 0.5f;
-        public const float MaxPipeScale = 2f;
-        public const float ClearHoldTime = 0.75f;
-
-        public class Segment
-        {
-            public Vector3 Position
-            {
-                get => segmentRoot.transform.position;
-                set => segmentRoot.transform.position = value;
-            }
-
-            public Quaternion Rotation
-            {
-                get => segmentRoot.transform.rotation;
-                set => segmentRoot.transform.rotation = value;
-            }
-            public Vector3 EndPosition => stretchedPart.transform.position + stretchedPart.transform.forward * stretchedPart.transform.localScale.z;
-            public Renderer Renderer => segmentRoot.GetComponentInChildren<Renderer>();
-
-            private readonly GameObject segmentRoot;
-            private readonly GameObject stretchedPart;
-            private readonly GameObject bend;
-
-            public Segment(GameObject segmentRoot, GameObject stretchedPart, bool createExtraBendAtOrigin)
-            {
-                this.segmentRoot = segmentRoot;
-                this.stretchedPart = stretchedPart;
-                stretchedPart.SetActive(true);
-                stretchedPart.transform.localPosition = Vector3.zero;
-                stretchedPart.transform.localRotation = Quaternion.identity;
-
-                bend = CreateBend();
-                if (createExtraBendAtOrigin)
-                {
-                    _ = CreateBend();
-                }
-
-                segmentRoot.SetActive(false);
-                segmentRoot.EnsureComponent<SkyApplier>().renderers = segmentRoot.GetComponentsInChildren<Renderer>();
-                segmentRoot.SetActive(true);
-            }
-
-            public void Resize(float length)
-            {
-                GameObjectUtil.Resize(stretchedPart.transform, z: length);
-                UpdateEnds();
-            }
-
-            public void UpdateEnds()
-            {
-                float distance = stretchedPart.transform.localScale.z;
-                bend.transform.localPosition = Vector3.forward * distance;
-            }
-
-            private GameObject CreateBend()
-            {
-                GameObject end = GameObjectUtil.CreateChild(segmentRoot, "bend", PrimitiveType.Sphere, scale: Vector3.one * 0.0575f);
-                Destroy(end.GetComponent<Collider>());
-                end.GetComponent<Renderer>().material.color = new Color32(225, 224, 222, 255);
-                MaterialUtils.ApplySNShaders(end, shininess: 6.2f);
-                return end;
-            }
-        }
+        public const float MinPipeLength = 0.5f;
+        public const float MaxPipeLength = 2f;
     }
 }

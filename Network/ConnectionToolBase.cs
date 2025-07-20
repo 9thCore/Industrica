@@ -1,0 +1,191 @@
+﻿using Industrica.Utility;
+using Nautilus.Utility;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace Industrica.Network
+{
+    public abstract class ConnectionToolBase : PlayerTool
+    {
+        protected GameObject segmentParent;
+        protected float placementTimeout = 0f;
+        protected float clearHoldElapsed = 0f;
+        protected bool holster = false;
+        protected float placeDistance;
+
+        public PortType neededPort = PortType.None;
+        public Transform stretchedPart;
+        public GameObject craftModel;
+
+        public bool Holstering => holster;
+        public bool CanPlace => placementTimeout <= 0f;
+
+        public List<Segment> segments = new(capacity: MaxSegments);
+
+        public abstract GameObject ParentOfSegmentParent { get; }
+        public abstract void Reset();
+
+        protected void RestrictPlaceablePorts(PortType port)
+        {
+            neededPort = port switch
+            {
+                PortType.Input => PortType.Output,
+                PortType.Output => PortType.Input,
+                PortType.InputAndOutput => PortType.None,
+                _ => PortType.None
+            };
+        }
+
+        public void UnlinkSegments()
+        {
+            segmentParent = null;
+        }
+
+        public void ClearSegments()
+        {
+            if (segmentParent != null)
+            {
+                Destroy(segmentParent);
+                UnlinkSegments();
+            }
+
+            segments.Clear();
+            placementTimeout = 0f;
+        }
+
+        public void ResetPlacementTimeout()
+        {
+            placementTimeout = PlacementTimeout;
+        }
+
+        public override void OnDraw(Player p)
+        {
+            Inventory.main.quickSlots.SetIgnoreScrollInput(true);
+            holster = false;
+            Reset();
+            base.OnDraw(p);
+        }
+
+        public override void OnHolster()
+        {
+            Inventory.main.quickSlots.SetIgnoreScrollInput(false);
+            holster = true;
+            Reset();
+            base.OnHolster();
+        }
+
+        public void EnsureSegmentParent()
+        {
+            if (segmentParent != null)
+            {
+                return;
+            }
+
+            segmentParent = GameObjectUtil.CreateChild(ParentOfSegmentParent, nameof(segmentParent));
+        }
+
+        public static Segment CreateSegment(Transform parent, GameObject stretchedPartPrefab, List<Segment> segments)
+        {
+            GameObject segmentRoot = GameObjectUtil.CreateChild(parent.gameObject, nameof(segmentRoot));
+
+            GameObject stretchedPart = Instantiate(stretchedPartPrefab);
+            stretchedPart.transform.SetParent(segmentRoot.transform);
+
+            Segment segment = new Segment(segmentRoot, stretchedPart, segments.Count() == 0);
+            segments.Add(segment);
+            return segment;
+        }
+
+        public static void Position(Segment segment, Vector3 start, Vector3 end, float minScale, float maxScale, bool skipLowClamp = false)
+        {
+            segment.Position = start;
+
+            Vector3 offset = end - start;
+            Vector3 direction = Vector3.Normalize(offset);
+            float distance = skipLowClamp
+                ? Mathf.Min(offset.magnitude, maxScale)
+                : Mathf.Clamp(offset.magnitude, minScale, maxScale);
+
+            segment.Resize(distance);
+
+            if (direction == Vector3.zero)
+            {
+                segment.UpdateEnds();
+                return;
+            }
+
+            segment.Rotation = Quaternion.LookRotation(direction, Vector3.up);
+            segment.UpdateEnds();
+        }
+
+        public const int MaxSegments = 20;
+        public const float PlaceMinDistance = 1f;
+        public const float PlaceMaxDistance = 5f;
+        public const float PlaceDefaultDistance = 2f;
+        public const float PlaceDistanceChange = 16f;
+        public const float PlacementTimeout = 0.1f;
+        public const float ClearHoldTime = 0.75f;
+
+        public class Segment
+        {
+            public Vector3 Position
+            {
+                get => segmentRoot.transform.position;
+                set => segmentRoot.transform.position = value;
+            }
+
+            public Quaternion Rotation
+            {
+                get => segmentRoot.transform.rotation;
+                set => segmentRoot.transform.rotation = value;
+            }
+            public Vector3 EndPosition => stretchedPart.transform.position + stretchedPart.transform.forward * stretchedPart.transform.localScale.z;
+            public Renderer Renderer => segmentRoot.GetComponentInChildren<Renderer>();
+
+            private readonly GameObject segmentRoot;
+            private readonly GameObject stretchedPart;
+            private readonly GameObject bend;
+
+            public Segment(GameObject segmentRoot, GameObject stretchedPart, bool createExtraBendAtOrigin)
+            {
+                this.segmentRoot = segmentRoot;
+                this.stretchedPart = stretchedPart;
+                stretchedPart.SetActive(true);
+                stretchedPart.transform.localPosition = Vector3.zero;
+                stretchedPart.transform.localRotation = Quaternion.identity;
+
+                bend = CreateBend();
+                if (createExtraBendAtOrigin)
+                {
+                    _ = CreateBend();
+                }
+
+                segmentRoot.SetActive(false);
+                segmentRoot.EnsureComponent<SkyApplier>().renderers = segmentRoot.GetComponentsInChildren<Renderer>();
+                segmentRoot.SetActive(true);
+            }
+
+            public void Resize(float length)
+            {
+                GameObjectUtil.Resize(stretchedPart.transform, z: length);
+                UpdateEnds();
+            }
+
+            public void UpdateEnds()
+            {
+                float distance = stretchedPart.transform.localScale.z;
+                bend.transform.localPosition = Vector3.forward * distance;
+            }
+
+            private GameObject CreateBend()
+            {
+                GameObject end = GameObjectUtil.CreateChild(segmentRoot, "bend", PrimitiveType.Sphere, scale: Vector3.one * 0.0575f);
+                Destroy(end.GetComponent<Collider>());
+                end.GetComponent<Renderer>().material.color = new Color32(225, 224, 222, 255);
+                MaterialUtils.ApplySNShaders(end, shininess: 6.2f);
+                return end;
+            }
+        }
+    }
+}
