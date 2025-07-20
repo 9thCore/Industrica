@@ -1,4 +1,5 @@
-﻿using Industrica.Network.Physical;
+﻿using Industrica.Network;
+using Industrica.Network.Physical;
 using Industrica.Save;
 using Industrica.Utility;
 using Nautilus.Assets;
@@ -10,15 +11,11 @@ using UnityEngine;
 
 namespace Industrica.Item.Network.Placed
 {
-    public abstract class PlacedTransferPipe<T> : MonoBehaviour where T : class
+    public abstract class PlacedTransferPipe<T> : PlacedConnection where T : class
     {
-        public Transform stretchedPart, endCap;
+        public Transform endCap;
 
         private PhysicalNetworkPort<T> start, end;
-        private GameObject segmentParent;
-        private List<TransferPipe<T>.Segment> segments;
-        private bool disconnectQueued = false;
-        private Vector3 lastPlayerPosition = Vector3.zero;
 
         public static PrefabInfo Register<P>(string classID) where P : PlacedTransferPipe<T>
         {
@@ -62,48 +59,6 @@ namespace Industrica.Item.Network.Placed
             return info;
         }
 
-        protected abstract void CreateSave();
-        protected abstract void InvalidateSave();
-        protected abstract void OnObjectDestroySave();
-
-        public void Start()
-        {
-            CreateSave();
-            UpdateRender();
-        }
-
-        public void Update()
-        {
-            Vector3 playerPosition = Player.main.transform.position;
-            if (Vector3.SqrMagnitude(playerPosition - lastPlayerPosition) <= 1f)
-            {
-                return;
-            }
-            lastPlayerPosition = playerPosition;
-
-            UpdateRender();
-        }
-
-        private void UpdateRender()
-        {
-            if (segmentParent == null)
-            {
-                return;
-            }
-
-            Vector3 playerPosition = Player.main.transform.position;
-            bool flag = Vector3.SqrMagnitude(transform.position - playerPosition) <= MeshUnloadDistanceSquared;
-            segmentParent.SetActive(flag);
-        }
-
-        public void SetSegments<S>(GameObject segmentParent, List<S> segments) where S : TransferPipe<T>.Segment
-        {
-            this.segmentParent = segmentParent;
-            segmentParent.transform.SetParent(transform);
-            this.segments = new(segments);
-            UpdateRender();
-        }
-
         public void Connect(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
         {
             this.start = start;
@@ -132,77 +87,31 @@ namespace Industrica.Item.Network.Placed
             OnObjectDestroySave();
         }
 
-        public void Disconnect()
+        protected override void OnDisconnect()
         {
-            if (disconnectQueued)
-            {
-                return;
-            }
-
-            disconnectQueued = true;
             start.NetworkDisconnect();
             end.NetworkDisconnect();
             InvalidateSave();
             Destroy(gameObject);
         }
 
-        public TransferPipe<T>.Segment CreateSegment(Vector3 start, Vector3 end)
-        {
-            TransferPipe<T>.Segment segment = TransferPipe<T>.CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments);
-            TransferPipe<T>.Position(segment, start, end);
-            return segment;
-        }
-
         public void Load(string start, string end, List<Vector3> positions)
         {
-            if (!UniqueIdentifier.TryGetIdentifier(start, out UniqueIdentifier startID)
-                || !UniqueIdentifier.TryGetIdentifier(end, out UniqueIdentifier endID))
+            if (!TryFetchPorts(start, end, out PhysicalNetworkPort<T> startPort, out PhysicalNetworkPort<T> endPort))
             {
-                Plugin.Logger.LogError($"{this} was incorrectly setup, loaded invalid ids: {start}, {end}. Removing pipe");
-                Destroy(gameObject);
                 return;
             }
 
-            if (!startID.TryGetComponent(out PhysicalNetworkPort<T> startPort)
-                || !endID.TryGetComponent(out PhysicalNetworkPort<T> endPort))
-            {
-                Plugin.Logger.LogError($"{this} was incorrectly setup, loaded ids: {start}, {end}, but they are not ports. Removing pipe");
-                Destroy(gameObject);
-                return;
-            }
-
-            segments = new();
-            segmentParent = GameObjectUtil.CreateChild(gameObject, nameof(segmentParent));
-
-            for (int i = 1; i < positions.Count; i++)
-            {
-                CreateSegment(positions[i - 1], positions[i]);
-            }
-            CreateSegment(positions.Last(), endPort.SegmentPosition);
-
+            SetupSegments(positions, endPort.SegmentPosition);
             TransferPipe<T>.CreateEndCap(segmentParent.transform, endCap.gameObject, startPort);
             TransferPipe<T>.CreateEndCap(segmentParent.transform, endCap.gameObject, endPort);
-
-            segmentParent.SetActive(false);
-            SkyApplier applier = segmentParent.EnsureComponent<SkyApplier>();
-            applier.renderers = segmentParent.GetComponentsInChildren<Renderer>();
-            segmentParent.SetActive(true);
-
+            PrepareRenderers();
             Connect(startPort, endPort);
         }
 
-        public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PlacedTransferPipe<T>
+        public abstract class TransferPipeSaveData<S, C> : BaseSaveData<S, C> where S : TransferPipeSaveData<S, C> where C : PlacedTransferPipe<T>
         {
-            public string startID, endID;
-            public List<Vector3> positions = new();
-            public BaseSaveData(C component) : base(component) { }
-
-            public override void CopyFromStorage(S data)
-            {
-                startID = data.startID;
-                endID = data.endID;
-                positions = data.positions;
-            }
+            public TransferPipeSaveData(C component) : base(component) { }
 
             public override void Load()
             {
@@ -211,25 +120,10 @@ namespace Industrica.Item.Network.Placed
 
             public override void Save()
             {
+                base.Save();
                 startID = Component.start.Id;
                 endID = Component.end.Id;
-
-                positions.Clear();
-                Component.segments.ForEach(s => positions.Add(s.Position));
-            }
-
-            public override void InvalidateIfNotValid()
-            {
-                if (Component.start == null
-                    || Component.end == null
-                    || positions.Count == 0)
-                {
-                    Invalidate();
-                }
             }
         }
-
-        public const float MeshUnloadDistance = 60f;
-        public const float MeshUnloadDistanceSquared = MeshUnloadDistance * MeshUnloadDistance;
     }
 }
