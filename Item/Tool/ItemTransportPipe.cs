@@ -6,7 +6,7 @@ using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Utility;
 using UnityEngine;
 
-namespace Industrica.Item.Network
+namespace Industrica.Item.Tool
 {
     public static class ItemTransportPipe
     {
@@ -33,12 +33,12 @@ namespace Industrica.Item.Network
                 ComponentUtil.Setup(tool, pipe);
                 tool.Setup(pipe);
 
-                GameObject.DestroyImmediate(pipe.endCap.GetComponent<Collider>());
+                Object.DestroyImmediate(pipe.endCap.GetComponent<Collider>());
                 go.DestroyImmediateChildrenWith<Collider>(true);
-                GameObject.DestroyImmediate(pipe.bottomSection.gameObject);
-                GameObject.DestroyImmediate(pipe);
-                GameObject.DestroyImmediate(go.GetComponentInChildren<OxygenArea>());
-                GameObject.DestroyImmediate(go.GetComponent<FMOD_CustomLoopingEmitter>());
+                Object.DestroyImmediate(pipe.bottomSection.gameObject);
+                Object.DestroyImmediate(pipe);
+                Object.DestroyImmediate(go.GetComponentInChildren<OxygenArea>());
+                Object.DestroyImmediate(go.GetComponent<FMOD_CustomLoopingEmitter>());
             };
 
             prefab.SetEquipment(EquipmentType.Hand);

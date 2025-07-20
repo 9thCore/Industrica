@@ -2,8 +2,8 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using Industrica.Buildable.Pump;
-using Industrica.Item.Network;
-using Industrica.Item.Network.Placed;
+using Industrica.Item.Tool;
+using Industrica.Network.Physical.Item;
 using Industrica.Network.Systems;
 using Industrica.Patch.Vanilla;
 using Industrica.Save;

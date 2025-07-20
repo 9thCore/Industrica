@@ -1,5 +1,4 @@
-﻿using Industrica.Item.Network.Placed;
-using Industrica.Network.Container;
+﻿using Industrica.Network.Container;
 using Industrica.Network.Filter;
 using Industrica.Network.Systems;
 using Industrica.Save;
