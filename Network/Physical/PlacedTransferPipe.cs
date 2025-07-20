@@ -1,5 +1,4 @@
 ﻿using Industrica.Network;
-using Industrica.Network.Physical;
 using Industrica.Save;
 using Industrica.Utility;
 using Nautilus.Assets;
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Industrica.Item.Network.Placed
+namespace Industrica.Network.Physical
 {
     public abstract class PlacedTransferPipe<T> : PlacedConnection where T : class
     {

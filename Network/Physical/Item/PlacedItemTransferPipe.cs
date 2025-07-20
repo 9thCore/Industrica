@@ -1,7 +1,7 @@
 ﻿using Industrica.Save;
 using Nautilus.Assets;
 
-namespace Industrica.Item.Network.Placed
+namespace Industrica.Network.Physical.Item
 {
     public class PlacedItemTransferPipe : PlacedTransferPipe<Pickupable>
     {
