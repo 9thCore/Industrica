@@ -56,6 +56,7 @@ namespace Industrica.Network.Physical
             CreateSegment();
             CreateEndCap(connection);
             RestrictPlaceablePorts(connection.port);
+            OnConnectionRefresh?.Invoke(this);
         }
 
         public override void EndConnection(PhysicalNetworkPort<T> connection)
