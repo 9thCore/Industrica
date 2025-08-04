@@ -15,9 +15,11 @@ namespace Industrica.Network
         protected bool disconnectQueued = false;
         protected Vector3 lastPlayerPosition = Vector3.zero;
 
+        public abstract Vector3 Scale { get; }
+        public abstract Color StretchedPartColor { get; }
+        public abstract Color BendColor { get; }
         protected abstract void CreateSave();
         protected abstract void InvalidateSave();
-        protected abstract void OnObjectDestroySave();
         protected abstract void OnDisconnect();
 
         public void Start()
@@ -71,7 +73,7 @@ namespace Industrica.Network
 
         public ConnectionToolBase.Segment CreateSegment(Vector3 start, Vector3 end)
         {
-            ConnectionToolBase.Segment segment = ConnectionToolBase.CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments);
+            ConnectionToolBase.Segment segment = ConnectionToolBase.CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments, StretchedPartColor, BendColor, Scale);
             ConnectionToolBase.Position(segment, start, end, float.MinValue, float.MaxValue);
             return segment;
         }

@@ -15,6 +15,9 @@ namespace Industrica.Network
         public virtual string PlacingLangKey => "ConnectionTool_Place";
         public virtual string DisconnectLangKey => "ConnectionTool_Disconnect";
 
+        public abstract Vector3 Scale { get; }
+        public abstract Color StretchedPartColor { get; }
+        public abstract Color BendColor { get; }
         public abstract float MaxSegmentLength { get; }
         public abstract bool Available(T port);
         public abstract void StartConnection(T port);
@@ -154,7 +157,7 @@ namespace Industrica.Network
             Vector3 startPos = segments.Select(c => c.EndPosition).DefaultIfEmpty(start.SegmentPosition).Last();
 
             EnsureSegmentParent();
-            Segment segment = CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments);
+            Segment segment = CreateSegment(segmentParent.transform, stretchedPart.gameObject, segments, StretchedPartColor, BendColor, Scale);
             Position(segment, startPos);
             ResetPlacementTimeout();
         }
