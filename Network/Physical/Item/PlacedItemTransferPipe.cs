@@ -1,5 +1,6 @@
 ﻿using Industrica.Save;
 using Nautilus.Assets;
+using UnityEngine;
 
 namespace Industrica.Network.Physical.Item
 {
@@ -7,6 +8,10 @@ namespace Industrica.Network.Physical.Item
     {
         private SaveData save;
         public static PrefabInfo Info { get; private set; }
+
+        public override Vector3 Scale => Vector3.one;
+        public override Color StretchedPartColor => ItemTransferPipe.ItemPipeColor;
+        public override Color BendColor => ItemTransferPipe.ItemPipeBendColor;
 
         public static void Register()
         {
@@ -21,14 +26,6 @@ namespace Industrica.Network.Physical.Item
         protected override void InvalidateSave()
         {
             save.Invalidate();
-        }
-
-        protected override void OnObjectDestroySave()
-        {
-            if (save.Valid)
-            {
-                save.Save();
-            }
         }
 
         public class SaveData : TransferPipeSaveData<SaveData, PlacedItemTransferPipe>

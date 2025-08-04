@@ -1,11 +1,8 @@
-﻿using Industrica.Network;
-using Industrica.Save;
-using Industrica.Utility;
+﻿using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Utility;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Industrica.Network.Physical
@@ -79,11 +76,6 @@ namespace Industrica.Network.Physical
         {
             Connect(start, end);
             start.CreateAndSetNetwork(end.SetNetwork);
-        }
-
-        public void OnDestroy()
-        {
-            OnObjectDestroySave();
         }
 
         protected override void OnDisconnect()
