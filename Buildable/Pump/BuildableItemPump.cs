@@ -33,11 +33,12 @@ namespace Industrica.Buildable.Pump
                 obj.EnsureComponent<PhysicalNetworkItemPump>().WithHandTarget(obj.EnsureComponent<GenericHandTarget>());
                 obj.EnsureComponent<ItemPumpContainerProvider>();
 
-                obj.SetupConstructableBounds();
+                Vector3 offset = -Vector3.up * 0.25f;
+                obj.SetupConstructableBounds(offset: offset);
 
                 foreach (Transform child in obj.transform)
                 {
-                    child.position -= Vector3.up * 0.25f;
+                    child.position += offset;
                 }
 
                 PhysicalNetworkItemPort.CreatePort(
