@@ -26,32 +26,28 @@ namespace Industrica.Patch.Vanilla.Build
                     root: go,
                     rightSide + topSection + front,
                     rotation,
-                    Network.PortType.Input,
-                    false);
+                    Network.PortType.Input);
 
                 PhysicalNetworkItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     leftSide + topSection + front,
                     rotation,
-                    Network.PortType.Input,
-                    false);
+                    Network.PortType.Input);
 
                 PhysicalNetworkItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     rightSide + bottomSection + front,
                     rotation,
-                    Network.PortType.Output,
-                    false);
+                    Network.PortType.Output);
 
                 PhysicalNetworkItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     leftSide + bottomSection + front,
                     rotation,
-                    Network.PortType.Output,
-                    false);
+                    Network.PortType.Output);
             });
         }
     }

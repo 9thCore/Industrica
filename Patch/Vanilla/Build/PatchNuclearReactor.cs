@@ -33,16 +33,14 @@ namespace Industrica.Patch.Vanilla.Build
                     root: go,
                     top + rightSide,
                     Quaternion.Euler(100f, 0f, 0f),
-                    Network.PortType.Input,
-                    false);
+                    PortType.Input);
 
                 PhysicalNetworkItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     top + leftSide,
                     Quaternion.Euler(260f, 0f, 0f),
-                    Network.PortType.Output,
-                    true);
+                    PortType.Output);
             });
         }
 
