@@ -34,22 +34,16 @@ namespace Industrica.Network.Physical
         public string Id => identifier.Id;
         public bool HasNetwork => network != null;
 
-        protected static P CreatePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool autoNetworkTransfer)
+        protected static P CreatePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type)
             where P : PhysicalNetworkPort<T>
         {
             P component = CreateBasePort<P>(prefab, root, position, rotation, type);
-            component.hasPumpModule = autoNetworkTransfer;
             return component;
         }
 
         public virtual void Start()
         {
             parent = gameObject.TryGetComponentInParent(out SubRoot seabase) ? seabase.transform : transform.parent;
-
-            if (hasPumpModule)
-            {
-                pump = CreatePump();
-            }
         }
 
         public void OnDestroy()
@@ -67,7 +61,6 @@ namespace Industrica.Network.Physical
             PlacedTransferPipe<T> copy = transferPipe;
             transferPipe = null;
             copy.Disconnect();
-            pump?.NetworkDisconnect();
             connection.Deregister();
             connection = null;
             network = null;
@@ -77,7 +70,6 @@ namespace Industrica.Network.Physical
         public virtual void SetNetwork(PhysicalNetwork<T> network)
         {
             this.network = network;
-            pump?.SetNetwork(network);
             networkIdentifier = network.GetComponent<UniqueIdentifier>();
             connection = network.Register(port, this);
         }

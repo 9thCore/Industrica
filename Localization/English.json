@@ -14,5 +14,7 @@
 	"ConnectionTool_Place": "Place segment",
 	"Tooltip_ConnectionTool_Place": "{0}/{1}",
 	"ConnectionTool_Disconnect": "Disconnect pipe",
-	"Tooltip_ConnectionTool_Disconnect": "Hold to disconnect"
+	"Tooltip_ConnectionTool_Disconnect": "Hold to disconnect",
+	"IndustricaPump_PumpingEnabled": "Disable pump",
+	"IndustricaPump_PumpingDisabled": "Enable pump"
 }

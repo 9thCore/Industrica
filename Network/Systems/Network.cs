@@ -10,7 +10,6 @@ namespace Industrica.Network.Systems
     public abstract class Network<T, R, W> : MonoBehaviour where R : Network<T, R, W>.NetworkConnection where W : Network<T, R, W>.ContainerWrapper<R>, new() where T : class
     {
         private float destroyTimer = 0f;
-        private float elapsedSincePump = 0f;
         private bool lockDestruction = false;
         protected readonly W input = new();
         protected readonly W output = new();
@@ -110,11 +109,6 @@ namespace Industrica.Network.Systems
             return count;
         }
 
-        public void Sync(Network<T, R, W> network)
-        {
-            elapsedSincePump = network.elapsedSincePump;
-        }
-
         public void Start()
         {
             StartDestroyTimer();
@@ -127,7 +121,6 @@ namespace Industrica.Network.Systems
 
         public virtual void Update()
         {
-            UpdatePump();
             UpdateDestroyTimer();
         }
 
@@ -152,24 +145,7 @@ namespace Industrica.Network.Systems
             }
         }
 
-        private void UpdatePump()
-        {
-            elapsedSincePump += DayNightCycle.main.deltaTime;
-            if (elapsedSincePump < PumpInterval)
-            {
-                return;
-            }
-
-            elapsedSincePump -= PumpInterval;
-
-            OnPump?.Invoke();
-        }
-
-        public const float PumpInterval = 5f;
         public const float DestroyTimeout = 5f;
-
-        public delegate void PumpNotification();
-        public event PumpNotification OnPump;
 
         public static IEnumerator CreateNetwork<N>(TechType tech, Action<N> postLoadAction) where N : Network<T, R, W>
         {

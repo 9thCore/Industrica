@@ -29,8 +29,7 @@ namespace Industrica.Patch.Vanilla.Build
                     root: go,
                     new Vector3(1.53f, -0.61f, 0f),
                     Quaternion.Euler(0f, 0f, 315f),
-                    PortType.Input,
-                    false);
+                    PortType.Input);
             });
         }
 

@@ -30,7 +30,7 @@ namespace Industrica.Buildable.Pump
                 PrefabUtils.AddBasicComponents(obj, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
                 PrefabUtils.AddConstructable(obj, Info.TechType, ConstructableFlags.Inside | ConstructableFlags.Wall, renderer.gameObject);
 
-                obj.EnsureComponent<PhysicalNetworkItemPump>();
+                obj.EnsureComponent<PhysicalNetworkItemPump>().WithHandTarget(obj.EnsureComponent<GenericHandTarget>());
                 obj.EnsureComponent<ItemPumpContainerProvider>();
 
                 obj.SetupConstructableBounds();
@@ -45,16 +45,14 @@ namespace Industrica.Buildable.Pump
                     root: obj,
                     Vector3.right * 0.4f,
                     Quaternion.Euler(0f, 0f, 270f),
-                    PortType.Input,
-                    true);
+                    PortType.Input);
 
                 PhysicalNetworkItemPort.CreatePort(
                     prefab: obj,
                     root: obj,
                     Vector3.right * -0.4f,
                     Quaternion.Euler(0f, 0f, 90f),
-                    PortType.Output,
-                    true);
+                    PortType.Output);
 
                 renderer.materials[0].SetFloat("_LightmapStrength", 1f);
                 renderer.materials[1].SetTexture("_Illum", PhysicalNetworkItemPump.Texture);
