@@ -19,7 +19,7 @@ namespace Industrica.Network
         protected static P CreateBasePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type)
             where P : Port
         {
-            GameObject portRoot = GameObjectUtil.CreateChild(root, typeof(P).Name, position: position, rotation: rotation);
+            GameObject portRoot = root.CreateChild(typeof(P).Name, position: position, rotation: rotation);
 
             BaseModuleProvider provider = prefab.GetComponent<BaseModuleProvider>();
 

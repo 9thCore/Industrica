@@ -7,7 +7,7 @@ namespace Industrica.Utility
 {
     public static class GameObjectUtil
     {
-        public static GameObject CreateChild(GameObject parent, string name, PrimitiveType? primitive = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null)
+        public static GameObject CreateChild(this GameObject parent, string name, PrimitiveType? primitive = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null)
         {
             GameObject child;
             if (primitive.HasValue)
@@ -24,25 +24,6 @@ namespace Industrica.Utility
             child.transform.localRotation = rotation ?? Quaternion.identity;
             child.transform.localScale = scale ?? Vector3.one;
             return child;
-        }
-
-        public static void Resize(Transform transform, float? x = null, float? y = null, float? z = null)
-        {
-            Vector3 scale = transform.localScale;
-            if (x.HasValue)
-            {
-                scale.x = x.Value;
-            }
-            if (y.HasValue)
-            {
-                scale.y = y.Value;
-            }
-            if (z.HasValue)
-            {
-                scale.z = z.Value;
-            }
-
-            transform.localScale = scale;
         }
 
         public static bool TryGetComponentInParent<T>(this GameObject go, out T component)

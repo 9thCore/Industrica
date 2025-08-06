@@ -82,12 +82,12 @@ namespace Industrica.Network
                 return;
             }
 
-            segmentParent = GameObjectUtil.CreateChild(ParentOfSegmentParent, nameof(segmentParent));
+            segmentParent = ParentOfSegmentParent.CreateChild(nameof(segmentParent));
         }
 
         public static Segment CreateSegment(Transform parent, GameObject stretchedPartPrefab, List<Segment> segments, Color stretchedPartColor, Color bendColor, Vector3 scale)
         {
-            GameObject segmentRoot = GameObjectUtil.CreateChild(parent.gameObject, nameof(segmentRoot));
+            GameObject segmentRoot = parent.gameObject.CreateChild(nameof(segmentRoot));
 
             GameObject stretchedPart = Instantiate(stretchedPartPrefab);
             stretchedPart.transform.SetParent(segmentRoot.transform);
@@ -170,7 +170,7 @@ namespace Industrica.Network
 
             public void Resize(float length)
             {
-                GameObjectUtil.Resize(stretchedPart.transform, z: length);
+                stretchedPart.transform.WithScale(z: length);
                 UpdateEnds();
             }
 
@@ -182,7 +182,7 @@ namespace Industrica.Network
 
             private GameObject CreateBend(Color color, Vector3 scale)
             {
-                GameObject end = GameObjectUtil.CreateChild(segmentRoot, "bend", PrimitiveType.Sphere, scale: scale * 0.0575f);
+                GameObject end = segmentRoot.CreateChild("bend", PrimitiveType.Sphere, scale: scale * 0.0575f);
                 Destroy(end.GetComponent<Collider>());
                 end.GetComponent<Renderer>().material.color = color;
                 MaterialUtils.ApplySNShaders(end, shininess: 6.2f);

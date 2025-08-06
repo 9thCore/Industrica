@@ -105,7 +105,7 @@ namespace Industrica.Network
         protected void SetupSegments(List<Vector3> positions, Vector3 lastPosition)
         {
             segments = new();
-            segmentParent = GameObjectUtil.CreateChild(gameObject, nameof(segmentParent));
+            segmentParent = gameObject.CreateChild(nameof(segmentParent));
 
             for (int i = 1; i < positions.Count; i++)
             {
