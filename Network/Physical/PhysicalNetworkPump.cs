@@ -4,7 +4,6 @@ using Industrica.Utility;
 using Nautilus.Extensions;
 using System.Linq;
 using UnityEngine;
-using static Industrica.Network.ConnectionToolBase;
 
 namespace Industrica.Network.Physical
 {
@@ -14,7 +13,7 @@ namespace Industrica.Network.Physical
         public static Texture Texture => _texture ??= PathUtil.GetTexture("Pump/monitor");
 
         private GameObject storageRoot;
-        public GameObject StorageRoot => storageRoot.Exists() ?? (storageRoot = GameObjectUtil.CreateChild(gameObject, nameof(storageRoot)));
+        public GameObject StorageRoot => storageRoot.Exists() ?? (storageRoot = gameObject.CreateChild(nameof(storageRoot)));
 
         private P storage;
         public P Storage => storage ??= GetStorage;

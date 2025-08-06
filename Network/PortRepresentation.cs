@@ -36,9 +36,9 @@ namespace Industrica.Network
 
         public static P Create<P>(GameObject prefab, T parent, BaseModuleProvider provider, GameObject portRoot) where P : PortRepresentation<T>
         {
-            GameObject representation = GameObjectUtil.CreateChild(portRoot, typeof(P).Name);
+            GameObject representation = portRoot.CreateChild(typeof(P).Name);
 
-            GameObject interactable = GameObjectUtil.CreateChild(representation, "Interactable", primitive: PrimitiveType.Cube);
+            GameObject interactable = representation.CreateChild("Interactable", primitive: PrimitiveType.Cube);
             interactable.SetActive(false);
             interactable.GetComponent<Collider>().isTrigger = true;
             MaterialUtils.ApplySNShaders(interactable, 8f, 0f, 0f);
