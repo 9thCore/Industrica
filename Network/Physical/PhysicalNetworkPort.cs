@@ -19,7 +19,6 @@ namespace Industrica.Network.Physical
         internal PhysicalNetwork<T> network;
         internal UniqueIdentifier networkIdentifier;
         internal PhysicalNetwork<T>.PhysicalConnection connection = null;
-        internal PhysicalNetworkPortPump<T> pump;
         internal PlacedTransferPipe<T> transferPipe = null;
 
         public abstract Container<T> Container { get; }
