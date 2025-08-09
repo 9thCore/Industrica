@@ -19,6 +19,7 @@ namespace Industrica.Network.Systems
             prefab.SetGameObject(() =>
             {
                 GameObject prefab = new GameObject(nameof(ItemPhysicalNetwork));
+                prefab.SetActive(false);
                 prefab.EnsureComponent<ItemPhysicalNetwork>();
                 PrefabUtils.AddBasicComponents(prefab, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
                 return prefab;
