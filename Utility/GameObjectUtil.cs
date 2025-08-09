@@ -91,5 +91,11 @@ namespace Industrica.Utility
 
             bounds.bounds.position += offset.Value;
         }
+
+        public static GameObject EnsureComponentChained<T>(this GameObject obj, out T component) where T : Component
+        {
+            component = obj.EnsureComponent<T>();
+            return obj;
+        }
     }
 }
