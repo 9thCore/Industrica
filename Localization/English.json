@@ -9,8 +9,17 @@
 	"Tooltip_IndustricaItemPipe": "Pipe capable of transferring items over a distance.\nConnectable to ports on item containers or pumps, which are highlighted when using it.\nUses sci-fi technology to ensure it does not get consumed on pipe creation.",
 	"ConnectionTool_Place": "Place segment",
 	"Tooltip_ConnectionTool_Place": "{0}/{1}",
-	"ConnectionTool_Disconnect": "Disconnect pipe",
-	"Tooltip_ConnectionTool_Disconnect": "Hold to disconnect",
+	"ConnectionTool_Disconnect": "Disconnect",
+	"Tooltip_ConnectionTool_Disconnect": "Hold",
 	"IndustricaPump_PumpingEnabled": "Disable pump",
-	"IndustricaPump_PumpingDisabled": "Enable pump"
+	"IndustricaPump_PumpingDisabled": "Enable pump",
+	"IndustricaWire_Input": "Wire input port",
+	"IndustricaWire_Output": "Wire output port",
+	"IndustricaElectricOperator": "Electric operator",
+	"Tooltip_IndustricaElectricOperator": "Utility that continuously consumes a small amount of power to operate on the information trasmitted through the two input wires with one of a few mathematical operations, as well as mathematical comparison in the form of < and >.",
+	"IndustricaOperator_CycleOperation": "Cycle operation",
+	"IndustricaWirePort_CannotDeconstructConnected": "Cannot deconstruct object while a wire is connected to a port.",
+	"IndustricaElectricLever": "Electric output",
+	"Tooltip_IndustricaElectricLever": "Utility that continuously consumes a small amount of power to output 1 into the connected wire if it is toggled, or 0 otherwise. <b>If the base runs out of power, it will be automatically toggled off, and will require manual intervention to turn back on</b>.",
+	"IndustricaLever_Toggle": "Toggle output"
 }
