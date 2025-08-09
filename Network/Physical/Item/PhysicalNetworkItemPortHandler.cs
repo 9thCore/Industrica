@@ -7,6 +7,8 @@ namespace Industrica.Network.Physical.Item
     {
         public List<PhysicalNetworkItemPort> ports;
 
+        public override string DeconstructionDeniedReason => "IndustricaItemPort_CannotDeconstructConnected";
+
         public override bool CanDeconstructPorts()
         {
             return CanDeconstruct(ports);
