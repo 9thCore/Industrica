@@ -25,10 +25,14 @@ namespace Industrica.ClassBase
             }
         }
 
-        public bool ConsumeEnergyExact(float energy)
+        public bool HasEnergy(float energy)
         {
-            float power = powerRelay.GetPower();
-            if (power < energy)
+            return powerRelay.GetPower() >= energy;
+        }
+
+        public bool TryConsumeEnergy(float energy)
+        {
+            if (!HasEnergy(energy))
             {
                 return false;
             }
@@ -37,7 +41,7 @@ namespace Industrica.ClassBase
             return true;
         }
 
-        public bool ConsumeEnergyGreedy(float energy, out float consumed)
+        public bool ConsumeEnergy(float energy, out float consumed)
         {
             return powerRelay.ConsumeEnergy(energy, out consumed);
         }
