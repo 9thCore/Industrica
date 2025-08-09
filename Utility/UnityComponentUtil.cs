@@ -35,5 +35,11 @@ namespace Industrica.Utility
             component.transform.localPosition = position;
             return component;
         }
+
+        public static T GetComponent<T, C>(this T component, out C result) where T : Component where C : Component
+        {
+            result = component.GetComponent<C>();
+            return component;
+        }
     }
 }
