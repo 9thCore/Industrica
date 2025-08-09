@@ -45,5 +45,10 @@ namespace Industrica.ClassBase
         {
             return powerRelay.ConsumeEnergy(energy, out consumed);
         }
+
+        public bool ConsumeEnergyPerSecond(float energy, out float consumed)
+        {
+            return ConsumeEnergy(energy * DayNightCycle.main.deltaTime, out consumed);
+        }
     }
 }
