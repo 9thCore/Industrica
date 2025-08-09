@@ -1,4 +1,6 @@
-﻿namespace Industrica.ClassBase
+﻿using UWE;
+
+namespace Industrica.ClassBase
 {
     public abstract class BaseMachine : BaseConstructable
     {
@@ -13,6 +15,13 @@
             {
                 Plugin.Logger.LogError($"Could not find {nameof(PowerRelay)} in tree of {gameObject.name}! Disabling...");
                 enabled = false;
+                return;
+            }
+
+            if (this is IRelayPowerChangeListener listener)
+            {
+                powerRelay.powerUpEvent.AddHandler(gameObject, new Event<PowerRelay>.HandleFunction(listener.PowerUpEvent));
+                powerRelay.powerDownEvent.AddHandler(gameObject, new Event<PowerRelay>.HandleFunction(listener.PowerDownEvent));
             }
         }
 
