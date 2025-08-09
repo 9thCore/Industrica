@@ -44,10 +44,11 @@ namespace Industrica.Network
                 return true;
             }
 
-            reason = Language.main.Get("IndustricaPort_CannotDeconstructConnected");
+            reason = Language.main.Get(DeconstructionDeniedReason);
             return false;
         }
 
+        public abstract string DeconstructionDeniedReason { get; }
         public abstract bool CanDeconstructPorts();
         public abstract PortHandler CopyTo(GameObject prefab);
     }
