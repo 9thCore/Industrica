@@ -1,9 +1,4 @@
 {
-	"IndustricaSteamReactor": "Steam Turbine",
-	"Tooltip_IndustricaSteamReactor": "Converts steam into power, when placed above an overheated Alien Containment Unit.\nCondensed water is automatically vented out into the ocean.",
-	"Use_IndustricaSteamReactor_Disabled": "Stored {0}/{1}, not generating",
-	"Use_IndustricaSteamReactor_Enabled": "Stored {0}/{1}, generating",
-	"IndustricaPort_CannotDeconstructConnected": "Cannot deconstruct storage while a pipe is attached to a port.",
 	"IndustricaItemPort_CannotDeconstructConnected": "Cannot deconstruct storage while a pipe is connected to a port.",
 	"IndustricaPipe_Item_Input": "Item input port",
 	"IndustricaPipe_Item_Output": "Item output port",
