@@ -7,13 +7,17 @@ namespace Industrica.Utility
 {
     public static class GameObjectUtil
     {
-        public static GameObject CreateChild(this GameObject parent, string name, PrimitiveType? primitive = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null)
+        public static GameObject CreateChild(this GameObject parent, string name, PrimitiveType? primitive = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, bool withCollider = true)
         {
             GameObject child;
             if (primitive.HasValue)
             {
                 child = GameObject.CreatePrimitive(primitive.Value);
                 child.name = name;
+                if (!withCollider)
+                {
+                    GameObject.DestroyImmediate(child.GetComponent<Collider>());
+                }
             } else
             {
                 child = new GameObject(name);
