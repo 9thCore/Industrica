@@ -13,12 +13,14 @@ namespace Industrica.Buildable.Pump
 {
     public class BuildableItemPump
     {
+        public static readonly Texture Texture = PathUtil.GetTexture("Pump/monitor");
+
         public static PrefabInfo Info { get; private set; }
         public static void Register()
         {
             Info = PrefabInfo
                 .WithTechType("IndustricaItemPump", true)
-                .WithIcon(SpriteManager.Get(TechType.SmallLocker));
+                .WithIcon(SpriteManager.Get(TechType.PropulsionCannon));
 
             CustomPrefab prefab = new(Info);
             CloneTemplate template = new(Info, "0782292e-d313-468a-8816-2adba65bfba3");
@@ -56,9 +58,9 @@ namespace Industrica.Buildable.Pump
                     PortType.Output);
 
                 renderer.materials[0].SetFloat("_LightmapStrength", 1f);
-                renderer.materials[1].SetTexture("_Illum", PhysicalNetworkItemPump.Texture);
-                renderer.materials[1].SetTexture("_SpecTex", PhysicalNetworkItemPump.Texture);
-                renderer.materials[1].mainTexture = PhysicalNetworkItemPump.Texture;
+                renderer.materials[1].SetTexture("_Illum", Texture);
+                renderer.materials[1].SetTexture("_SpecTex", Texture);
+                renderer.materials[1].mainTexture = Texture;
             };
 
             prefab.SetRecipe(new RecipeData(
