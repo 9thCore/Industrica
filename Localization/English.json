@@ -10,7 +10,6 @@
 	"ConnectionTool_Place": "Place segment",
 	"Tooltip_ConnectionTool_Place": "{0}/{1}",
 	"ConnectionTool_Disconnect": "Disconnect",
-	"Tooltip_ConnectionTool_Disconnect": "Hold",
 	"IndustricaPump_PumpingEnabled": "Disable pump",
 	"IndustricaPump_PumpingDisabled": "Enable pump",
 	"IndustricaWire_Input": "Wire input port",
@@ -21,5 +20,7 @@
 	"IndustricaWirePort_CannotDeconstructConnected": "Cannot deconstruct object while a wire is connected to a port.",
 	"IndustricaElectricLever": "Electric output",
 	"Tooltip_IndustricaElectricLever": "Utility that continuously consumes a small amount of power to output 1 into the connected wire if it is toggled, or 0 otherwise. <b>If the base runs out of power, it will be automatically toggled off, and will require manual intervention to turn back on</b>.",
-	"IndustricaLever_Toggle": "Toggle output"
+	"IndustricaLever_Toggle": "Toggle output",
+	"IndustricaWire_PowerDisplay_Output": "Transmitting {0}/{1}",
+	"IndustricaWire_PowerDisplay_Input": "Receiving {0}/{1}"
 }

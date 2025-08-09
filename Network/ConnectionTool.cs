@@ -202,7 +202,7 @@ namespace Industrica.Network
             }
         }
 
-        public void OnHoverOccupied()
+        public virtual void OnHoverOccupied()
         {
             if (clearHoldElapsed == 0f)
             {
@@ -215,7 +215,6 @@ namespace Industrica.Network
             }
 
             HandReticle.main.SetText(HandReticle.TextType.Hand, DisconnectLangKey, true, GameInput.Button.RightHand);
-            HandReticle.main.SetText(HandReticle.TextType.HandSubscript, $"Tooltip_{DisconnectLangKey}", true);
         }
 
         public bool CloseEnoughToLastSegment(Vector3 target)
