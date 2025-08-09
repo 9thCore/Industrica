@@ -101,5 +101,11 @@ namespace Industrica.Utility
             component = obj.EnsureComponent<T>();
             return obj;
         }
+
+        public static GameObject WithSharedMaterial(this GameObject obj, Material material)
+        {
+            obj.GetComponentsInChildren<Renderer>().ForEach(renderer => renderer.sharedMaterial = material);
+            return obj;
+        }
     }
 }
