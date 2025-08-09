@@ -60,12 +60,9 @@ namespace Industrica.Save
                 Cleanup();
 
                 Clear();
+                dirty.ForEach(pair => pair.Value.UpdateSaveIfAble());
                 IEnumerable<string> validKeys = dirty.Where(pair => pair.Value.IncludeInSave()).Select(pair => pair.Key);
-                validKeys.ForEach(key =>
-                {
-                    dirty[key].UpdateSaveIfAble();
-                    Add(key, dirty[key]);
-                });
+                validKeys.ForEach(key => Add(key, dirty[key]));
             }
 
             public void Load()
