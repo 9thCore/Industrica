@@ -7,14 +7,9 @@ namespace Industrica.Utility
 {
     public static class PathUtil
     {
-        private static string _assemblyPath;
-        public static string AssemblyPath => _assemblyPath ??= Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        private static string _assetPath;
-        public static string AssetPath => _assetPath ??= Path.Combine(AssemblyPath, "Assets");
-
-        private static string _texturePath;
-        public static string TexturePath => _texturePath ??= Path.Combine(AssetPath, "Texture");
+        public static readonly string AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static readonly string AssetPath = Path.Combine(AssemblyPath, "Assets");
+        public static readonly string TexturePath = Path.Combine(AssetPath, "Texture");
 
         public static Atlas.Sprite GetImage(string path)
         {
