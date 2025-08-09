@@ -1,10 +1,12 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using Industrica.Buildable.Electrical;
 using Industrica.Buildable.Pump;
 using Industrica.Item.Tool;
 using Industrica.Network.Physical.Item;
 using Industrica.Network.Systems;
+using Industrica.Network.Wire;
 using Industrica.Patch.Vanilla;
 using Industrica.Save;
 using Nautilus.Handlers;
@@ -49,6 +51,10 @@ namespace Industrica
             ItemTransportPipe.Register();
             ItemPhysicalNetwork.RegisterPrefab();
             BuildableItemPump.Register();
+            PlacedWire.Register();
+            ItemWireTool.Register();
+            BuildableElectricLever.Register();
+            BuildableElectricOperator.Register();
 
             VanillaPatch.Patch(harmony);
         }
