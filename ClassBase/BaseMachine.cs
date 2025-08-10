@@ -27,7 +27,7 @@ namespace Industrica.ClassBase
 
         public bool HasEnergy(float energy)
         {
-            return powerRelay.GetPower() >= energy;
+            return !GameModeUtils.RequiresPower() || powerRelay.GetPower() >= energy;
         }
 
         public bool TryConsumeEnergy(float energy)
