@@ -1,4 +1,5 @@
-﻿using Industrica.Container;
+﻿using Industrica.ClassBase;
+using Industrica.Container;
 using Industrica.Network.Filter;
 using Industrica.Utility;
 using Nautilus.Extensions;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class PhysicalNetworkPump<T, P> : MonoBehaviour where P : PumpSlot<T> where T : class
+    public abstract class PhysicalNetworkPump<T, P> : BaseMachine where P : PumpSlot<T> where T : class
     {
         private GameObject storageRoot;
         public GameObject StorageRoot => storageRoot.Exists() ?? (storageRoot = gameObject.CreateChild(nameof(storageRoot)));
@@ -40,8 +41,10 @@ namespace Industrica.Network.Physical
             return this;
         }
 
-        public void Start()
+        public override void Start()
         {
+            base.Start();
+
             if (!handTarget)
             {
                 return;
@@ -82,7 +85,11 @@ namespace Industrica.Network.Physical
                 return;
             }
 
-            Pump();
+            if (TryConsumeEnergy(PumpEnergyUsage))
+            {
+                Pump();
+            }
+
             queuedPump = false;
         }
 
@@ -119,5 +126,6 @@ namespace Industrica.Network.Physical
         }
 
         public const float PumpInterval = 5f;
+        public const float PumpEnergyUsage = 1f;
     }
 }
