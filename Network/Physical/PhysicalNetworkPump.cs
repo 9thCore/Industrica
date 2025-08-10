@@ -1,22 +1,17 @@
 ﻿using Industrica.ClassBase;
-using Industrica.Container;
+using Industrica.Network.Container;
 using Industrica.Network.Filter;
 using Industrica.Network.Wire;
-using Industrica.Utility;
 using Nautilus.Extensions;
 using System.Linq;
-using UnityEngine;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class PhysicalNetworkPump<T, P> : BaseMachine where P : PumpSlot<T> where T : class
+    public abstract class PhysicalNetworkPump<T, P> : BaseMachine where P : PumpContainer<T> where T : class
     {
-        private GameObject storageRoot;
-        public GameObject StorageRoot => storageRoot.Exists() ?? (storageRoot = gameObject.CreateChild(nameof(storageRoot)));
-
-        private P storage;
-        public P Storage => storage ??= GetStorage;
-        public abstract P GetStorage { get; }
+        private P container;
+        public P Container => container ??= GetContainer;
+        public abstract P GetContainer { get; }
 
         private PhysicalNetworkPort<T> _output;
         public PhysicalNetworkPort<T> Output => _output.Exists() ?? (_output = GetComponentsInChildren<PhysicalNetworkPort<T>>()
