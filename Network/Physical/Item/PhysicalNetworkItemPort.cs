@@ -46,11 +46,6 @@ namespace Industrica.Network.Physical.Item
             handler.WithBaseModule(provider);
         }
 
-        public override string GetClassIDFromHandler()
-        {
-            return handler.GetClassID();
-        }
-
         public override void OnHoverStart()
         {
             representation.OnHoverStart();
