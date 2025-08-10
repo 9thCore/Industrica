@@ -1,6 +1,7 @@
 ﻿using Industrica.ClassBase;
 using Industrica.Container;
 using Industrica.Network.Filter;
+using Industrica.Network.Wire;
 using Industrica.Utility;
 using Nautilus.Extensions;
 using System.Linq;
@@ -34,10 +35,17 @@ namespace Industrica.Network.Physical
         private bool queuedPump = false;
 
         public GenericHandTarget handTarget;
+        public WirePort port;
 
         public PhysicalNetworkPump<T, P> WithHandTarget(GenericHandTarget handTarget)
         {
             this.handTarget = handTarget;
+            return this;
+        }
+
+        public PhysicalNetworkPump<T, P> WithWirePort(WirePort port)
+        {
+            this.port = port;
             return this;
         }
 
@@ -104,7 +112,22 @@ namespace Industrica.Network.Physical
 
         public bool Enabled()
         {
+            if (DisabledByWire())
+            {
+                return false;
+            }
+
             return enabledPump;
+        }
+
+        private bool DisabledByWire()
+        {
+            if (!port.Occupied)
+            {
+                return false;
+            }
+
+            return port.value == WirePort.WireDefault;
         }
 
         private void OnClick(HandTargetEventData data)
@@ -123,6 +146,11 @@ namespace Industrica.Network.Physical
             };
 
             HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaPump_Pumping{state}", true, GameInput.Button.LeftHand);
+
+            if (DisabledByWire())
+            {
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "IndustricaWire_DisabledByWire", true);
+            }
         }
 
         public const float PumpInterval = 5f;
