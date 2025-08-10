@@ -19,10 +19,10 @@
 	"IndustricaOperator_CycleOperation": "Cycle operation",
 	"IndustricaWirePort_CannotDeconstructConnected": "Cannot deconstruct object while a wire is connected to a port.",
 	"IndustricaElectricLever": "Electric output",
-	"Tooltip_IndustricaElectricLever": "Utility that continuously consumes a small amount of power to output 1 into the connected wire if it is toggled, or 0 otherwise. <b>If the base runs out of power, it will be automatically toggled off, and will require manual intervention to turn back on</b>.",
+	"Tooltip_IndustricaElectricLever": "Utility that continuously consumes a small amount of power to output 1 into the connected wire if it is toggled, or 0 otherwise.\n<b>If the base runs out of power, it will be automatically toggled off, and will require manual intervention to turn back on</b>.",
 	"IndustricaLever_Toggle": "Toggle output",
 	"IndustricaWire_PowerDisplay_Output": "Transmitting {0}/{1}",
 	"IndustricaWire_PowerDisplay_Input": "Receiving {0}/{1}",
 	"IndustricaElectricSplitter": "Electric splitter",
-	"Tooltip_IndustricaElectricSplitter": "Utility that continuously consumes a small amount of power to split incoming wire information in two halves. If the input is an odd number, the additional remainder comes through the second output."
+	"Tooltip_IndustricaElectricSplitter": "Utility that continuously consumes a small amount of power to split incoming wire information in two halves.\nIf the input is an odd number, the additional remainder comes through the second output."
 }
