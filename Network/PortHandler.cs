@@ -6,7 +6,6 @@ namespace Industrica.Network
     public abstract class PortHandler : MonoBehaviour, IConstructable
     {
         public BaseModuleProvider provider;
-        private int count = 0;
 
         public void WithBaseModule(BaseModuleProvider provider)
         {
@@ -19,11 +18,6 @@ namespace Industrica.Network
             {
                 provider.AddGeometryHandler(this);
             }
-        }
-
-        public string GetClassID()
-        {
-            return $"PhysicalNetworkPort{count++}";
         }
 
         public bool IsDeconstructionObstacle()

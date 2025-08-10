@@ -22,6 +22,7 @@ namespace Industrica.Network
             GameObject portRoot = root.CreateChild(typeof(P).Name, position: position, rotation: rotation);
 
             BaseModuleProvider provider = prefab.GetComponent<BaseModuleProvider>();
+            PortIDAssigner assigner = prefab.EnsureComponent<PortIDAssigner>();
 
             ChildObjectIdentifier identifier = portRoot.EnsureComponent<ChildObjectIdentifier>();
 
@@ -31,11 +32,10 @@ namespace Industrica.Network
             component.EnsureHandlerAndRegister(prefab, provider);
             component.CreateRepresentation(prefab, provider);
 
-            identifier.ClassId = component.GetClassIDFromHandler();
+            identifier.ClassId = assigner.GetClassIDAndCycle();
             return component;
         }
 
-        public abstract string GetClassIDFromHandler();
         public abstract void EnsureHandlerAndRegister(GameObject prefab, BaseModuleProvider provider);
         public abstract void CreateRepresentation(GameObject prefab, BaseModuleProvider provider);
         public abstract void OnHoverStart();

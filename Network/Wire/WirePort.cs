@@ -113,11 +113,6 @@ namespace Industrica.Network.Wire
             handler.WithBaseModule(provider);
         }
 
-        public override string GetClassIDFromHandler()
-        {
-            return handler.GetClassID();
-        }
-
         public override void OnHover()
         {
             representation.OnHover();
