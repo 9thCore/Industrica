@@ -1,6 +1,7 @@
 ﻿using Industrica.Network;
 using Industrica.Network.Container.Provider.Item.Industrica;
 using Industrica.Network.Physical.Item;
+using Industrica.Network.Wire;
 using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
@@ -32,9 +33,6 @@ namespace Industrica.Buildable.Pump
                 PrefabUtils.AddBasicComponents(obj, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
                 PrefabUtils.AddConstructable(obj, Info.TechType, ConstructableFlags.Inside | ConstructableFlags.Wall, renderer.gameObject);
 
-                obj.EnsureComponent<PhysicalNetworkItemPump>().WithHandTarget(obj.EnsureComponent<GenericHandTarget>());
-                obj.EnsureComponent<ItemPumpContainerProvider>();
-
                 Vector3 offset = -Vector3.up * 0.25f;
                 obj.SetupConstructableBounds(offset: offset);
 
@@ -56,6 +54,15 @@ namespace Industrica.Buildable.Pump
                     Vector3.right * -0.4f,
                     Quaternion.Euler(0f, 0f, 90f),
                     PortType.Output);
+
+                WirePort port = WirePort.CreatePort(
+                    prefab: obj,
+                    Vector3.up * -0.22f,
+                    Quaternion.Euler(0f, 0f, 180f),
+                    PortType.Input);
+
+                obj.EnsureComponent<PhysicalNetworkItemPump>().WithHandTarget(obj.EnsureComponent<GenericHandTarget>()).WithWirePort(port);
+                obj.EnsureComponent<ItemPumpContainerProvider>();
 
                 renderer.materials[0].SetFloat("_LightmapStrength", 1f);
                 renderer.materials[1].SetTexture("_Illum", Texture);

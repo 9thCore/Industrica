@@ -14,6 +14,7 @@
 	"IndustricaPump_PumpingDisabled": "Enable pump",
 	"IndustricaWire_Input": "Wire input port",
 	"IndustricaWire_Output": "Wire output port",
+	"IndustricaWire_DisabledByWire": "Force-disabled by wire",
 	"IndustricaElectricOperator": "Electric operator",
 	"Tooltip_IndustricaElectricOperator": "Utility that continuously consumes a small amount of power to operate on the information trasmitted through the two input wires with one of a few mathematical and bitwise operations.",
 	"IndustricaOperator_CycleOperation": "Cycle operation",
