@@ -9,6 +9,7 @@ namespace Industrica.Save
     {
         [JsonIgnore]
         public bool Valid { get; private set; } = true;
+        [JsonIgnore]
         public abstract string SaveKey { get; }
         [JsonIgnore]
         public abstract SaveSystem.SaveData<S> SaveStorage { get; }

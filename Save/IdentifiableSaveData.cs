@@ -18,7 +18,7 @@ namespace Industrica.Save
                 return uniqueIdentifier;
             }
         }
-        [JsonIgnore]
+
         public override string SaveKey => SaveDataIdentifier.Id;
         [JsonIgnore]
         public abstract UniqueIdentifier GetUniqueIdentifier { get; }
