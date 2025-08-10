@@ -1,7 +1,6 @@
 ﻿using Industrica.ClassBase;
-using Industrica.Save;
+using Industrica.Operation;
 using Industrica.UI.UIData;
-using Industrica.Utility;
 using System.Collections;
 using UnityEngine;
 
@@ -15,7 +14,6 @@ namespace Industrica.Network.Wire
         public WirePortUIData input1UIData, input2UIData, outputUIData;
         public OperationWrapperUIData operationUI;
         public Canvas canvas;
-        public SaveData save;
 
         public WireLogicGate WithTarget(GenericHandTarget target)
         {
@@ -51,7 +49,7 @@ namespace Industrica.Network.Wire
             target.onHandClick = new();
             target.onHandClick.AddListener(OnClick);
 
-            save = new(this);
+            operationWrapper.CreateSave(GetComponent<UniqueIdentifier>().Id);
         }
 
         public void Update()
@@ -61,7 +59,7 @@ namespace Industrica.Network.Wire
 
         public void OnDestroy()
         {
-            save.Invalidate();
+            operationWrapper.InvalidateSave();
         }
 
         public void PowerUpEvent(PowerRelay relay)
@@ -109,34 +107,5 @@ namespace Industrica.Network.Wire
 
         public const float OutputDelay = 1f / 15;
         public const float EnergyUsage = 0.1f;
-
-        public class SaveData : ComponentSaveData<SaveData, WireLogicGate>
-        {
-            public OperationWrapper.Type operation;
-
-            public SaveData(WireLogicGate component) : base(component) { }
-
-            public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.wireLogicGateData;
-
-            public override void CopyFromStorage(SaveData data)
-            {
-                operation = data.operation;
-            }
-
-            public override void Load()
-            {
-                Component.operationWrapper.Set(operation);
-            }
-
-            public override void Save()
-            {
-                operation = Component.operationWrapper.type;
-            }
-
-            public override bool IncludeInSave()
-            {
-                return operation != default;
-            }
-        }
     }
 }

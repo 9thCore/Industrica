@@ -15,7 +15,7 @@
 	"IndustricaWire_Input": "Wire input port",
 	"IndustricaWire_Output": "Wire output port",
 	"IndustricaElectricOperator": "Electric operator",
-	"Tooltip_IndustricaElectricOperator": "Utility that continuously consumes a small amount of power to operate on the information trasmitted through the two input wires with one of a few mathematical operations, as well as mathematical comparison in the form of < and >.",
+	"Tooltip_IndustricaElectricOperator": "Utility that continuously consumes a small amount of power to operate on the information trasmitted through the two input wires with one of a few mathematical and bitwise operations.",
 	"IndustricaOperator_CycleOperation": "Cycle operation",
 	"IndustricaWirePort_CannotDeconstructConnected": "Cannot deconstruct object while a wire is connected to a port.",
 	"IndustricaElectricLever": "Electric output",
