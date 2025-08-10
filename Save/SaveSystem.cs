@@ -20,6 +20,7 @@ namespace Industrica.Save
         public SaveData<PlacedWire.SaveData> placedWireData = new();
         public SaveData<WirePort.SaveData> outputWirePortData = new();
         public SaveData<OperationWrapper.SaveData> operationWrapperSaveData = new();
+        public SaveData<PhysicalNetworkItemPump.SaveData> physicalItemPumpSaveData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)
