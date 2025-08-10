@@ -2,6 +2,7 @@
 using Industrica.Network.Container;
 using Industrica.Network.Filter;
 using Industrica.Network.Wire;
+using Industrica.Save;
 using Nautilus.Extensions;
 using System.Linq;
 
@@ -22,6 +23,9 @@ namespace Industrica.Network.Physical
         public PhysicalNetworkPort<T> Input => _input.Exists() ?? (_input = GetComponentsInChildren<PhysicalNetworkPort<T>>()
             .Where(p => p.IsInput)
             .First());
+
+        public abstract void CreateSave();
+        public abstract void InvalidateSave();
 
         public bool enabledPump = true;
         private NetworkFilter<T> insertFilter = null;
@@ -47,6 +51,7 @@ namespace Industrica.Network.Physical
         public override void Start()
         {
             base.Start();
+            CreateSave();
 
             if (!handTarget)
             {
@@ -63,6 +68,11 @@ namespace Industrica.Network.Physical
         {
             UpdateTimer();
             TryPump();
+        }
+
+        public void OnDestroy()
+        {
+            InvalidateSave();
         }
 
         private void UpdateTimer()
@@ -150,5 +160,31 @@ namespace Industrica.Network.Physical
 
         public const float PumpInterval = 5f;
         public const float PumpEnergyUsage = 1f;
+
+        public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PhysicalNetworkPump<T, P>
+        {
+            public float elapsedSinceLastPump;
+            public bool enabledPump;
+
+            protected BaseSaveData(C component) : base(component) { }
+
+            public override void CopyFromStorage(S data)
+            {
+                elapsedSinceLastPump = data.elapsedSinceLastPump;
+                enabledPump = data.enabledPump;
+            }
+
+            public override void Load()
+            {
+                Component.elapsedSinceLastPump = elapsedSinceLastPump;
+                Component.enabledPump = enabledPump;
+            }
+
+            public override void Save()
+            {
+                elapsedSinceLastPump = Component.elapsedSinceLastPump;
+                enabledPump = Component.enabledPump;
+            }
+        }
     }
 }
