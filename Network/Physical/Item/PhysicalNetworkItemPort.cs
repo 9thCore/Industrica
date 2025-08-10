@@ -66,11 +66,6 @@ namespace Industrica.Network.Physical.Item
             representation.OnHoverEnd();
         }
 
-        public override PhysicalNetworkPortPump<Pickupable> CreatePump()
-        {
-            return new PhysicalNetworkPortPump<Pickupable>(this);
-        }
-
         public override void Start()
         {
             base.Start();

@@ -12,8 +12,6 @@ namespace Industrica.Network.Physical
 {
     public abstract class PhysicalNetworkPort<T> : Port where T : class
     {
-        public bool hasPumpModule = false;
-
         internal PhysicalNetworkPort<T> connectedPort = null;
         internal Transform parent = null;
         internal PhysicalNetwork<T> network;
@@ -26,7 +24,6 @@ namespace Industrica.Network.Physical
         public abstract void CreateAndSetNetwork(Action<PhysicalNetwork<T>> action);
         public abstract bool TryExtract(NetworkFilter<T> filter, out T value, bool simulate = false);
         public abstract bool TryInsert(T value, bool simulate = false);
-        public abstract PhysicalNetworkPortPump<T> CreatePump();
 
         public Vector3 EndCapPosition => transform.position + transform.up * 0.06f;
         public override Vector3 SegmentPosition => transform.position + transform.up * 0.2f;
