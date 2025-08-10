@@ -7,6 +7,7 @@ using Industrica.Item.Tool;
 using Industrica.Network.Physical.Item;
 using Industrica.Network.Systems;
 using Industrica.Network.Wire;
+using Industrica.Operation;
 using Industrica.Patch.Vanilla;
 using Industrica.Save;
 using Nautilus.Handlers;
@@ -47,6 +48,8 @@ namespace Industrica
 
         private void InitializePrefabs()
         {
+            BaseModOperations.Register();
+
             PlacedItemTransferPipe.Register();
             ItemTransportPipe.Register();
             ItemPhysicalNetwork.RegisterPrefab();

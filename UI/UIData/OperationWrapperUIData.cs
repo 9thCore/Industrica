@@ -1,6 +1,4 @@
-﻿using Industrica.Utility;
-using System;
-using TMPro;
+﻿using Industrica.Operation;
 
 namespace Industrica.UI.UIData
 {
@@ -17,16 +15,7 @@ namespace Industrica.UI.UIData
 
         public void OnChange()
         {
-            text.text = wrapper.type switch
-            {
-                OperationWrapper.Type.Add => "+",
-                OperationWrapper.Type.Subtract => "-",
-                OperationWrapper.Type.Multiply => "*",
-                OperationWrapper.Type.Divide => "/",
-                OperationWrapper.Type.GreaterThan => ">",
-                OperationWrapper.Type.LessThan => "<",
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            text.text = wrapper.operation.Representation;
         }
     }
 }

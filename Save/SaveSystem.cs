@@ -1,5 +1,6 @@
 ﻿using Industrica.Network.Physical.Item;
 using Industrica.Network.Wire;
+using Industrica.Operation;
 using Nautilus.Handlers;
 using Nautilus.Json;
 using Nautilus.Json.Attributes;
@@ -18,7 +19,7 @@ namespace Industrica.Save
         public SaveData<PhysicalNetworkItemPort.SaveData> physicalNetworkItemPortData = new();
         public SaveData<PlacedWire.SaveData> placedWireData = new();
         public SaveData<WirePort.SaveData> outputWirePortData = new();
-        public SaveData<WireLogicGate.SaveData> wireLogicGateData = new();
+        public SaveData<OperationWrapper.SaveData> operationWrapperSaveData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)
