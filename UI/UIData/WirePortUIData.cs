@@ -27,6 +27,7 @@ namespace Industrica.UI.UIData
         public void OnCharge()
         {
             text.text = port.value.ToString("D2");
+            InvokeUpdate();
         }
     }
 }
