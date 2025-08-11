@@ -1,19 +1,19 @@
 ﻿using Industrica.ClassBase;
 using Industrica.Operation;
+using Industrica.UI;
 using Industrica.UI.UIData;
 using System.Collections;
 using UnityEngine;
 
 namespace Industrica.Network.Wire
 {
-    public class WireLogicGate : BaseMachine, IRelayPowerChangeListener
+    public class WireLogicGate : BaseMachine
     {
         private readonly OperationWrapper operationWrapper = new();
         public GenericHandTarget target;
         public WirePort input1, input2, output;
         public WirePortUIData input1UIData, input2UIData, outputUIData;
         public OperationWrapperUIData operationUI;
-        public Canvas canvas;
 
         public WireLogicGate WithTarget(GenericHandTarget target)
         {
@@ -60,16 +60,6 @@ namespace Industrica.Network.Wire
         public void OnDestroy()
         {
             operationWrapper.InvalidateSave();
-        }
-
-        public void PowerUpEvent(PowerRelay relay)
-        {
-            canvas.gameObject.SetActive(true);
-        }
-
-        public void PowerDownEvent(PowerRelay relay)
-        {
-            canvas.gameObject.SetActive(false);
         }
 
         public void OnChange()
