@@ -1,4 +1,5 @@
 ﻿using Industrica.Network.Wire;
+using Industrica.UI;
 using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
@@ -73,17 +74,18 @@ namespace Industrica.Buildable.Electrical
                 Vector2 iconSize = Vector2.one * 50f;
                 float radius = 15f;
 
-                gate.canvas = obj.CreateCanvas()
-                .WithLocalRotation(Quaternion.Euler(0f, 180f, 0f))
-                .WithLocalPosition(Vector3.forward * 0.08f)
-                .WithBackgroundIcon(type, radius, iconSize, gate.input1UIData.SetBackground)
-                .WithText(gate.input1UIData.SetText)
-                .WithBackgroundIcon(type, radius, iconSize, gate.input2UIData.SetBackground)
-                .WithText(gate.input2UIData.SetText)
-                .WithBackgroundIcon(type, radius, iconSize, gate.outputUIData.SetBackground)
-                .WithText(gate.outputUIData.SetText)
-                .WithBackgroundIcon(type, radius, iconSize, gate.operationUI.SetBackground)
-                .WithText(gate.operationUI.SetText);
+                obj.EnsureComponent<PoweredCanvas>().WithCanvas(
+                    obj.CreateCanvas()
+                    .WithLocalRotation(Quaternion.Euler(0f, 180f, 0f))
+                    .WithLocalPosition(Vector3.forward * 0.08f)
+                    .WithBackgroundIcon(type, radius, iconSize, gate.input1UIData.SetBackground)
+                    .WithText(gate.input1UIData.SetText)
+                    .WithBackgroundIcon(type, radius, iconSize, gate.input2UIData.SetBackground)
+                    .WithText(gate.input2UIData.SetText)
+                    .WithBackgroundIcon(type, radius, iconSize, gate.outputUIData.SetBackground)
+                    .WithText(gate.outputUIData.SetText)
+                    .WithBackgroundIcon(type, radius, iconSize, gate.operationUI.SetBackground)
+                    .WithText(gate.operationUI.SetText));
 
                 Vector2 input2DOffset = Vector2.up * 40f;
                 Vector2 input2DSide = Vector2.right * -140f;
