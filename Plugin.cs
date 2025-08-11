@@ -59,6 +59,7 @@ namespace Industrica
             BuildableElectricLever.Register();
             BuildableElectricOperator.Register();
             BuildableElectricSplitter.Register();
+            BuildableElectricTimer.Register();
 
             VanillaPatch.Patch(harmony);
         }
