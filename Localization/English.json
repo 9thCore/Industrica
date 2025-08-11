@@ -25,5 +25,7 @@
 	"IndustricaWire_PowerDisplay_Output": "Transmitting {0}/{1}",
 	"IndustricaWire_PowerDisplay_Input": "Receiving {0}/{1}",
 	"IndustricaElectricSplitter": "Electric splitter",
-	"Tooltip_IndustricaElectricSplitter": "Utility that continuously consumes a small amount of power to split incoming wire information in two halves.\nIf the input is an odd number, the additional remainder comes through the second output."
+	"Tooltip_IndustricaElectricSplitter": "Utility that continuously consumes a small amount of power to split incoming wire information in two halves.\nIf the input is an odd number, the additional remainder comes through the second output.",
+	"IndustricaElectricTimer": "Electric timer",
+	"Tooltip_IndustricaElectricTimer": "Utility that continuously consumes a moderate amount of power to delay incoming wire information.\nDelay is determined by the bottom wire input - that is the number of seconds, but <b>the utility has an additional hardcoded delay itself</b>."
 }
