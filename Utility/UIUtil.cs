@@ -1,11 +1,8 @@
-﻿using FMOD;
-using Industrica.UI;
+﻿using Industrica.UI;
 using Industrica.UI.SpriteDataFix;
 using System;
-using System.Drawing;
 using TMPro;
 using UnityEngine;
-using static Atlas;
 
 namespace Industrica.Utility
 {
