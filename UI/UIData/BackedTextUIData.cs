@@ -24,5 +24,13 @@ namespace Industrica.UI.UIData
             text.transform.localPosition = position;
             background.transform.localPosition = position;
         }
+
+        protected void InvokeUpdate()
+        {
+            OnUpdate?.Invoke();
+        }
+
+        public delegate void DataUpdate();
+        public event DataUpdate OnUpdate;
     }
 }
