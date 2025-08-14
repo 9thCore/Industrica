@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Industrica.Utility;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UWE;
@@ -9,17 +10,10 @@ namespace Industrica.Network.Wire
     {
         public override float MaxSegmentLength => MaxWireLength;
         public override GameObject ParentOfSegmentParent => start.parent.gameObject;
-
+        public override string UseText => "Use_IndustricaWire";
         public override Vector3 Scale => WireScale;
         public override Color StretchedPartColor => WireColor;
         public override Color BendColor => WireColor;
-
-        public void Setup(OxygenPipe pipe)
-        {
-            stretchedPart = pipe.stretchedPart;
-            craftModel = pipe.craftModel;
-            Setup(stretchedPart);
-        }
 
         public IEnumerator CreateWire(WirePort start, WirePort end)
         {
@@ -44,6 +38,11 @@ namespace Industrica.Network.Wire
 
             UnlinkSegments();
             Reset();
+        }
+
+        public override void InitialiseComponent(MultiTool multiTool)
+        {
+            stretchedPart = UWE.Utils.InstantiateDeactivated(multiTool.stretchedPart).transform.WithParent(transform);
         }
 
         public override bool Available(WirePort port)
