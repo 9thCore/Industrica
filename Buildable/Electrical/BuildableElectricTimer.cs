@@ -53,13 +53,13 @@ namespace Industrica.Buildable.Electrical
                 WirePort timer = WirePort.CreatePort(
                     obj,
                     offset,
-                    Quaternion.Euler(0f, 0f, 90f),
+                    Quaternion.Euler(0f, 0f, 180f),
                     Network.PortType.Input);
 
                 WirePort output = WirePort.CreatePort(
                     obj,
                     inputOffset - inputSide,
-                    Quaternion.Euler(0f, 0f, 180f),
+                    Quaternion.Euler(0f, 0f, 90f),
                     Network.PortType.Output);
 
                 renderer.materials[0].SetFloat("_LightmapStrength", 1f);
@@ -95,8 +95,8 @@ namespace Industrica.Buildable.Electrical
             };
 
             prefab.SetRecipe(new RecipeData(
-                new CraftData.Ingredient(TechType.Titanium, 2),
-                new CraftData.Ingredient(TechType.WiringKit)
+                new Ingredient(TechType.Titanium, 2),
+                new Ingredient(TechType.WiringKit, 1)
                 ));
             prefab.SetPdaGroupCategory(TechGroup.InteriorModules, TechCategory.InteriorModule);
 

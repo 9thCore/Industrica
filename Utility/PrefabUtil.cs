@@ -9,15 +9,25 @@ namespace Industrica.Utility
     {
         public static void RunOnPrefab(TechType techType, Action<GameObject> action)
         {
-            CoroutineHost.StartCoroutine(RunOnPrefabAsync(techType, action));
+            RunOnPrefab(CoroutineHost.Initialize(), techType, action);
         }
 
         public static void RunOnPrefab(string classID, Action<GameObject> action)
         {
-            CoroutineHost.StartCoroutine(RunOnPrefabAsync(classID, action));
+            RunOnPrefab(CoroutineHost.Initialize(), classID, action);
         }
 
-        private static IEnumerator RunOnPrefabAsync(TechType techType, Action<GameObject> action)
+        public static void RunOnPrefab(MonoBehaviour component, TechType techType, Action<GameObject> action)
+        {
+            component.StartCoroutine(RunOnPrefabAsync(techType, action));
+        }
+
+        public static void RunOnPrefab(MonoBehaviour component, string classID, Action<GameObject> action)
+        {
+            component.StartCoroutine(RunOnPrefabAsync(classID, action));
+        }
+
+        public static IEnumerator RunOnPrefabAsync(TechType techType, Action<GameObject> action)
         {
             CoroutineTask<GameObject> task = CraftData.GetPrefabForTechTypeAsync(techType);
             yield return task;
@@ -32,7 +42,7 @@ namespace Industrica.Utility
             action.Invoke(result);
         }
 
-        private static IEnumerator RunOnPrefabAsync(string classID, Action<GameObject> action)
+        public static IEnumerator RunOnPrefabAsync(string classID, Action<GameObject> action)
         {
             IPrefabRequest request = PrefabDatabase.GetPrefabAsync(classID);
             yield return request;

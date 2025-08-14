@@ -7,7 +7,7 @@ namespace Industrica.UI.SpriteDataFix
     {
         public uGUI_Icon icon;
 
-        public abstract Atlas.Sprite Sprite { get; }
+        public abstract Sprite Sprite { get; }
 
         public virtual void PerformAdditionalInit() { }
 
@@ -21,7 +21,7 @@ namespace Industrica.UI.SpriteDataFix
         {
             icon.material = new Material(uGUI_ItemIcon.iconMaterial);
 
-            RectTransformExtensions.Fit(icon.rectTransform, size.x, size.y, Sprite.size.x, Sprite.size.y, false);
+            RectTransformExtensions.Fit(icon.rectTransform, size.x, size.y, Sprite.rect.size.x, Sprite.rect.size.y, false);
 
             icon.material.SetVector(ShaderPropertyID._Size, size);
 

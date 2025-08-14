@@ -1,16 +1,16 @@
 ﻿using Industrica.Network.Container.Provider.Item;
 using Industrica.Network.Physical.Item;
 using Industrica.Utility;
+using System.Collections;
 using UnityEngine;
-using UWE;
 
 namespace Industrica.Patch.Vanilla.Build
 {
     public static class PatchWallLocker
     {
-        public static void Patch()
+        public static IEnumerator Patch()
         {
-            PrefabUtil.RunOnPrefab(TechType.SmallLocker, go =>
+            yield return PrefabUtil.RunOnPrefabAsync(TechType.SmallLocker, go =>
             {
                 go.EnsureComponent<StorageContainerProvider>();
 

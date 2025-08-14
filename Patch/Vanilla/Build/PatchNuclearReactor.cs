@@ -4,6 +4,7 @@ using Industrica.Network.BaseModule.Vanilla;
 using Industrica.Network.Container.Provider.Item.Vanilla;
 using Industrica.Network.Physical.Item;
 using Industrica.Utility;
+using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
@@ -11,15 +12,9 @@ namespace Industrica.Patch.Vanilla.Build
 {
     public static class PatchNuclearReactor
     {
-        public static void Patch(Harmony harmony)
+        public static IEnumerator Patch()
         {
-            MethodInfo original = typeof(BaseNuclearReactorGeometry)
-                .GetMethod(nameof(BaseNuclearReactorGeometry.Start), BindingFlags.NonPublic | BindingFlags.Instance);
-            HarmonyMethod postfix = new HarmonyMethod(typeof(PatchNuclearReactor)
-                .GetMethod(nameof(HarmonyPatch), BindingFlags.Public | BindingFlags.Static));
-            harmony.Patch(original, postfix: postfix);
-
-            PrefabUtil.RunOnPrefab("864f7780-a4c3-4bf2-b9c7-f4296388b70f", go =>
+            yield return PrefabUtil.RunOnPrefabAsync("864f7780-a4c3-4bf2-b9c7-f4296388b70f", go =>
             {
                 go.EnsureComponent<NuclearReactorConstructionProvider>();
                 go.EnsureComponent<NuclearReactorContainerProvider>();
@@ -42,6 +37,15 @@ namespace Industrica.Patch.Vanilla.Build
                     Quaternion.Euler(260f, 0f, 0f),
                     PortType.Output);
             });
+        }
+
+        public static void PatchMethod(Harmony harmony)
+        {
+            MethodInfo original = typeof(BaseNuclearReactorGeometry)
+                .GetMethod(nameof(BaseNuclearReactorGeometry.Start), BindingFlags.NonPublic | BindingFlags.Instance);
+            HarmonyMethod postfix = new HarmonyMethod(typeof(PatchNuclearReactor)
+                .GetMethod(nameof(HarmonyPatch), BindingFlags.Public | BindingFlags.Static));
+            harmony.Patch(original, postfix: postfix);
         }
 
         public static void HarmonyPatch(BaseNuclearReactorGeometry __instance)

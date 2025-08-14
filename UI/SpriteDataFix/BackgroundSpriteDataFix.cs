@@ -1,4 +1,6 @@
-﻿namespace Industrica.UI.SpriteDataFix
+﻿using UnityEngine;
+
+namespace Industrica.UI.SpriteDataFix
 {
     public class BackgroundSpriteDataFix : BaseSpriteDataFix
     {
@@ -23,6 +25,6 @@
             icon.material.SetFloat(ShaderPropertyID._Radius, radius);
         }
 
-        public override Atlas.Sprite Sprite => SpriteManager.GetBackground(type);
+        public override Sprite Sprite => SpriteManager.GetBackground(type);
     }
 }

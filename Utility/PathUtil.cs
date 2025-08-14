@@ -11,7 +11,7 @@ namespace Industrica.Utility
         public static readonly string AssetPath = Path.Combine(AssemblyPath, "Assets");
         public static readonly string TexturePath = Path.Combine(AssetPath, "Texture");
 
-        public static Atlas.Sprite GetImage(string path)
+        public static Sprite GetImage(string path)
         {
             string fullPath = Path.Combine(AssetPath, $"{path}.png");
             if (!File.Exists(fullPath))

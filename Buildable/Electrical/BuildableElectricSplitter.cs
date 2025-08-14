@@ -55,8 +55,8 @@ namespace Industrica.Buildable.Electrical
             };
 
             prefab.SetRecipe(new RecipeData(
-                new CraftData.Ingredient(TechType.Titanium, 2),
-                new CraftData.Ingredient(TechType.WiringKit)
+                new Ingredient(TechType.Titanium, 2),
+                new Ingredient(TechType.WiringKit, 1)
                 ));
             prefab.SetPdaGroupCategory(TechGroup.InteriorModules, TechCategory.InteriorModule);
 
