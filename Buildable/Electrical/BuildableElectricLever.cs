@@ -70,8 +70,8 @@ namespace Industrica.Buildable.Electrical
             };
 
             prefab.SetRecipe(new RecipeData(
-                new CraftData.Ingredient(TechType.Titanium),
-                new CraftData.Ingredient(TechType.Copper)
+                new Ingredient(TechType.Titanium, 1),
+                new Ingredient(TechType.Copper, 1)
                 ));
             prefab.SetPdaGroupCategory(TechGroup.InteriorModules, TechCategory.InteriorModule);
 

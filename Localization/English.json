@@ -1,4 +1,6 @@
 {
+	"IndustricaLoading_Patching": "Patching {0}",
+
 	"IndustricaItemPort_CannotDeconstructConnected": "Cannot deconstruct storage while a pipe is connected to a port.",
 	"IndustricaPipe_Item_Input": "Item input port",
 	"IndustricaPipe_Item_Output": "Item output port",

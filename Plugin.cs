@@ -4,13 +4,16 @@ using HarmonyLib;
 using Industrica.Buildable.Electrical;
 using Industrica.Buildable.Pump;
 using Industrica.Item.Tool;
+using Industrica.Network;
 using Industrica.Network.Physical.Item;
 using Industrica.Network.Systems;
 using Industrica.Network.Wire;
 using Industrica.Operation;
 using Industrica.Patch.Vanilla;
+using Industrica.Patch.Vanilla.Build;
 using Industrica.Save;
 using Nautilus.Handlers;
+using System.Reflection;
 
 namespace Industrica
 {
@@ -32,6 +35,7 @@ namespace Industrica
             InitializePrefabs();
             InitializeLanguage();
             InitializeSave();
+            InitializePatches();
 
             Logger.LogInfo($"Successfully loaded [{PluginInfo.PLUGIN_NAME} {PluginInfo.PLUGIN_VERSION}]! Happy engineering!");
         }
@@ -61,7 +65,13 @@ namespace Industrica
             BuildableElectricSplitter.Register();
             BuildableElectricTimer.Register();
 
-            VanillaPatch.Patch(harmony);
+            VanillaPatch.Patch();
+        }
+
+        private void InitializePatches()
+        {
+            PatchBioReactor.PatchMethod(harmony);
+            PatchNuclearReactor.PatchMethod(harmony);
         }
     }
 }
