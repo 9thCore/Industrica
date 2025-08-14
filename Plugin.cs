@@ -55,15 +55,15 @@ namespace Industrica
             BaseModOperations.Register();
 
             PlacedItemTransferPipe.Register();
-            ItemTransportPipe.Register();
             ItemPhysicalNetwork.RegisterPrefab();
             BuildableItemPump.Register();
             PlacedWire.Register();
-            ItemWireTool.Register();
             BuildableElectricLever.Register();
             BuildableElectricOperator.Register();
             BuildableElectricSplitter.Register();
             BuildableElectricTimer.Register();
+            ItemMultiTool.Register();
+            BaseModConnectionTools.Register();
 
             VanillaPatch.Patch();
         }

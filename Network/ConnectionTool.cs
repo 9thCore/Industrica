@@ -8,9 +8,9 @@ namespace Industrica.Network
     {
         protected T start, hover;
 
-        public bool Placing => start != null;
         public bool HoveringAvailableConnection => hover != null && Available(hover);
-        public bool HoveringOccupiedConnection => hover != null && !Available(hover);
+        public override bool HoveringOccupiedConnection => hover != null && !Available(hover);
+        public override bool Placing => start != null;
 
         public virtual string PlacingLangKey => "ConnectionTool_Place";
         public virtual string DisconnectLangKey => "ConnectionTool_Disconnect";
@@ -60,15 +60,6 @@ namespace Industrica.Network
         }
 
         public void Update()
-        {
-            if (usingPlayer != null)
-            {
-                UpdateTool();
-                return;
-            }
-        }
-
-        public void UpdateTool()
         {
             if (segments.Count > 0)
             {

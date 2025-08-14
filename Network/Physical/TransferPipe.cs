@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Industrica.Utility;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UWE;
@@ -11,13 +12,6 @@ namespace Industrica.Network.Physical
 
         public abstract PipeType Type { get; }
         public abstract IEnumerator CreatePipe(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end);
-
-        public void Setup(OxygenPipe pipe)
-        {
-            stretchedPart = pipe.stretchedPart;
-            craftModel = pipe.craftModel;
-            endCap = pipe.endCap;
-        }
 
         public IEnumerator CreatePipe<P>(TechType pipeTechType, PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end) where P : PlacedTransferPipe<T>
         {
@@ -48,6 +42,12 @@ namespace Industrica.Network.Physical
 
         public override GameObject ParentOfSegmentParent => start.parent.gameObject;
         public override float MaxSegmentLength => MaxPipeLength;
+
+        public override void InitialiseComponent(MultiTool multiTool)
+        {
+            stretchedPart = UWE.Utils.InstantiateDeactivated(multiTool.stretchedPart).transform.WithParent(transform);
+            endCap = UWE.Utils.InstantiateDeactivated(multiTool.endCap).transform.WithParent(transform);
+        }
 
         public override void StartConnection(PhysicalNetworkPort<T> connection)
         {

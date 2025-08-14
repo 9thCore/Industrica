@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Industrica.Network
 {
-    public abstract class ConnectionToolBase : PlayerTool
+    public abstract class ConnectionToolBase : MonoBehaviour
     {
         protected GameObject segmentParent;
         protected float placementTimeout = 0f;
@@ -16,15 +16,20 @@ namespace Industrica.Network
 
         public PortType neededPort = PortType.None;
         public Transform stretchedPart;
-        public GameObject craftModel;
 
         public bool Holstering => holster;
         public bool CanPlace => placementTimeout <= 0f;
 
         public List<Segment> segments = new(capacity: MaxSegments);
 
+        public abstract bool Placing { get; }
+        public abstract bool HoveringOccupiedConnection { get; }
+        public abstract string UseText { get; }
         public abstract GameObject ParentOfSegmentParent { get; }
         public abstract void Reset();
+        public abstract bool OnLeftHandDown();
+        public abstract bool DoesOverrideHand();
+        public abstract void InitialiseComponent(MultiTool multiTool);
 
         protected void RestrictPlaceablePorts(PortType port)
         {
@@ -59,20 +64,18 @@ namespace Industrica.Network
             placementTimeout = PlacementTimeout;
         }
 
-        public override void OnDraw(Player p)
+        public void OnEnable()
         {
             Inventory.main.quickSlots.SetIgnoreScrollInput(true);
             holster = false;
             Reset();
-            base.OnDraw(p);
         }
 
-        public override void OnHolster()
+        public void OnDisable()
         {
             Inventory.main.quickSlots.SetIgnoreScrollInput(false);
             holster = true;
             Reset();
-            base.OnHolster();
         }
 
         public void EnsureSegmentParent()
@@ -109,13 +112,10 @@ namespace Industrica.Network
 
             segment.Resize(distance);
 
-            if (direction == Vector3.zero)
+            if (direction != Vector3.zero)
             {
-                segment.UpdateEnds();
-                return;
+                segment.Rotation = Quaternion.LookRotation(direction, Vector3.up);
             }
-
-            segment.Rotation = Quaternion.LookRotation(direction, Vector3.up);
             segment.UpdateEnds();
         }
 
