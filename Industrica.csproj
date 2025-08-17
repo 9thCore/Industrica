@@ -20,15 +20,22 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     
     <SignAssembly>False</SignAssembly>
+
+    <Configurations>Release;ReleaseBZ</Configurations>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <PackageReference Include="Subnautica.Nautilus" Version="1.0.0-pre.43" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'ReleaseBZ'">
+    <PackageReference Include="SubnauticaZero.Nautilus" Version="1.0.0-pre.43" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.4.21" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Subnautica.GameLibs" Version="82304.0.0-r.0" />
-    <PackageReference Include="Subnautica.Nautilus" Version="1.0.0-pre.42" />
     <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" IncludeAssets="compile" />
     <PackageReference Include="PolySharp" Version="1.15.0">
       <PrivateAssets>all</PrivateAssets>
@@ -40,11 +47,52 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ModularilyBased\ModularilyBased.csproj" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <ReleaseSuffix>SN</ReleaseSuffix>
+  </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="call build" />
+  <PropertyGroup Condition="'$(Configuration)' == 'ReleaseBZ'">
+    <ReleaseSuffix>BZ</ReleaseSuffix>
+  </PropertyGroup>
+
+  <Target Name="CopyPlugin" AfterTargets="PostBuildEvent">
+    <!-- SUBNAUTICA_PATH and SUBNAUTICA_BZ_PATH are system environment variables,
+    pointing to the given game. -->
+    <CombinePath Condition="'$(Configuration)' == 'Release'" BasePath="$(SUBNAUTICA_PATH)\BepInEx\plugins" Paths="$(ProjectName)">
+      <Output TaskParameter="CombinedPaths" ItemName="PluginOutputs" />
+    </CombinePath>
+
+    <CombinePath Condition="'$(Configuration)' == 'ReleaseBZ'" BasePath="$(SUBNAUTICA_BZ_PATH)\BepInEx\plugins" Paths="$(ProjectName)">
+      <Output TaskParameter="CombinedPaths" ItemName="PluginOutputs" />
+    </CombinePath>
+
+    <PropertyGroup>
+      <PluginOutput>%(PluginOutputs.Identity)</PluginOutput>
+    </PropertyGroup>
+
+    <!-- Assembly -->
+    <Copy SourceFiles="$(OutDir)\$(ProjectName).dll" DestinationFolder="$(PluginOutput)" />
+
+    <!-- Assets -->
+    <ItemGroup>
+      <OldAssets Include="$(PluginOutput)\Assets\**\*.*" />
+      <Assets Include="$(ProjectDir)Assets\**\*.*" />
+    </ItemGroup>
+
+    <Delete Files="@(OldAssets)" />
+    <Copy SourceFiles="@(Assets)" DestinationFolder="$(PluginOutput)\Assets" />
+
+    <!-- Localization -->
+    <ItemGroup>
+      <OldLocalization Include="$(PluginOutput)\Localization\**\*.*" />
+      <Localization Include="$(ProjectDir)Localization\**\*.*" />
+    </ItemGroup>
+
+    <Delete Files="@(OldLocalization)" />
+    <Copy SourceFiles="@(Localization)" DestinationFolder="$(PluginOutput)\Localization" />
+
+    <!-- Prepare release -->
+    <MakeDir Directories="$(ProjectDir)..\_Release\$(ProjectName)"></MakeDir>
+    <ZipDirectory SourceDirectory="$(PluginOutput)" DestinationFile="$(ProjectDir)..\_Release\$(ProjectName)\$(ProjectName)_$(ReleaseSuffix).zip" Overwrite="true" />
   </Target>
 </Project>
