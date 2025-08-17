@@ -80,7 +80,7 @@
     </ItemGroup>
 
     <Delete Files="@(OldAssets)" />
-    <Copy SourceFiles="@(Assets)" DestinationFolder="$(PluginOutput)\Assets" />
+    <Copy SourceFiles="@(Assets)" DestinationFolder="$(PluginOutput)\Assets\%(RecursiveDir)" />
 
     <!-- Localization -->
     <ItemGroup>
@@ -89,7 +89,7 @@
     </ItemGroup>
 
     <Delete Files="@(OldLocalization)" />
-    <Copy SourceFiles="@(Localization)" DestinationFolder="$(PluginOutput)\Localization" />
+    <Copy SourceFiles="@(Localization)" DestinationFolder="$(PluginOutput)\Localization\%(RecursiveDir)" />
 
     <!-- Prepare release -->
     <MakeDir Directories="$(ProjectDir)..\_Release\$(ProjectName)"></MakeDir>
