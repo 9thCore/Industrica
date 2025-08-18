@@ -193,7 +193,7 @@ namespace Industrica.Network
             }
         }
 
-        public virtual void OnHoverOccupied()
+        public void OnHoverOccupied()
         {
             if (clearHoldElapsed == 0f)
             {

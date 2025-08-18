@@ -64,6 +64,15 @@ namespace Industrica.Network.Wire
             };
 
             HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaWire_{port}", true, GameInput.Button.LeftHand);
+
+            if (parent.port == PortType.Input
+                && !parent.Occupied)
+            {
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "IndustricaWire_PowerDisplay_InputNoConnection", false);
+                return;
+            }
+
+            HandReticle.main.SetText(HandReticle.TextType.HandSubscript, Language.main.GetFormat($"IndustricaWire_PowerDisplay_{port}", parent.value, WirePort.WireMax), false);
         }
 
         public static readonly Vector3 UntargettedSize = new Vector3(0.1f, 0.16f, 0.1f);

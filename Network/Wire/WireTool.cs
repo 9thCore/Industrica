@@ -96,13 +96,6 @@ namespace Industrica.Network.Wire
             OnConnectionRefresh?.Invoke(this);
         }
 
-        public override void OnHoverOccupied()
-        {
-            base.OnHoverOccupied();
-            string suffix = hover.IsOutput ? "Output" : "Input";
-            HandReticle.main.SetText(HandReticle.TextType.HandSubscript, Language.main.GetFormat($"IndustricaWire_PowerDisplay_{suffix}", hover.value, WirePort.WireMax), false);
-        }
-
         public static void Setup(Transform stretchedPart)
         {
             stretchedPart.GetComponentInChildren<Renderer>().material.SetFloat("_SpecInt", 0f);
