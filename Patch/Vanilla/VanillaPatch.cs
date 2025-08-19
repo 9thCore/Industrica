@@ -2,6 +2,7 @@
 using Industrica.Utility;
 using Nautilus.Handlers;
 using System.Collections;
+using UnityEngine;
 
 namespace Industrica.Patch.Vanilla
 {
@@ -23,16 +24,16 @@ namespace Industrica.Patch.Vanilla
 
             alreadyPatched = true;
 
-            task.Status = Language.main.GetFormat("IndustricaLoading_Patching", nameof(TechType.BaseBioReactor));
+            task.Status = "IndustricaLoading_Patching".Translate(nameof(TechType.BaseBioReactor));
             yield return PatchBioReactor.Patch();
 
-            task.Status = Language.main.GetFormat("IndustricaLoading_Patching", nameof(TechType.BaseNuclearReactor));
+            task.Status = "IndustricaLoading_Patching".Translate(nameof(TechType.BaseNuclearReactor));
             yield return PatchNuclearReactor.Patch();
 
-            task.Status = Language.main.GetFormat("IndustricaLoading_Patching", nameof(TechType.Locker));
+            task.Status = "IndustricaLoading_Patching".Translate(nameof(TechType.Locker));
             yield return PatchLocker.Patch();
 
-            task.Status = Language.main.GetFormat("IndustricaLoading_Patching", nameof(TechType.SmallLocker));
+            task.Status = "IndustricaLoading_Patching".Translate(nameof(TechType.SmallLocker));
             yield return PatchWallLocker.Patch();
         }
     }

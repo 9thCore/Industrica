@@ -1,4 +1,5 @@
 ﻿using Industrica.Network.BaseModule;
+using Industrica.Utility;
 using UnityEngine;
 
 namespace Industrica.Network
@@ -38,7 +39,7 @@ namespace Industrica.Network
                 return true;
             }
 
-            reason = Language.main.Get(DeconstructionDeniedReason);
+            reason = DeconstructionDeniedReason.Translate();
             return false;
         }
 
