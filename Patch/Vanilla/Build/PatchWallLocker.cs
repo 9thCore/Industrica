@@ -36,7 +36,7 @@ namespace Industrica.Patch.Vanilla.Build
 
                 WirePort output = WirePort.CreatePort(
                     go,
-                    Vector3.forward,
+                    Vector3.forward * 0.35f - Vector3.up * 0.17f,
                     Quaternion.Euler(90f, 0f, 0f),
                     Network.PortType.Output);
 
