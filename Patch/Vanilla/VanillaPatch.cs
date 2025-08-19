@@ -1,8 +1,7 @@
-﻿using HarmonyLib;
-using Industrica.Patch.Vanilla.Build;
+﻿using Industrica.Patch.Vanilla.Build;
+using Industrica.Utility;
 using Nautilus.Handlers;
 using System.Collections;
-using UnityEngine;
 
 namespace Industrica.Patch.Vanilla
 {
@@ -12,7 +11,7 @@ namespace Industrica.Patch.Vanilla
 
         public static void Patch()
         {
-            WaitScreenHandler.RegisterAsyncLoadTask(nameof(VanillaPatch), PatchPrefabs);
+            WaitScreenHandler.RegisterAsyncLoadTask(nameof(VanillaPatch).AsLoadTaskID(), PatchPrefabs);
         }
 
         private static IEnumerator PatchPrefabs(WaitScreenHandler.WaitScreenTask task)
