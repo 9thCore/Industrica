@@ -9,6 +9,13 @@ namespace Industrica.Network.Container
         public VanillaItemContainer(IItemsContainer container)
         {
             this.container = container;
+            container.onAddItem += OnContainerUpdate;
+            container.onRemoveItem += OnContainerUpdate;
+        }
+
+        private void OnContainerUpdate(InventoryItem item)
+        {
+            OnUpdate?.Invoke(this);
         }
 
         protected override void Add(Pickupable value)

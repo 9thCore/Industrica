@@ -1,5 +1,7 @@
 ﻿using Industrica.Network.Container.Provider.Item;
 using Industrica.Network.Physical.Item;
+using Industrica.Network.Wire;
+using Industrica.Network.Wire.Output;
 using Industrica.Utility;
 using System.Collections;
 using UnityEngine;
@@ -31,6 +33,14 @@ namespace Industrica.Patch.Vanilla.Build
                     rightSide + topAndFront,
                     Quaternion.Euler(0f, 0f, 90f),
                     Network.PortType.Output);
+
+                WirePort output = WirePort.CreatePort(
+                    go,
+                    Vector3.forward,
+                    Quaternion.Euler(90f, 0f, 0f),
+                    Network.PortType.Output);
+
+                go.EnsureComponent<ItemContainerWireOutput>().SetPort(output);
             });
         }
     }

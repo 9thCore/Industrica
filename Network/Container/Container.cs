@@ -12,5 +12,19 @@ namespace Industrica.Network.Container
         protected abstract void Add(T value);
         protected abstract void Remove(T value);
         public abstract IEnumerator<T> GetEnumerator();
+
+        public int Count()
+        {
+            return Count(AlwaysNetworkFilter<T>.Instance);
+        }
+
+        public int CountRemovable()
+        {
+            return CountRemovable(AlwaysNetworkFilter<T>.Instance);
+        }
+
+
+        public delegate void ContainerUpdate(Container<T> container);
+        public ContainerUpdate OnUpdate;
     }
 }
