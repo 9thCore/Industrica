@@ -1,0 +1,13 @@
+{
+  "Use_IndustricaWire": "Wire subtool | Cycle",
+
+  "IndustricaWire_Input": "Wire input port",
+  "IndustricaWire_Output": "Wire output port",
+  "IndustricaWire_PowerDisplay_Input": "Receiving {0}/{1}",
+  "IndustricaWire_PowerDisplay_Output": "Transmitting {0}/{1}",
+
+  "IndustricaWirePort_CannotDeconstructConnected": "Cannot deconstruct object while a wire is connected to a port.",
+
+  "IndustricaWire_DisabledByWire": "Force-disabled by wire",
+  "IndustricaWire_PowerDisplay_InputNoConnection": "No connection"
+}

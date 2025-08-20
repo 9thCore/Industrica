@@ -12,8 +12,8 @@ namespace Industrica.Network
         public override bool HoveringOccupiedConnection => hover != null && !Available(hover);
         public override bool Placing => start != null;
 
-        public virtual string PlacingLangKey => "ConnectionTool_Place";
-        public virtual string DisconnectLangKey => "ConnectionTool_Disconnect";
+        public virtual string PlacingLangKey => "IndustricaConnectionTool_Place";
+        public virtual string DisconnectLangKey => "IndustricaConnectionTool_Disconnect";
 
         public abstract Vector3 Scale { get; }
         public abstract Color StretchedPartColor { get; }

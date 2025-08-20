@@ -1,0 +1,8 @@
+{
+  "Use_IndustricaItemPipe": "Item pipe subtool | Cycle",
+
+  "IndustricaPipe_Item_Input": "Item input port",
+  "IndustricaPipe_Item_Output": "Item output port",
+
+  "IndustricaItemPort_CannotDeconstructConnected": "Cannot deconstruct storage while a pipe is connected to a port."
+}

@@ -42,7 +42,12 @@ namespace Industrica
 
         private void InitializeLanguage()
         {
-            LanguageHandler.RegisterLocalizationFolder("Localization");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Buildable");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Item");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Loading");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Port/Generic");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Port/Item");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Port/Wire");
         }
 
         private void InitializeSave()

@@ -1,0 +1,20 @@
+{
+  "IndustricaItemPump": "Item pump",
+  "Tooltip_IndustricaItemPump": "Utility that can pull items from its input container and push them into its output container.\nConsumes 1 power on pump if an item was able to be pumped, and will not pump if there is not enough power.\nMultiple pumps connected in series multiplies effective throughput.\nWill not pull that which it cannot insert into the output container.",
+  "IndustricaPump_PumpingEnabled": "Disable pump",
+  "IndustricaPump_PumpingDisabled": "Enable pump",
+
+  "IndustricaElectricOperator": "Electric operator",
+  "Tooltip_IndustricaElectricOperator": "Utility that continuously consumes a small amount of power to operate on the information trasmitted through the two input wires with one of a few mathematical and bitwise operations.",
+  "IndustricaOperator_CycleOperation": "Cycle operation",
+
+  "IndustricaElectricLever": "Electric output",
+  "Tooltip_IndustricaElectricLever": "Utility that continuously consumes a small amount of power to output 1 into the connected wire if it is toggled, or 0 otherwise.\n<b>If the base runs out of power, it will be automatically toggled off, and will require manual intervention to turn back on</b>.",
+  "IndustricaLever_Toggle": "Toggle output",
+
+  "IndustricaElectricSplitter": "Electric splitter",
+  "Tooltip_IndustricaElectricSplitter": "Utility that continuously consumes a small amount of power to split incoming wire information in two halves.\nIf the input is an odd number, the additional remainder comes through the second output.",
+
+  "IndustricaElectricTimer": "Electric timer",
+  "Tooltip_IndustricaElectricTimer": "Utility that continuously consumes a moderate amount of power to delay incoming wire information.\nDelay is determined by the bottom wire input - that is the number of seconds, but <b>the utility has an additional hardcoded delay itself</b>."
+}
