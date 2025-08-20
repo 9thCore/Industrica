@@ -1,10 +1,11 @@
-﻿using Industrica.Network.Container;
+﻿using Industrica.ClassBase;
+using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
 using UnityEngine;
 
 namespace Industrica.Network.Wire.Output
 {
-    public abstract class ContainerWireOutput<T> : MonoBehaviour where T : class
+    public abstract class ContainerWireOutput<T> : BaseMachine, IRelayPowerChangeListener where T : class
     {
         private Container<T> container;
         public WirePort port;
@@ -31,7 +32,22 @@ namespace Industrica.Network.Wire.Output
 
         private void OnUpdate(Container<T> container)
         {
+            if (!powerRelay.IsPowered())
+            {
+                return;
+            }
+
             port.SetElectricity(container.Count());
+        }
+
+        public void PowerUpEvent(PowerRelay relay)
+        {
+            port.SetElectricity(container.Count());
+        }
+
+        public void PowerDownEvent(PowerRelay relay)
+        {
+            port.SetElectricity(0);
         }
     }
 }
