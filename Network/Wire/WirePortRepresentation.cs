@@ -69,7 +69,7 @@ namespace Industrica.Network.Wire
             if (parent.port == PortType.Input
                 && !parent.Occupied)
             {
-                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "IndustricaWire_PowerDisplay_InputNoConnection", false);
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "IndustricaWire_PowerDisplay_InputNoConnection", true);
                 return;
             }
 
