@@ -41,23 +41,25 @@ namespace Industrica.Buildable.Pump
                     child.position += offset;
                 }
 
+                Vector3 forward = Vector3.forward * 0.05f;
+
                 PhysicalNetworkItemPort.CreatePort(
                     prefab: obj,
                     root: obj,
-                    Vector3.right * 0.4f,
+                    Vector3.right * 0.4f + forward,
                     Quaternion.Euler(0f, 0f, 270f),
                     PortType.Input);
 
                 PhysicalNetworkItemPort.CreatePort(
                     prefab: obj,
                     root: obj,
-                    Vector3.right * -0.4f,
+                    Vector3.right * -0.4f + forward,
                     Quaternion.Euler(0f, 0f, 90f),
                     PortType.Output);
 
                 WirePort port = WirePort.CreatePort(
                     prefab: obj,
-                    Vector3.up * -0.22f,
+                    Vector3.up * -0.22f + forward,
                     Quaternion.Euler(0f, 0f, 180f),
                     PortType.Input);
 

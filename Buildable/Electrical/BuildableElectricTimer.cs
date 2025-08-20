@@ -43,22 +43,23 @@ namespace Industrica.Buildable.Electrical
 
                 Vector3 inputOffset = Vector3.up * 0.07f;
                 Vector3 inputSide = Vector3.right * 0.4f;
+                Vector3 forward = Vector3.forward * 0.05f;
 
                 WirePort input = WirePort.CreatePort(
                     obj,
-                    inputOffset + inputSide,
+                    inputOffset + inputSide + forward,
                     Quaternion.Euler(0f, 0f, 270f),
                     Network.PortType.Input);
 
                 WirePort timer = WirePort.CreatePort(
                     obj,
-                    offset,
+                    offset + forward,
                     Quaternion.Euler(0f, 0f, 180f),
                     Network.PortType.Input);
 
                 WirePort output = WirePort.CreatePort(
                     obj,
-                    inputOffset - inputSide,
+                    inputOffset - inputSide + forward,
                     Quaternion.Euler(0f, 0f, 90f),
                     Network.PortType.Output);
 
