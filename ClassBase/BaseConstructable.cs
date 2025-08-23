@@ -11,9 +11,11 @@ namespace Industrica.ClassBase
 
         public virtual void Start()
         {
-            if (!TryGetComponent(out constructable))
+            constructable = GetComponentInParent<Constructable>();
+
+            if (constructable == null)
             {
-                Plugin.Logger.LogError($"Could not find {nameof(Constructable)} in {gameObject.name}. Disabling...");
+                Plugin.Logger.LogError($"Could not find {nameof(Constructable)} in {gameObject.name}'s hierarchy. Disabling...");
                 enabled = false;
             }
         }
