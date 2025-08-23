@@ -28,5 +28,17 @@ namespace Industrica.Patch.Vanilla.UI
                 }
             }
         }
+
+        [HarmonyPatch(typeof(uGUI_EquipmentSlot), nameof(uGUI_EquipmentSlot.SetItem))]
+        public static class EquipmentSlotPatch
+        {
+            public static void Postfix(InventoryItem item, uGUI_EquipmentSlot __instance)
+            {
+                if (item.item.TryGetComponent(out OverlayHolder holder))
+                {
+                    holder.CreateOrUpdate(__instance.icon);
+                }
+            }
+        }
     }
 }

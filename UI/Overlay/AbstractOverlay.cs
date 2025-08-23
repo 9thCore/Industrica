@@ -15,7 +15,17 @@ namespace Industrica.UI.Overlay
             }
         }
 
+        public void Start()
+        {
+            UpdateSizeDelta();
+        }
+
         public virtual void Update()
+        {
+            UpdateSizeDelta();
+        }
+
+        public void UpdateSizeDelta()
         {
             icon.rectTransform.sizeDelta = parent.rectTransform.sizeDelta;
         }
