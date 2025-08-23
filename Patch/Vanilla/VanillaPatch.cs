@@ -10,7 +10,7 @@ namespace Industrica.Patch.Vanilla
     {
         private static bool alreadyPatched = false;
 
-        public static void Patch()
+        public static void Register()
         {
             WaitScreenHandler.RegisterAsyncLoadTask(nameof(VanillaPatch).AsLoadTaskID(), PatchPrefabs);
         }
@@ -29,12 +29,6 @@ namespace Industrica.Patch.Vanilla
 
             task.Status = "IndustricaLoading_Patching".Translate(nameof(TechType.BaseNuclearReactor));
             yield return PatchNuclearReactor.Patch();
-
-            task.Status = "IndustricaLoading_Patching".Translate(nameof(TechType.Locker));
-            yield return PatchLocker.Patch();
-
-            task.Status = "IndustricaLoading_Patching".Translate(nameof(TechType.SmallLocker));
-            yield return PatchWallLocker.Patch();
         }
     }
 }

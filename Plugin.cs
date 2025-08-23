@@ -13,7 +13,6 @@ using Industrica.Patch.Vanilla;
 using Industrica.Patch.Vanilla.Build;
 using Industrica.Save;
 using Nautilus.Handlers;
-using System.Reflection;
 
 namespace Industrica
 {
@@ -24,8 +23,6 @@ namespace Industrica
     {
         public new static ManualLogSource Logger { get; private set; }
 
-        private static Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
-
         private void Awake()
         {
             // set project-scoped logger instance
@@ -35,8 +32,8 @@ namespace Industrica
             InitializePrefabs();
             InitializeLanguage();
             InitializeSave();
-            InitializePatches();
 
+            new Harmony(PluginInfo.PLUGIN_GUID).PatchAll();
             Logger.LogInfo($"Successfully loaded [{PluginInfo.PLUGIN_NAME} {PluginInfo.PLUGIN_VERSION}]! Happy engineering!");
         }
 
@@ -70,13 +67,7 @@ namespace Industrica
             ItemMultiTool.Register();
             BaseModConnectionTools.Register();
 
-            VanillaPatch.Patch();
-        }
-
-        private void InitializePatches()
-        {
-            PatchBioReactor.PatchMethod(harmony);
-            PatchNuclearReactor.PatchMethod(harmony);
+            VanillaPatch.Register();
         }
     }
 }
