@@ -3,14 +3,29 @@ using Industrica.UI.Overlay.Holder;
 
 namespace Industrica.Patch.Vanilla.UI
 {
-    [HarmonyPatch(typeof(uGUI_ItemsContainer), nameof(uGUI_ItemsContainer.OnAddItem))]
     public static class ItemOverlayPatch
     {
-        public static void Postfix(InventoryItem item, uGUI_ItemsContainer __instance)
+        [HarmonyPatch(typeof(uGUI_ItemsContainer), nameof(uGUI_ItemsContainer.OnAddItem))]
+        public static class ItemsContainerPatch
         {
-            if (item.item.TryGetComponent(out OverlayHolder holder))
+            public static void Postfix(InventoryItem item, uGUI_ItemsContainer __instance)
             {
-                holder.Create(__instance.items[item]);
+                if (item.item.TryGetComponent(out OverlayHolder holder))
+                {
+                    holder.CreateOrUpdate(__instance.items[item]);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(ItemDragManager), nameof(ItemDragManager.InternalDragStart))]
+        public static class ItemDragManagerPatch
+        {
+            public static void Postfix(InventoryItem item, ItemDragManager __instance)
+            {
+                if (item.item.TryGetComponent(out OverlayHolder holder))
+                {
+                    holder.CreateOrUpdate(__instance.draggedIcon);
+                }
             }
         }
     }

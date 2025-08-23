@@ -4,7 +4,8 @@ namespace Industrica.UI.Overlay
 {
     public abstract class AbstractOverlay : MonoBehaviour
     {
-        protected uGUI_Icon icon;
+        public uGUI_Icon icon;
+        protected uGUI_Icon parent;
 
         public void SetColor(Color color)
         {
@@ -12,6 +13,11 @@ namespace Industrica.UI.Overlay
             {
                 renderer.SetColor(color);
             }
+        }
+
+        public virtual void Update()
+        {
+            icon.rectTransform.sizeDelta = parent.rectTransform.sizeDelta;
         }
     }
 }

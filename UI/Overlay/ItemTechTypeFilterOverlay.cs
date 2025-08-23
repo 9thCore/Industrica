@@ -14,15 +14,22 @@ namespace Industrica.UI.Overlay
                 .EnsureComponent<ItemTechTypeFilterOverlay>();
 
             overlay.icon = overlay.gameObject.EnsureComponent<uGUI_Icon>();
-            overlay.holder = holder;
+            overlay.parent = itemIcon.foreground;
 
-            overlay.UpdateIcon(holder.TechType);
-
+            overlay.SetHolder(holder);
             return overlay;
         }
 
-        public void Update()
+        public void SetHolder(TechTypeNetworkFilterHolder holder)
         {
+            this.holder = holder;
+            UpdateIcon(holder.TechType);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
             if (holder.TechType == lastTechType)
             {
                 return;
