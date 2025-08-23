@@ -1,4 +1,8 @@
 {
   "IndustricaMultiTool": "Connection multitool",
-  "Tooltip_IndustricaMultiTool": "Fabricates pipes and wires used to connect various ports together."
+  "Tooltip_IndustricaMultiTool": "Fabricates pipes and wires used to connect various ports together.",
+
+  "IndustricaItemTechTypeFilter": "Item type filter",
+  "Tooltip_IndustricaItemTechTypeFilter": "Filters for items using their type.",
+  "DynamicTooltip_IndustricaItemTechTypeFilter": "Filter set to: {0}"
 }

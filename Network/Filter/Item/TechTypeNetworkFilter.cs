@@ -2,7 +2,7 @@
 {
     public class TechTypeNetworkFilter : NetworkFilter<Pickupable>
     {
-        public TechType techType;
+        public TechType techType = TechType.None;
 
         public override bool Matches(Pickupable value)
         {

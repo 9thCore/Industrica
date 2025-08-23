@@ -1,4 +1,5 @@
-﻿using Industrica.Network.Physical.Item;
+﻿using Industrica.Network.Filter.Holder;
+using Industrica.Network.Physical.Item;
 using Industrica.Network.Wire;
 using Industrica.Operation;
 using Nautilus.Handlers;
@@ -22,6 +23,7 @@ namespace Industrica.Save
         public SaveData<OperationWrapper.SaveData> operationWrapperSaveData = new();
         public SaveData<PhysicalNetworkItemPump.SaveData> physicalItemPumpSaveData = new();
         public SaveData<WireTimer.SaveData> wireTimerSaveData = new();
+        public SaveData<TechTypeNetworkFilterHolder.SaveData> techTypeFilterSaveData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)

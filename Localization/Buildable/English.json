@@ -16,5 +16,9 @@
   "Tooltip_IndustricaElectricSplitter": "Utility that continuously consumes a small amount of power to split incoming wire information in two halves.\nIf the input is an odd number, the additional remainder comes through the second output.",
 
   "IndustricaElectricTimer": "Electric timer",
-  "Tooltip_IndustricaElectricTimer": "Utility that continuously consumes a moderate amount of power to delay incoming wire information.\nDelay is determined by the bottom wire input - that is the number of seconds, but <b>the utility has an additional hardcoded delay itself</b>."
+  "Tooltip_IndustricaElectricTimer": "Utility that continuously consumes a moderate amount of power to delay incoming wire information.\nDelay is determined by the bottom wire input - that is the number of seconds, but <b>the utility has an additional hardcoded delay itself</b>.",
+
+  "IndustricaFilterLocker": "Filtered locker",
+  "Tooltip_IndustricaFilterLocker": "Locker with little storage with filtering capability.\nWhen an item is attempted to be inserted, consumes 1 power to determine if it should be allowed.\n<b>The filtration system will not function without enough power</b>.",
+  "NetworkFilterStorage": "Filter storage"
 }
