@@ -35,7 +35,7 @@ namespace Industrica.Storage
         public void Start()
         {
             equipment = new Equipment(gameObject, root);
-            equipment.SetLabel(nameof(NetworkFilterStorage));
+            equipment.SetLabel($"Industrica{nameof(NetworkFilterStorage)}");
             equipment.isAllowedToAdd = new IsAllowedToAdd(IsAllowedToAdd);
             equipment.compatibleSlotDelegate = new Equipment.DelegateGetCompatibleSlot(GetCompatibleSlot);
             equipment.onAddItem += OnAddItem;
