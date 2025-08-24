@@ -37,6 +37,7 @@ namespace Industrica.Machine.FilterWriter
             base.Start();
 
             workbench.isValidHandTarget = false;
+            workbench.handOverText = "IndustricaWriterItemTechTypeFilter_Access";
             workbench.logic.onItemPickup = new CrafterLogic.OnItemPickup(OnItemPickup);
             workbench.logic.onDone = new CrafterLogic.OnDone(OnDone);
             workbench.logic.onProgress = new CrafterLogic.OnProgress(OnProgress);
@@ -132,17 +133,22 @@ namespace Industrica.Machine.FilterWriter
 
         public void OnHandHover(HandTargetEventData data)
         {
-            HandReticle.main.SetIcon(HandReticle.IconType.Hand);
-            HandReticle.main.SetText(HandReticle.TextType.Hand, "IndustricaWriterItemTechTypeFilter_Access", true, GameInput.Button.LeftHand);
-
             if (AllSlotsEmpty())
             {
                 HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "Empty", true);
             }
+
+            workbench.OnHandHover(null);
         }
 
         public void OnHandClick(HandTargetEventData data)
         {
+            if (workbench.HasCraftedItem())
+            {
+                workbench.logic.TryPickup();
+                return;
+            }
+
             Inventory.main.SetUsedStorage(equipment);
             Player.main.GetPDA().Open(PDATab.Inventory, transform);
         }
