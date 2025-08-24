@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static VehicleUpgradeConsoleInput;
 
 namespace Industrica.Utility
 {
@@ -24,8 +23,15 @@ namespace Industrica.Utility
 
         public static void Recover(this Equipment equipment, Transform root, string slot)
         {
-            foreach (Pickupable item in root.GetComponentsInChildren<Pickupable>(true))
+            foreach (Transform child in root)
             {
+                if (!child.TryGetComponent(out Pickupable item))
+                {
+                    Plugin.Logger.LogWarning($"[{equipment._label}] Found non-item in {slot} ({item.gameObject}), destroying...");
+                    GameObject.Destroy(item.gameObject);
+                    continue;
+                }
+
                 if (equipment.GetItemInSlot(slot) != null)
                 {
                     Plugin.Logger.LogWarning($"[{equipment._label}] Found extra item in {slot} ({item.gameObject}), destroying...");
