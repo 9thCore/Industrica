@@ -29,5 +29,11 @@ namespace Industrica.UI.Overlay
         {
             icon.rectTransform.sizeDelta = parent.rectTransform.sizeDelta;
         }
+
+        public void Remove()
+        {
+            GameObject.Destroy(icon);
+            GameObject.Destroy(this);
+        }
     }
 }
