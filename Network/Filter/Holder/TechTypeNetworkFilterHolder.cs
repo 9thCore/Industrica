@@ -58,6 +58,11 @@ namespace Industrica.Network.Filter.Holder
             {
                 techType = Component.TechType;
             }
+
+            public override bool IncludeInSave()
+            {
+                return techType != default;
+            }
         }
     }
 }
