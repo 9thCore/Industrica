@@ -30,6 +30,7 @@ namespace Industrica.Buildable.Storage
             {
                 PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
+                GameObject.DestroyImmediate(go.GetComponentInChildren<ColoredLabel>());
                 GameObject.DestroyImmediate(go.FindChild("TriggerCull"));
                 GameObject.DestroyImmediate(go.FindChild("Label"));
 
@@ -67,7 +68,7 @@ namespace Industrica.Buildable.Storage
 
                 GameObject handTarget = filter.CreateChild(nameof(HandTarget))
                 .transform
-                .WithScale(x: 0.47f, y: 0.15f, z: 0.2f)
+                .WithScale(x: 0.55f, y: 0.25f, z: 0.2f)
                 .WithLocalPosition(Vector3.up * 0.03f + Vector3.forward * 0.3f)
                 .gameObject;
 
