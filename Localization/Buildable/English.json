@@ -20,5 +20,11 @@
 
   "IndustricaFilterLocker": "Filtered locker",
   "Tooltip_IndustricaFilterLocker": "Locker with little storage with filtering capability.\nWhen an item is attempted to be inserted, consumes 1 power to determine if it should be allowed.\n<b>The filtration system will not function without enough power</b>.",
-  "NetworkFilterStorage": "Filter storage"
+  "NetworkFilterStorage": "Filter storage",
+
+  "IndustricaItemTechTypeFilterWriter": "Item type filter imprinter",
+  "Tooltip_IndustricaItemTechTypeFilterWriter": "Analyses and imprints item type data from the template item (right slot) to the filter (left slot), using a lot of power over a period of time.\nA filter cannot be a template item.\nImprinting process will begin automatically once both slots are filled and destroys the target item.\n<b>If the base runs out of power while it's processing, the target item will be lost</b>.",
+  "IndustricaWriterItemTechTypeFilter_Storage": "Imprinter storage",
+  "IndustricaWriterItemTechTypeFilter_Access": "Access imprinter",
+  "IndustricaWriterItemTechTypeFilter_ErrorDeconstruct": "Cannot deconstruct imprinter with items in it"
 }

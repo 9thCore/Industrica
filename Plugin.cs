@@ -76,6 +76,7 @@ namespace Industrica
             BaseModConnectionTools.Register();
             ItemTechTypeFilter.Register();
             BuildableFilterLocker.Register();
+            BuildabltemTechTypeFilterWriter.Register();
 
             VanillaPatch.Register();
         }
@@ -83,6 +84,7 @@ namespace Industrica
         private void InitializeEquipment()
         {
             FilterEquipment.RegisterSlots();
+            GenericNoFilterEquipment.RegisterSlots();
         }
     }
 }
