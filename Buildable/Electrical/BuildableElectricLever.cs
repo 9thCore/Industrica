@@ -17,7 +17,7 @@ namespace Industrica.Buildable.Electrical
         {
             Info = PrefabInfo
                 .WithTechType("IndustricaElectricLever", true)
-                .WithIcon(PathUtil.GetImage("Sprite/Buildable/lever"));
+                .WithIcon(SpriteManager.Get(TechType.Radio));
 
             CustomPrefab prefab = new(Info);
             CloneTemplate template = new(Info, "4f045c69-1539-4c53-b157-767df47c1aa6");
