@@ -13,6 +13,7 @@ using Industrica.Network.Wire;
 using Industrica.Operation;
 using Industrica.Patch.Vanilla;
 using Industrica.Patch.Vanilla.Build;
+using Industrica.Register;
 using Industrica.Register.Equipment;
 using Industrica.Save;
 using Industrica.Utility;
@@ -35,9 +36,13 @@ namespace Industrica
 
             // Initialize custom prefabs
             InitializeEquipment();
-            InitializePrefabs();
             InitializeLanguage();
             InitializeSave();
+
+            ItemRegistry.Register();
+            BuildableRegistry.Register();
+            MiscRegistry.Register();
+            VanillaPatch.Register();
 
             new Harmony(PluginInfo.PLUGIN_GUID).PatchAll();
 
@@ -58,29 +63,6 @@ namespace Industrica
         private void InitializeSave()
         {
             SaveSystem.Register();
-        }
-
-        private void InitializePrefabs()
-        {
-            BaseModOperations.Register();
-
-            PlacedItemTransferPipe.Register();
-            ItemPhysicalNetwork.RegisterPrefab();
-            BuildableItemPump.Register();
-            PlacedWire.Register();
-            BuildableElectricLever.Register();
-            BuildableElectricOperator.Register();
-            BuildableElectricSplitter.Register();
-            BuildableElectricTimer.Register();
-            ItemMultiTool.Register();
-            BaseModConnectionTools.Register();
-            ItemTechTypeFilter.Register();
-            BuildableFilterLocker.Register();
-            BuildabltemTechTypeFilterWriter.Register();
-            BuildableWeighedItemLocker.Register();
-            BuildableBigItemLocker.Register();
-
-            VanillaPatch.Register();
         }
 
         private void InitializeEquipment()
