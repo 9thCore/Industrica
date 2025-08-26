@@ -77,6 +77,8 @@ namespace Industrica
             ItemTechTypeFilter.Register();
             BuildableFilterLocker.Register();
             BuildabltemTechTypeFilterWriter.Register();
+            BuildableWeighedItemLocker.Register();
+            BuildableBigItemLocker.Register();
 
             VanillaPatch.Register();
         }

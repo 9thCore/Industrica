@@ -26,5 +26,11 @@
   "Tooltip_IndustricaItemTechTypeFilterWriter": "Analyses and imprints item type data from the template item (right slot) to the filter (left slot), using a lot of power over a period of time.\nA filter cannot be a template item.\nImprinting process will begin automatically once both slots are filled and destroys the target item.\n<b>If the base runs out of power while it's processing, the target item will be lost</b>.",
   "IndustricaWriterItemTechTypeFilter_Storage": "Imprinter storage",
   "IndustricaWriterItemTechTypeFilter_Access": "Access imprinter",
-  "IndustricaWriterItemTechTypeFilter_ErrorDeconstruct": "Cannot deconstruct imprinter with items in it"
+  "IndustricaWriterItemTechTypeFilter_ErrorDeconstruct": "Cannot deconstruct imprinter with items in it",
+
+  "IndustricaWeighedItemLocker": "Weighed wall locker",
+  "Tooltip_IndustricaWeighedItemLocker": "A variant of the wall locker that trades away some of its storage in favour of two item ports and the ability to read out how much of the storage is occupied, through a wire output.\n<b>If the base runs out of power, the wire port will always output 0</b>.",
+
+  "IndustricaBigItemLocker": "Open port locker",
+  "Tooltip_IndustricaBigItemLocker": "A variant of the freestanding locker that trades away some of its storage in favour of four item ports."
 }
