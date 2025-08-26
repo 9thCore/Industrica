@@ -66,7 +66,9 @@ namespace Industrica.Network.Physical
             start.Connect(this);
             end.Connect(this);
 
-            if (start.parent == end.parent)
+            if (start.parent == end.parent
+                && !start.outside
+                && !end.outside)
             {
                 transform.SetParent(start.parent, true);
             }

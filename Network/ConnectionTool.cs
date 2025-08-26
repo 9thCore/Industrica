@@ -11,6 +11,7 @@ namespace Industrica.Network
         public bool HoveringAvailableConnection => hover != null && Available(hover);
         public override bool HoveringOccupiedConnection => hover != null && !Available(hover);
         public override bool Placing => start != null;
+        public override bool SegmentParentOutsideHack => start != null && start.outside;
 
         public virtual string PlacingLangKey => "IndustricaConnectionTool_Place";
         public virtual string DisconnectLangKey => "IndustricaConnectionTool_Disconnect";

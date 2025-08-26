@@ -20,9 +20,9 @@ namespace Industrica.Network.Physical.Item
 
         public override PipeType AllowedPipeType => PipeType.Item;
 
-        public static PhysicalNetworkItemPort CreatePort(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type)
+        public static PhysicalNetworkItemPort CreatePort(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool outside = false)
         {
-            return CreatePort<PhysicalNetworkItemPort>(prefab, root, position, rotation, type);
+            return CreatePort<PhysicalNetworkItemPort>(prefab, root, position, rotation, type, outside);
         }
 
         public override void CreateAndSetNetwork(Action<PhysicalNetwork<Pickupable>> action)

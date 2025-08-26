@@ -10,13 +10,14 @@ namespace Industrica.Network
 
         public UniqueIdentifier identifier;
         public PortType port;
+        public bool outside;
 
         public bool IsInput => port == PortType.Input;
         public bool IsOutput => port == PortType.Output;
         public abstract Vector3 SegmentPosition { get; }
-        public bool LockHover { set => lockHover = value; }
+        public bool LockHover { set => lockHover = value; get => lockHover; }
 
-        protected static P CreateBasePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type)
+        protected static P CreateBasePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool outside)
             where P : Port
         {
             GameObject portRoot = root.CreateChild(typeof(P).Name, position: position, rotation: rotation);
@@ -29,6 +30,7 @@ namespace Industrica.Network
             P component = portRoot.EnsureComponent<P>();
             component.port = type;
             component.identifier = identifier;
+            component.outside = outside;
             component.EnsureHandlerAndRegister(prefab, provider);
             component.CreateRepresentation(prefab, provider);
 

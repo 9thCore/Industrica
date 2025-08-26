@@ -24,6 +24,12 @@ namespace Industrica.Utility
             return component;
         }
 
+        public static T WithScale<T>(this T component, Vector3 scale) where T : Component
+        {
+            component.transform.localScale = scale;
+            return component;
+        }
+
         public static T WithLocalRotation<T>(this T component, Quaternion rotation) where T : Component
         {
             component.transform.localRotation = rotation;

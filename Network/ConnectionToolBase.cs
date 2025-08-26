@@ -22,6 +22,7 @@ namespace Industrica.Network
 
         public List<Segment> segments = new(capacity: MaxSegments);
 
+        public abstract bool SegmentParentOutsideHack { get; }
         public abstract bool Placing { get; }
         public abstract bool HoveringOccupiedConnection { get; }
         public abstract string UseText { get; }
@@ -85,7 +86,13 @@ namespace Industrica.Network
                 return;
             }
 
-            segmentParent = ParentOfSegmentParent.CreateChild(nameof(segmentParent));
+            if (SegmentParentOutsideHack)
+            {
+                segmentParent = new GameObject(nameof(segmentParent));
+            } else
+            {
+                segmentParent = ParentOfSegmentParent.CreateChild(nameof(segmentParent));
+            }
         }
 
         public static Segment CreateSegment(Transform parent, GameObject stretchedPartPrefab, List<Segment> segments, Color stretchedPartColor, Color bendColor, Vector3 scale)

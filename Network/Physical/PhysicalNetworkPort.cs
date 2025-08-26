@@ -30,10 +30,10 @@ namespace Industrica.Network.Physical
         public string Id => identifier.Id;
         public bool HasNetwork => network != null;
 
-        protected static P CreatePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type)
+        protected static P CreatePort<P>(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool outside)
             where P : PhysicalNetworkPort<T>
         {
-            P component = CreateBasePort<P>(prefab, root, position, rotation, type);
+            P component = CreateBasePort<P>(prefab, root, position, rotation, type, outside);
             return component;
         }
 

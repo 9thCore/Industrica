@@ -32,5 +32,8 @@
   "Tooltip_IndustricaWeighedItemLocker": "A variant of the wall locker that trades away some of its storage in favour of two item ports and the ability to read out how much of the storage is occupied, through a wire output.\n<b>If the base runs out of power, the wire port will always output 0</b>.",
 
   "IndustricaBigItemLocker": "Open port locker",
-  "Tooltip_IndustricaBigItemLocker": "A variant of the freestanding locker that trades away some of its storage in favour of four item ports."
+  "Tooltip_IndustricaBigItemLocker": "A variant of the freestanding locker that trades away some of its storage in favour of four item ports.",
+
+  "IndustricaInOutItemPassthrough": "Item pipe wall passthrough",
+  "Tooltip_IndustricaInOutItemPassthrough": "Wall utility that allows pipes to pass through to the other side, in both directions.\nDoes not pump by itself - an item pump is still required for logistics, but a secondary pump on the other side is not required.\n<b>Can only be built on the end cap of a corridor, or where a corridor and another room may connect</b>."
 }

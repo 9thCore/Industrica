@@ -15,6 +15,8 @@ namespace Industrica.Register
             BuildabltemTechTypeFilterWriter.Register();
             BuildableFilterLocker.Register();
 
+            BuildableInOutItemPassthrough.Register();
+
             BuildableElectricLever.Register();
             BuildableElectricOperator.Register();
             BuildableElectricSplitter.Register();

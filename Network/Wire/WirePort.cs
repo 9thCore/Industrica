@@ -21,9 +21,9 @@ namespace Industrica.Network.Wire
         public string Id => identifier.Id;
         public override Vector3 SegmentPosition => transform.position;
 
-        public static WirePort CreatePort(GameObject prefab, Vector3 position, Quaternion rotation, PortType type)
+        public static WirePort CreatePort(GameObject prefab, Vector3 position, Quaternion rotation, PortType type, bool outside = false)
         {
-            return CreateBasePort<WirePort>(prefab, prefab, position, rotation, type);
+            return CreateBasePort<WirePort>(prefab, prefab, position, rotation, type, outside);
         }
 
         public void Start()
