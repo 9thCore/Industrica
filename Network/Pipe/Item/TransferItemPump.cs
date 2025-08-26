@@ -1,8 +1,8 @@
 ﻿using Industrica.Save;
 
-namespace Industrica.Network.Physical.Item
+namespace Industrica.Network.Pipe.Item
 {
-    public class PhysicalNetworkItemPump : PhysicalNetworkPump<Pickupable>
+    public class TransferItemPump : TransferPump<Pickupable>
     {
         private SaveData save;
 
@@ -16,9 +16,9 @@ namespace Industrica.Network.Physical.Item
             save.Invalidate();
         }
 
-        public class SaveData : BaseSaveData<SaveData, PhysicalNetworkItemPump>
+        public class SaveData : BaseSaveData<SaveData, TransferItemPump>
         {
-            public SaveData(PhysicalNetworkItemPump component) : base(component) { }
+            public SaveData(TransferItemPump component) : base(component) { }
             public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.physicalItemPumpSaveData;
         }
     }

@@ -6,20 +6,20 @@ using Industrica.Save;
 using Nautilus.Extensions;
 using System.Linq;
 
-namespace Industrica.Network.Physical
+namespace Industrica.Network.Pipe
 {
-    public abstract class PhysicalNetworkPump<T> : BaseMachine where T : class
+    public abstract class TransferPump<T> : BaseMachine where T : class
     {
         private PassthroughContainer<T> container;
         public PassthroughContainer<T> Container => container ??= new PassthroughContainer<T>(Input, Output);
 
-        private PhysicalNetworkPort<T> _output;
-        public PhysicalNetworkPort<T> Output => _output.Exists() ?? (_output = GetComponentsInChildren<PhysicalNetworkPort<T>>()
+        private TransferPort<T> _output;
+        public TransferPort<T> Output => _output.Exists() ?? (_output = GetComponentsInChildren<TransferPort<T>>()
             .Where(p => p.IsOutput)
             .First());
 
-        private PhysicalNetworkPort<T> _input;
-        public PhysicalNetworkPort<T> Input => _input.Exists() ?? (_input = GetComponentsInChildren<PhysicalNetworkPort<T>>()
+        private TransferPort<T> _input;
+        public TransferPort<T> Input => _input.Exists() ?? (_input = GetComponentsInChildren<TransferPort<T>>()
             .Where(p => p.IsInput)
             .First());
 
@@ -35,13 +35,13 @@ namespace Industrica.Network.Physical
         public GenericHandTarget handTarget;
         public WirePort port;
 
-        public PhysicalNetworkPump<T> WithHandTarget(GenericHandTarget handTarget)
+        public TransferPump<T> WithHandTarget(GenericHandTarget handTarget)
         {
             this.handTarget = handTarget;
             return this;
         }
 
-        public PhysicalNetworkPump<T> WithWirePort(WirePort port)
+        public TransferPump<T> WithWirePort(WirePort port)
         {
             this.port = port;
             return this;
@@ -91,8 +91,8 @@ namespace Industrica.Network.Physical
         {
             if (!queuedPump
                 || !Enabled()
-                || !Input.HasNetwork
-                || !Output.HasNetwork)
+                || Input.connectedPort == null
+                || Output.connectedPort == null)
             {
                 return;
             }
@@ -108,9 +108,9 @@ namespace Industrica.Network.Physical
         private void Pump()
         {
             insertFilter ??= new InsertableNetworkFilter<T>(Output.connectedPort.Container);
-            if (Input.network.TryExtract(insertFilter, out T value))
+            if (Input.connectedPort.TryExtract(insertFilter, out T value))
             {
-                Output.network.TryInsert(value);
+                Output.connectedPort.TryInsert(value);
             }
         }
 
@@ -160,7 +160,7 @@ namespace Industrica.Network.Physical
         public const float PumpInterval = 5f;
         public const float PumpEnergyUsage = 1f;
 
-        public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PhysicalNetworkPump<T>
+        public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : TransferPump<T>
         {
             public float elapsedSinceLastPump;
             public bool enabledPump;

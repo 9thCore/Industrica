@@ -1,5 +1,5 @@
 ﻿using Industrica.Network.Container.Provider.Item;
-using Industrica.Network.Physical.Item;
+using Industrica.Network.Pipe.Item;
 using Industrica.Storage;
 using Industrica.Utility;
 using Nautilus.Assets;
@@ -48,14 +48,14 @@ namespace Industrica.Buildable.Storage
                 Vector3 rightSide = Vector3.right * -0.42f;
                 Vector3 leftSide = -rightSide;
 
-                PhysicalNetworkItemPort.CreatePort(
+                TransferItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     leftSide + topAndFront,
                     Quaternion.Euler(0f, 0f, 270f),
                     Network.PortType.Input);
 
-                PhysicalNetworkItemPort.CreatePort(
+                TransferItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     rightSide + topAndFront,

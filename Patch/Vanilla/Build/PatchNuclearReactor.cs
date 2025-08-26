@@ -2,7 +2,7 @@
 using Industrica.Network;
 using Industrica.Network.BaseModule.Vanilla;
 using Industrica.Network.Container.Provider.Item.Vanilla;
-using Industrica.Network.Physical.Item;
+using Industrica.Network.Pipe.Item;
 using Industrica.Utility;
 using System.Collections;
 using System.Reflection;
@@ -23,14 +23,14 @@ namespace Industrica.Patch.Vanilla.Build
                 Vector3 rightSide = Vector3.forward * 0.96f;
                 Vector3 leftSide = -rightSide;
 
-                PhysicalNetworkItemPort.CreatePort(
+                TransferItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     top + rightSide,
                     Quaternion.Euler(100f, 0f, 0f),
                     PortType.Input);
 
-                PhysicalNetworkItemPort.CreatePort(
+                TransferItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     top + leftSide,

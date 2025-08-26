@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UWE;
 
-namespace Industrica.Network.Physical
+namespace Industrica.Network.Pipe
 {
-    public abstract class TransferPipe<T> : ConnectionTool<PhysicalNetworkPort<T>> where T : class
+    public abstract class TransferPipe<T> : ConnectionTool<TransferPort<T>> where T : class
     {
         public Transform endCap;
 
         public abstract PipeType Type { get; }
-        public abstract IEnumerator CreatePipe(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end);
+        public abstract IEnumerator CreatePipe(TransferPort<T> start, TransferPort<T> end);
 
-        public IEnumerator CreatePipe<P>(TechType pipeTechType, PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end) where P : PlacedTransferPipe<T>
+        public IEnumerator CreatePipe<P>(TechType pipeTechType, TransferPort<T> start, TransferPort<T> end) where P : PlacedTransferPipe<T>
         {
             List<Segment> copy = new(segments);
             CoroutineTask<GameObject> request = CraftData.GetPrefabForTechTypeAsync(pipeTechType);
@@ -34,7 +34,7 @@ namespace Industrica.Network.Physical
 
             P pipe = placedPipe.GetComponent<P>();
             pipe.SetSegments(segmentParent, copy);
-            pipe.ConnectAndCreateNetwork(start, end);
+            pipe.Connect(start, end);
 
             UnlinkSegments();
             Reset();
@@ -49,7 +49,7 @@ namespace Industrica.Network.Physical
             endCap = UWE.Utils.InstantiateDeactivated(multiTool.endCap).transform.WithParent(transform);
         }
 
-        public override void StartConnection(PhysicalNetworkPort<T> connection)
+        public override void StartConnection(TransferPort<T> connection)
         {
             connection.LockHover = true;
             start = connection;
@@ -59,7 +59,7 @@ namespace Industrica.Network.Physical
             OnConnectionRefresh?.Invoke(this);
         }
 
-        public override void EndConnection(PhysicalNetworkPort<T> connection)
+        public override void EndConnection(TransferPort<T> connection)
         {
             start.LockHover = false;
             start.OnHoverEnd();
@@ -91,18 +91,18 @@ namespace Industrica.Network.Physical
             OnConnectionRefresh?.Invoke(this);
         }
 
-        public override bool Available(PhysicalNetworkPort<T> port)
+        public override bool Available(TransferPort<T> port)
         {
-            return !port.HasNetwork;
+            return port.connectedPort == null;
         }
 
-        public override void Disconnect(PhysicalNetworkPort<T> port)
+        public override void Disconnect(TransferPort<T> port)
         {
-            port.connectedPort.NetworkDisconnect();
-            port.NetworkDisconnect();
+            port.connectedPort.Disconnect();
+            port.Disconnect();
         }
 
-        public GameObject CreateEndCap(PhysicalNetworkPort<T> port)
+        public GameObject CreateEndCap(TransferPort<T> port)
         {
             GameObject cap = CreateEndCap(segmentParent.transform, endCap.gameObject, port);
             cap.SetActive(false);
@@ -111,7 +111,7 @@ namespace Industrica.Network.Physical
             return cap;
         }
 
-        public static GameObject CreateEndCap(Transform parent, GameObject endCapPrefab, PhysicalNetworkPort<T> port)
+        public static GameObject CreateEndCap(Transform parent, GameObject endCapPrefab, TransferPort<T> port)
         {
             GameObject endCap = Instantiate(endCapPrefab);
             endCap.transform.SetParent(parent);

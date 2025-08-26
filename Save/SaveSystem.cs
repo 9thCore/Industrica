@@ -1,5 +1,5 @@
 ﻿using Industrica.Network.Filter.Holder;
-using Industrica.Network.Physical.Item;
+using Industrica.Network.Pipe.Item;
 using Industrica.Network.Wire;
 using Industrica.Operation;
 using Nautilus.Handlers;
@@ -17,11 +17,10 @@ namespace Industrica.Save
         public static SaveSystem Instance { get; private set; }
 
         public SaveData<PlacedItemTransferPipe.SaveData> placedItemTransferPipeData = new();
-        public SaveData<PhysicalNetworkItemPort.SaveData> physicalNetworkItemPortData = new();
         public SaveData<PlacedWire.SaveData> placedWireData = new();
         public SaveData<WirePort.SaveData> outputWirePortData = new();
         public SaveData<OperationWrapper.SaveData> operationWrapperSaveData = new();
-        public SaveData<PhysicalNetworkItemPump.SaveData> physicalItemPumpSaveData = new();
+        public SaveData<TransferItemPump.SaveData> physicalItemPumpSaveData = new();
         public SaveData<WireTimer.SaveData> wireTimerSaveData = new();
         public SaveData<TechTypeNetworkFilterHolder.SaveData> techTypeFilterSaveData = new();
 

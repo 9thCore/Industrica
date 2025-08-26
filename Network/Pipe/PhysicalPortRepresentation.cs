@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Industrica.Network.Physical
+namespace Industrica.Network.Pipe
 {
-    public abstract class PhysicalPortRepresentation<T, P> : PortRepresentation<P> where T : class where P : PhysicalNetworkPort<T>
+    public abstract class PhysicalPortRepresentation<T, P> : PortRepresentation<P> where T : class where P : TransferPort<T>
     {
         public void OnEnable()
         {

@@ -5,13 +5,13 @@ using Nautilus.Utility;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Industrica.Network.Physical
+namespace Industrica.Network.Pipe
 {
     public abstract class PlacedTransferPipe<T> : PlacedConnection where T : class
     {
         public Transform endCap;
 
-        private PhysicalNetworkPort<T> start, end;
+        private TransferPort<T> start, end;
 
         public static PrefabInfo Register<P>(string classID) where P : PlacedTransferPipe<T>
         {
@@ -55,7 +55,7 @@ namespace Industrica.Network.Physical
             return info;
         }
 
-        public void Connect(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
+        public void Connect(TransferPort<T> start, TransferPort<T> end)
         {
             this.start = start;
             this.end = end;
@@ -74,23 +74,17 @@ namespace Industrica.Network.Physical
             }
         }
 
-        public void ConnectAndCreateNetwork(PhysicalNetworkPort<T> start, PhysicalNetworkPort<T> end)
-        {
-            Connect(start, end);
-            start.CreateAndSetNetwork(end.SetNetwork);
-        }
-
         protected override void OnDisconnect()
         {
-            start.NetworkDisconnect();
-            end.NetworkDisconnect();
+            start.Disconnect();
+            end.Disconnect();
             InvalidateSave();
             Destroy(gameObject);
         }
 
         public void Load(string start, string end, List<Vector3> positions)
         {
-            if (!TryFetchPorts(start, end, out PhysicalNetworkPort<T> startPort, out PhysicalNetworkPort<T> endPort))
+            if (!TryFetchPorts(start, end, out TransferPort<T> startPort, out TransferPort<T> endPort))
             {
                 return;
             }

@@ -1,4 +1,4 @@
-﻿using Industrica.Network.Physical.Item;
+﻿using Industrica.Network.Pipe.Item;
 using Industrica.Network.Wire;
 
 namespace Industrica.Network

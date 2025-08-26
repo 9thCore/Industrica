@@ -1,6 +1,5 @@
 ﻿using Industrica.Network;
-using Industrica.Network.Physical.Item;
-using Industrica.Network.Systems;
+using Industrica.Network.Pipe.Item;
 using Industrica.Network.Wire;
 using Industrica.Operation;
 
@@ -15,8 +14,6 @@ namespace Industrica.Register
 
             PlacedItemTransferPipe.Register();
             PlacedWire.Register();
-
-            ItemPhysicalNetwork.RegisterPrefab();
         }
     }
 }

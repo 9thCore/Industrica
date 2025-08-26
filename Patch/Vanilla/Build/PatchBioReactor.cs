@@ -2,7 +2,7 @@
 using Industrica.Network;
 using Industrica.Network.BaseModule.Vanilla;
 using Industrica.Network.Container.Provider.Item.Vanilla;
-using Industrica.Network.Physical.Item;
+using Industrica.Network.Pipe.Item;
 using Industrica.Utility;
 using Nautilus.Handlers;
 using System.Collections;
@@ -20,7 +20,7 @@ namespace Industrica.Patch.Vanilla.Build
                 go.EnsureComponent<BioReactorConstructionProvider>();
                 go.EnsureComponent<BioReactorContainerProvider>();
 
-                PhysicalNetworkItemPort.CreatePort(
+                TransferItemPort.CreatePort(
                     prefab: go,
                     root: go,
                     new Vector3(1.53f, -0.61f, 0f),

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Industrica.Network.Physical.Item
+namespace Industrica.Network.Pipe.Item
 {
-    public class PhysicalNetworkItemPortHandler : PhysicalNetworkPortHandler<Pickupable>
+    public class TransferItemPortHandler : TransferPortHandler<Pickupable>
     {
-        public List<PhysicalNetworkItemPort> ports;
+        public List<TransferItemPort> ports;
 
         public override string DeconstructionDeniedReason => "IndustricaItemPort_CannotDeconstructConnected";
 
@@ -17,15 +17,15 @@ namespace Industrica.Network.Physical.Item
         public override PortHandler CopyTo(GameObject prefab)
         {
             ports ??= new();
-            PhysicalNetworkItemPortHandler handler = prefab.EnsureComponent<PhysicalNetworkItemPortHandler>();
+            TransferItemPortHandler handler = prefab.EnsureComponent<TransferItemPortHandler>();
             handler.ports = ports;
             return handler;
         }
 
-        public override void Register(PhysicalNetworkPort<Pickupable> port)
+        public override void Register(TransferPort<Pickupable> port)
         {
             ports ??= new();
-            ports.Add(port as PhysicalNetworkItemPort);
+            ports.Add(port as TransferItemPort);
         }
     }
 }

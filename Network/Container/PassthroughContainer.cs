@@ -1,14 +1,14 @@
 ﻿using Industrica.Network.Filter;
-using Industrica.Network.Physical;
+using Industrica.Network.Pipe;
 using System.Collections.Generic;
 
 namespace Industrica.Network.Container
 {
     public class PassthroughContainer<T> : Container<T> where T : class
     {
-        public PhysicalNetworkPort<T> input, output;
+        public TransferPort<T> input, output;
 
-        public PassthroughContainer(PhysicalNetworkPort<T> input, PhysicalNetworkPort<T> output)
+        public PassthroughContainer(TransferPort<T> input, TransferPort<T> output)
         {
             this.input = input;
             this.output = output;

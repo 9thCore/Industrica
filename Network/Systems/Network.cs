@@ -155,7 +155,7 @@ namespace Industrica.Network.Systems
             GameObject result = request.GetResult();
             if (result == null)
             {
-                ErrorMessage.AddMessage($"Could not spawn {nameof(ItemPhysicalNetwork)}. Discarding");
+                ErrorMessage.AddMessage($"Could not spawn {typeof(N).Name}. Discarding");
                 yield break;
             }
 

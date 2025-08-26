@@ -2,17 +2,13 @@
 using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
 using Industrica.Network.Filter;
-using Industrica.Network.Systems;
-using Industrica.Save;
-using System;
 using UnityEngine;
-using UWE;
 
-namespace Industrica.Network.Physical.Item
+namespace Industrica.Network.Pipe.Item
 {
-    public class PhysicalNetworkItemPort : PhysicalNetworkPort<Pickupable>
+    public class TransferItemPort : TransferPort<Pickupable>
     {
-        public PhysicalNetworkItemPortHandler handler;
+        public TransferItemPortHandler handler;
         public PhysicalItemPortRepresentation representation;
 
         private Container<Pickupable> itemContainer;
@@ -20,18 +16,9 @@ namespace Industrica.Network.Physical.Item
 
         public override PipeType AllowedPipeType => PipeType.Item;
 
-        public static PhysicalNetworkItemPort CreatePort(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool outside = false)
+        public static TransferItemPort CreatePort(GameObject prefab, GameObject root, Vector3 position, Quaternion rotation, PortType type, bool outside = false)
         {
-            return CreatePort<PhysicalNetworkItemPort>(prefab, root, position, rotation, type, outside);
-        }
-
-        public override void CreateAndSetNetwork(Action<PhysicalNetwork<Pickupable>> action)
-        {
-            CoroutineHost.StartCoroutine(ItemPhysicalNetwork.Create(network =>
-            {
-                SetNetwork(network);
-                action.Invoke(network);
-            }));
+            return CreatePort<TransferItemPort>(prefab, root, position, rotation, type, outside);
         }
 
         public override void CreateRepresentation(GameObject prefab, BaseModuleProvider provider)
@@ -41,7 +28,7 @@ namespace Industrica.Network.Physical.Item
 
         public override void EnsureHandlerAndRegister(GameObject prefab, BaseModuleProvider provider)
         {
-            handler = prefab.EnsureComponent<PhysicalNetworkItemPortHandler>();
+            handler = prefab.EnsureComponent<TransferItemPortHandler>();
             handler.Register(this);
             handler.WithBaseModule(provider);
         }
@@ -70,7 +57,6 @@ namespace Industrica.Network.Physical.Item
         {
             base.Start();
             itemContainer = gameObject.GetComponentInParent<ContainerProvider<Pickupable>>().Container;
-            new SaveData(this);
         }
 
         public override bool TryExtract(NetworkFilter<Pickupable> filter, out Pickupable value, bool simulate = false)
@@ -92,12 +78,6 @@ namespace Industrica.Network.Physical.Item
             }
 
             return itemContainer.TryInsert(value, simulate);
-        }
-
-        public class SaveData : BaseSaveData<SaveData, PhysicalNetworkItemPort>
-        {
-            public SaveData(PhysicalNetworkItemPort component) : base(component) { }
-            public override SaveSystem.SaveData<SaveData> SaveStorage => SaveSystem.Instance.physicalNetworkItemPortData;
         }
     }
 }

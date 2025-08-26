@@ -1,4 +1,4 @@
-﻿namespace Industrica.Network.Physical
+﻿namespace Industrica.Network.Pipe
 {
     public enum PipeType
     {

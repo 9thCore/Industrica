@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Industrica.Network.Physical.Item
+namespace Industrica.Network.Pipe.Item
 {
     public class ItemTransferPipe : TransferPipe<Pickupable>
     {
@@ -11,7 +11,7 @@ namespace Industrica.Network.Physical.Item
         public override Color StretchedPartColor => ItemPipeColor;
         public override Color BendColor => ItemPipeBendColor;
 
-        public override IEnumerator CreatePipe(PhysicalNetworkPort<Pickupable> start, PhysicalNetworkPort<Pickupable> end)
+        public override IEnumerator CreatePipe(TransferPort<Pickupable> start, TransferPort<Pickupable> end)
         {
             return CreatePipe<PlacedItemTransferPipe>(PlacedItemTransferPipe.Info.TechType, start, end);
         }

@@ -2,7 +2,7 @@
 using Nautilus.Assets;
 using UnityEngine;
 
-namespace Industrica.Network.Physical.Item
+namespace Industrica.Network.Pipe.Item
 {
     public class PlacedItemTransferPipe : PlacedTransferPipe<Pickupable>
     {

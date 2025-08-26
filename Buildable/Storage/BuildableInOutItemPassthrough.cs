@@ -1,5 +1,5 @@
 ﻿using Industrica.Network.Container.Provider.Item.Industrica;
-using Industrica.Network.Physical.Item;
+using Industrica.Network.Pipe.Item;
 using Industrica.Storage.Passthrough;
 using Industrica.Utility;
 using ModularilyBased.API.Buildable;
@@ -63,14 +63,14 @@ namespace Industrica.Buildable.Storage
 
             yield return CreateInside(prefab, model, collision);
 
-            PhysicalNetworkItemPort.CreatePort(
+            TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: inOut,
                 InOutOffset - Vector3.forward * 0.1f,
                 Quaternion.Euler(90f, 0f, 0f),
                 Network.PortType.Input);
 
-            PhysicalNetworkItemPort.CreatePort(
+            TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: inOut,
                 InOutOffset + new Vector3(0f, 0f, -0.9f),
@@ -78,7 +78,7 @@ namespace Industrica.Buildable.Storage
                 Network.PortType.Output,
                 true);
 
-            PhysicalNetworkItemPort.CreatePort(
+            TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: outIn,
                 OutInOffset + new Vector3(0f, 0f, -0.9f),
@@ -86,7 +86,7 @@ namespace Industrica.Buildable.Storage
                 Network.PortType.Input,
                 true);
 
-            PhysicalNetworkItemPort.CreatePort(
+            TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: outIn,
                 OutInOffset - Vector3.forward * 0.1f,

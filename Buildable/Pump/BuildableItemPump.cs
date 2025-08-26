@@ -1,6 +1,6 @@
 ﻿using Industrica.Network;
 using Industrica.Network.Container.Provider.Item.Industrica;
-using Industrica.Network.Physical.Item;
+using Industrica.Network.Pipe.Item;
 using Industrica.Network.Wire;
 using Industrica.Utility;
 using Nautilus.Assets;
@@ -43,14 +43,14 @@ namespace Industrica.Buildable.Pump
 
                 Vector3 forward = Vector3.forward * 0.05f;
 
-                PhysicalNetworkItemPort.CreatePort(
+                TransferItemPort.CreatePort(
                     prefab: obj,
                     root: obj,
                     Vector3.right * 0.4f + forward,
                     Quaternion.Euler(0f, 0f, 270f),
                     PortType.Input);
 
-                PhysicalNetworkItemPort.CreatePort(
+                TransferItemPort.CreatePort(
                     prefab: obj,
                     root: obj,
                     Vector3.right * -0.4f + forward,
@@ -63,7 +63,7 @@ namespace Industrica.Buildable.Pump
                     Quaternion.Euler(0f, 0f, 180f),
                     PortType.Input);
 
-                obj.EnsureComponent<PhysicalNetworkItemPump>().WithHandTarget(obj.EnsureComponent<GenericHandTarget>()).WithWirePort(port);
+                obj.EnsureComponent<TransferItemPump>().WithHandTarget(obj.EnsureComponent<GenericHandTarget>()).WithWirePort(port);
                 obj.EnsureComponent<ItemPumpContainerProvider>();
 
                 renderer.materials[0].SetFloat("_LightmapStrength", 1f);
