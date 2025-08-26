@@ -8,11 +8,10 @@ using System.Linq;
 
 namespace Industrica.Network.Physical
 {
-    public abstract class PhysicalNetworkPump<T, P> : BaseMachine where P : PumpContainer<T> where T : class
+    public abstract class PhysicalNetworkPump<T> : BaseMachine where T : class
     {
-        private P container;
-        public P Container => container ??= GetContainer;
-        public abstract P GetContainer { get; }
+        private PassthroughContainer<T> container;
+        public PassthroughContainer<T> Container => container ??= new PassthroughContainer<T>(Input, Output);
 
         private PhysicalNetworkPort<T> _output;
         public PhysicalNetworkPort<T> Output => _output.Exists() ?? (_output = GetComponentsInChildren<PhysicalNetworkPort<T>>()
@@ -36,13 +35,13 @@ namespace Industrica.Network.Physical
         public GenericHandTarget handTarget;
         public WirePort port;
 
-        public PhysicalNetworkPump<T, P> WithHandTarget(GenericHandTarget handTarget)
+        public PhysicalNetworkPump<T> WithHandTarget(GenericHandTarget handTarget)
         {
             this.handTarget = handTarget;
             return this;
         }
 
-        public PhysicalNetworkPump<T, P> WithWirePort(WirePort port)
+        public PhysicalNetworkPump<T> WithWirePort(WirePort port)
         {
             this.port = port;
             return this;
@@ -161,7 +160,7 @@ namespace Industrica.Network.Physical
         public const float PumpInterval = 5f;
         public const float PumpEnergyUsage = 1f;
 
-        public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PhysicalNetworkPump<T, P>
+        public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : PhysicalNetworkPump<T>
         {
             public float elapsedSinceLastPump;
             public bool enabledPump;

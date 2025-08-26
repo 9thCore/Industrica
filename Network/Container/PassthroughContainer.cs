@@ -1,15 +1,14 @@
 ﻿using Industrica.Network.Filter;
 using Industrica.Network.Physical;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Industrica.Network.Container
 {
-    public class PumpContainer<T> : Container<T> where T : class
+    public class PassthroughContainer<T> : Container<T> where T : class
     {
         public PhysicalNetworkPort<T> input, output;
 
-        public PumpContainer(PhysicalNetworkPort<T> input, PhysicalNetworkPort<T> output)
+        public PassthroughContainer(PhysicalNetworkPort<T> input, PhysicalNetworkPort<T> output)
         {
             this.input = input;
             this.output = output;
