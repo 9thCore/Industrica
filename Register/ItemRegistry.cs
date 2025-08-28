@@ -1,4 +1,5 @@
 ﻿using Industrica.Item.Filter;
+using Industrica.Item.Mining.CoreSample;
 using Industrica.Item.Tool;
 
 namespace Industrica.Register
@@ -9,6 +10,9 @@ namespace Industrica.Register
         {
             ItemMultiTool.Register();
             ItemTechTypeFilter.Register();
+
+            ItemCoreSampleEmpty.Register();
+            ItemCoreSampleTitaniumCopper.Register();
         }
     }
 }

@@ -29,6 +29,7 @@ namespace Industrica
             ItemRegistry.Register();
             BuildableRegistry.Register();
             MiscRegistry.Register();
+            OreVeinRegistry.Register();
             VanillaPatch.Register();
 
             new Harmony(PluginInfo.PLUGIN_GUID).PatchAll();
@@ -42,6 +43,7 @@ namespace Industrica
             LanguageHandler.RegisterLocalizationFolder("Localization/Equipment");
             LanguageHandler.RegisterLocalizationFolder("Localization/Item");
             LanguageHandler.RegisterLocalizationFolder("Localization/Loading");
+            LanguageHandler.RegisterLocalizationFolder("Localization/OreVein");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Generic");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Item");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Wire");

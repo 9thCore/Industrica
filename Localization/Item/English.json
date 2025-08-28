@@ -4,5 +4,11 @@
 
   "IndustricaItemTechTypeFilter": "Item type filter",
   "Tooltip_IndustricaItemTechTypeFilter": "Filters for items using their type.",
-  "DynamicTooltip_IndustricaItemTechTypeFilter": "Filter set to: {0}"
+  "DynamicTooltip_IndustricaItemTechTypeFilter": "Filter set to: {0}",
+
+  "IndustricaCoreSampleEmpty": "Core sample",
+  "Tooltip_IndustricaCoreSampleEmpty": "A sample extracted out of the ground.\nContains no ores in any significant quantity.",
+
+  "IndustricaCoreSampleTitaniumCopper": "Core sample",
+  "Tooltip_IndustricaCoreSampleTitaniumCopper": "A sample extracted out of the ground.\nContains chunks of titanium and traces of copper."
 }

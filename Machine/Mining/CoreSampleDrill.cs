@@ -1,6 +1,9 @@
 ﻿using Industrica.ClassBase;
+using Industrica.Item.Mining.CoreSample;
+using Industrica.Register.EcoTarget;
 using Industrica.Save;
 using Industrica.Utility;
+using Industrica.World.OreVein;
 using System.Collections;
 using UnityEngine;
 using UWE;
@@ -12,7 +15,9 @@ namespace Industrica.Machine.Mining
         public GenericHandTarget handTarget;
 
         private float drillTimeRemaining = DrillTimeRequired;
+        private TechType coreSample = TechType.None;
         private SaveData data;
+        private bool pickingUp = false;
 
         public override float PowerRelaySearchRange => 20f;
 
@@ -31,6 +36,15 @@ namespace Industrica.Machine.Mining
             handTarget.onHandHover = new();
             handTarget.onHandHover.AddListener(OnHandHover);
 
+            if (TryGetOreVein(transform.position, out AbstractOreVein oreVein)
+                && Vector3.SqrMagnitude(transform.position - oreVein.transform.position) <= oreVein.RangeSquared)
+            {
+                coreSample = oreVein.CoreSampleTechType;
+            } else
+            {
+                coreSample = ItemCoreSampleEmpty.Info.TechType;
+            }
+
             data = new SaveData(this);
         }
 
@@ -48,7 +62,7 @@ namespace Industrica.Machine.Mining
             }
 
             drillTimeRemaining -= DayNightCycle.main.deltaTime;
-            if (drillTimeRemaining <= 0f
+            if (!StillDrilling()
                 && !TryAddSample())
             {
                 ErrorMessage.AddMessage("Ready_IndustricaCoreSampleDrill".Translate());
@@ -77,19 +91,48 @@ namespace Industrica.Machine.Mining
 
         public bool TryAddSample()
         {
-            if (Vector3.SqrMagnitude(Player.main.transform.position - transform.position) >= MaxPickupRangeSquared)
+            if (pickingUp
+                || Vector3.SqrMagnitude(Player.main.transform.position - transform.position) >= MaxPickupRangeSquared)
             {
                 return false;
             }
 
+            pickingUp = true;
             CoroutineHost.StartCoroutine(AddSampleAsync());
-            Reset();
             return true;
         }
 
-        private static IEnumerator AddSampleAsync()
+        private IEnumerator AddSampleAsync()
         {
-            yield break;
+            if (coreSample == TechType.None)
+            {
+                pickingUp = false;
+                Reset();
+                yield break;
+            }
+
+            CoroutineTask<GameObject> task = CraftData.GetPrefabForTechTypeAsync(coreSample, false);
+            yield return task;
+
+            GameObject result = task.GetResult();
+            if (result == null
+                || !result.TryGetComponent(out Pickupable pickupable))
+            {
+                yield break;
+            }
+
+            if (!Inventory.main.HasRoomFor(pickupable))
+            {
+                ErrorMessage.AddMessage("InventoryFull".Translate());
+                yield break;
+            }
+
+            GameObject instance = GameObject.Instantiate(result);
+            Inventory.main.ForcePickup(instance.GetComponent<Pickupable>());
+            Player.main.PlayGrab();
+
+            Reset();
+            pickingUp = false;
         }
 
         public void OnHandHover(HandTargetEventData data)
@@ -99,6 +142,10 @@ namespace Industrica.Machine.Mining
                 HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1.5f);
                 HandReticle.main.SetProgress((DrillTimeRequired - drillTimeRemaining) / DrillTimeRequired);
                 HandReticle.main.SetText(HandReticle.TextType.Hand, "Working_IndustricaCoreSampleDrill", true);
+                if (!IsPowered())
+                {
+                    HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "unpowered", true);
+                }
             } else
             {
                 HandReticle.main.SetIcon(HandReticle.IconType.Hand);
@@ -116,14 +163,28 @@ namespace Industrica.Machine.Mining
             TryAddSample();
         }
 
+        public static bool TryGetOreVein(Vector3 position, out AbstractOreVein oreVein)
+        {
+            IEcoTarget target = EcoRegionManager.main.FindNearestTarget(OreVeinEcoTarget.EcoTargetType, position);
+            if (target != null
+                && target.GetGameObject().TryGetComponent(out oreVein))
+            {
+                return true;
+            }
+
+            oreVein = default;
+            return false;
+        }
+
         public const float MaxPickupRange = 5f;
         public const float MaxPickupRangeSquared = MaxPickupRange * MaxPickupRange;
-        public const float DrillTimeRequired = 5f;
-        public const float EnergyUsagePerSecond = 10f / 3f;
+        public const float DrillTimeRequired = 60f;
+        public const float EnergyUsagePerSecond = 1f;
 
         public class SaveData : ComponentSaveData<SaveData, CoreSampleDrill>
         {
             public float drillTimeRemaining = 0f;
+            public TechType coreSample = TechType.None;
 
             public SaveData(CoreSampleDrill component) : base(component) { }
 
@@ -132,16 +193,19 @@ namespace Industrica.Machine.Mining
             public override void CopyFromStorage(SaveData data)
             {
                 drillTimeRemaining = data.drillTimeRemaining;
+                coreSample = data.coreSample;
             }
 
             public override void Load()
             {
                 Component.drillTimeRemaining = drillTimeRemaining;
+                Component.coreSample = coreSample;
             }
 
             public override void Save()
             {
                 drillTimeRemaining = Component.drillTimeRemaining;
+                coreSample = Component.coreSample;
             }
         }
     }

@@ -44,10 +44,6 @@ namespace Industrica.Buildable.Mining
         {
             PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
-            ThermalPlantModel model = go.GetComponentInChildren<ThermalPlantModel>(true);
-
-            model.gameObject.EnsureComponent<CoreSampleDrillModel>();
-
             go.EnsureComponent<CoreSampleDrill>()
                 .WithHandTarget(go.EnsureComponent<GenericHandTarget>());
 
@@ -58,7 +54,7 @@ namespace Industrica.Buildable.Mining
             GameObject.DestroyImmediate(go.GetComponent<PowerSource>());
             GameObject.DestroyImmediate(go.GetComponent<PowerRelay>());
             GameObject.DestroyImmediate(go.GetComponent<PowerSystemPreview>());
-            GameObject.DestroyImmediate(model);
+            GameObject.DestroyImmediate(go.GetComponentInChildren<ThermalPlantModel>(true));
             GameObject.DestroyImmediate(go.GetComponents<PowerFX>().First(fx => fx.vfxPrefab.name.Contains("Preview")));
         }
     }
