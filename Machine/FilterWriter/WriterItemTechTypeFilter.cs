@@ -1,4 +1,5 @@
 ﻿using Industrica.ClassBase;
+using Industrica.ClassBase.Addons.Machine;
 using Industrica.Item.Filter;
 using Industrica.Network.Filter.Holder;
 using Industrica.Register.Equipment;
@@ -69,7 +70,7 @@ namespace Industrica.Machine.FilterWriter
 
         private void OnAddItem(InventoryItem item)
         {
-            if (!powerRelay.IsPowered())
+            if (!IsPowered())
             {
                 return;
             }
@@ -182,17 +183,18 @@ namespace Industrica.Machine.FilterWriter
             }
         }
 
-        public void OnConstructedChanged(bool constructed)
+        public override void OnConstructedChanged(bool constructed)
         {
+            base.OnConstructedChanged(constructed);
             handTarget.enabled = constructed;
         }
 
-        public bool IsDeconstructionObstacle()
+        public override bool IsDeconstructionObstacle()
         {
             return true;
         }
 
-        public bool CanDeconstruct(out string reason)
+        public override bool CanDeconstruct(out string reason)
         {
             if (!AllSlotsEmpty())
             {

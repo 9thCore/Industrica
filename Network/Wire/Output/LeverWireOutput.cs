@@ -1,4 +1,5 @@
 ﻿using Industrica.ClassBase;
+using Industrica.ClassBase.Addons.Machine;
 using Industrica.Utility;
 using UnityEngine;
 

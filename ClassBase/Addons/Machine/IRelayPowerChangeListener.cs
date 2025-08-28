@@ -1,4 +1,4 @@
-﻿namespace Industrica.ClassBase
+﻿namespace Industrica.ClassBase.Addons.Machine
 {
     public interface IRelayPowerChangeListener
     {

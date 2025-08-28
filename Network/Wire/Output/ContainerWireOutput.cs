@@ -1,4 +1,5 @@
 ﻿using Industrica.ClassBase;
+using Industrica.ClassBase.Addons.Machine;
 using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Industrica.Network.Wire.Output
             this.port = port;
         }
 
-        public void OnEnable()
+        public override void OnEnable()
         {
             if (container == null)
             {
@@ -25,7 +26,7 @@ namespace Industrica.Network.Wire.Output
             container.OnUpdate += OnUpdate;
         }
 
-        public void OnDisable()
+        public override void OnDisable()
         {
             container.OnUpdate -= OnUpdate;
         }

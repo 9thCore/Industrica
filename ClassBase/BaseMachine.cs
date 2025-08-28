@@ -1,4 +1,6 @@
-﻿using UWE;
+﻿using Industrica.ClassBase.Addons.Machine;
+using Industrica.Utility;
+using UWE;
 
 namespace Industrica.ClassBase
 {
@@ -10,19 +12,53 @@ namespace Industrica.ClassBase
         {
             base.Start();
 
-            powerRelay = GetComponentInParent<PowerRelay>();
-            if (powerRelay == null)
+            if (this is IExternalModule)
             {
-                Plugin.Logger.LogError($"Could not find {nameof(PowerRelay)} in tree of {gameObject.name}! Disabling...");
-                enabled = false;
                 return;
             }
+
+            powerRelay = GetComponentInParent<PowerRelay>();
+            if (powerRelay != null)
+            {
+                OnPowerRelayFind(powerRelay);
+            }
+        }
+
+        public virtual void OnEnable()
+        {
+            if (this is IExternalModule externalModule)
+            {
+                UpdateSchedulerUtils.Register(externalModule);
+            }
+        }
+
+        public virtual void OnDisable()
+        {
+            if (this is IExternalModule externalModule)
+            {
+                UpdateSchedulerUtils.Deregister(externalModule);
+            }
+        }
+
+        private void OnPowerRelayFind(PowerRelay powerRelay)
+        {
+            this.powerRelay = powerRelay;
 
             if (this is IRelayPowerChangeListener listener)
             {
                 powerRelay.powerUpEvent.AddHandler(gameObject, new Event<PowerRelay>.HandleFunction(listener.PowerUpEvent));
                 powerRelay.powerDownEvent.AddHandler(gameObject, new Event<PowerRelay>.HandleFunction(listener.PowerDownEvent));
             }
+
+            if (this is IExternalModule externalModule)
+            {
+                externalModule.PowerFX.SetTarget(powerRelay.gameObject);
+            }
+        }
+
+        public bool IsConnected()
+        {
+            return powerRelay != null;
         }
 
         public bool IsPowered()
@@ -76,6 +112,54 @@ namespace Industrica.ClassBase
         public bool ConsumeEnergyPerSecond(float energy, out float consumed)
         {
             return ConsumeEnergy(energy * DayNightCycle.main.deltaTime, out consumed);
+        }
+
+        // These two implement IScheduledUpdateBehaviour,
+        // if the machine extends it.
+        // (IExternalModule extends from IScheduledUpdateBehaviour)
+        public void ScheduledUpdate()
+        {
+            if (powerRelay != null
+                || !isActiveAndEnabled)
+            {
+                return;
+            }
+
+            IExternalModule externalModule = (IExternalModule)this;
+
+            SNUtil.GetNearestValidPowerRelay(
+                position: transform.position,
+                range: externalModule.PowerRelaySearchRange,
+                validator: externalModule.PowerRelayValidator,
+                callback: OnPowerRelayFind);
+        }
+
+        public string GetProfileTag()
+        {
+            return "Industrica_BaseMachinePowerRelayLookup";
+        }
+
+        // These three implement IConstructable,
+        // if the machine extends it.
+        // (IExternalModule extends from IConstructable)
+        public virtual void OnConstructedChanged(bool constructed)
+        {
+            if (IsConnected()
+                && this is IExternalModule externalModule)
+            {
+                externalModule.PowerFX.SetVFXVisible(constructed);
+            }
+        }
+
+        public virtual bool IsDeconstructionObstacle()
+        {
+            return true;
+        }
+
+        public virtual bool CanDeconstruct(out string reason)
+        {
+            reason = default;
+            return true;
         }
     }
 }

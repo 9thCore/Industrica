@@ -35,5 +35,11 @@
   "Tooltip_IndustricaBigItemLocker": "A variant of the freestanding locker that trades away some of its storage in favour of four item ports.",
 
   "IndustricaInOutItemPassthrough": "Item pipe wall passthrough",
-  "Tooltip_IndustricaInOutItemPassthrough": "Wall utility that allows pipes to pass through to the other side, in both directions.\nDoes not pump by itself - an item pump is still required for logistics, but a secondary pump on the other side is not required.\n<b>Can only be built on the end cap of a corridor, or where a corridor and another room may connect</b>."
+  "Tooltip_IndustricaInOutItemPassthrough": "Wall utility that allows pipes to pass through to the other side, in both directions.\nDoes not pump by itself - an item pump is still required for logistics, but a secondary pump on the other side is not required.\n<b>Can only be built on the end cap of a corridor, or where a corridor and another room may connect</b>.",
+
+  "IndustricaCoreSampleDrill": "Core sample drill",
+  "Tooltip_IndustricaCoreSampleDrill": "Drills into the ground and extracts a sample of the local area, containing possible ore traces.\nRequires a long time to finish and presents a moderately high continuous power usage.",
+  "Ready_IndustricaCoreSampleDrill": "Core sample ready for pickup",
+  "Working_IndustricaCoreSampleDrill": "Drilling",
+  "Finished_IndustricaCoreSampleDrill": "Pick up sample"
 }

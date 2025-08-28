@@ -1,4 +1,5 @@
 ﻿using Industrica.Buildable.Electrical;
+using Industrica.Buildable.Mining;
 using Industrica.Buildable.Pump;
 using Industrica.Buildable.Storage;
 
@@ -16,6 +17,8 @@ namespace Industrica.Register
             BuildableFilterLocker.Register();
 
             BuildableInOutItemPassthrough.Register();
+
+            BuildableCoreSampleDrill.Register();
 
             BuildableElectricLever.Register();
             BuildableElectricOperator.Register();
