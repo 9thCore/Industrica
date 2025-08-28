@@ -79,7 +79,7 @@ namespace Industrica.Network.Wire
             HandReticle.main.SetIcon(HandReticle.IconType.Hand);
             HandReticle.main.SetText(HandReticle.TextType.Hand, "IndustricaOperator_CycleOperation", true, GameInput.Button.LeftHand);
 
-            if (!powerRelay.IsPowered())
+            if (!IsPowered())
             {
                 HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "unpowered", true);
             }
@@ -87,7 +87,7 @@ namespace Industrica.Network.Wire
 
         public void OnClick(HandTargetEventData data)
         {
-            if (!powerRelay.IsPowered())
+            if (!IsPowered())
             {
                 return;
             }

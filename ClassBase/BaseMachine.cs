@@ -25,6 +25,16 @@ namespace Industrica.ClassBase
             }
         }
 
+        public bool IsPowered()
+        {
+            if (!GameModeUtils.RequiresPower())
+            {
+                return true;
+            }
+
+            return powerRelay != null && powerRelay.IsPowered();
+        }
+
         public bool HasEnergy(float energy)
         {
             return !GameModeUtils.RequiresPower() || powerRelay.GetPower() >= energy;

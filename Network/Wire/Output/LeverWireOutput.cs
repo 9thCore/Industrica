@@ -90,7 +90,7 @@ namespace Industrica.Network.Wire.Output
             HandReticle.main.SetIcon(HandReticle.IconType.Hand);
             HandReticle.main.SetText(HandReticle.TextType.Hand, "IndustricaLever_Toggle", true, GameInput.Button.LeftHand);
 
-            if (!powerRelay.IsPowered())
+            if (!IsPowered())
             {
                 HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "unpowered", true);
             }
@@ -98,7 +98,7 @@ namespace Industrica.Network.Wire.Output
 
         public void OnClick(HandTargetEventData data)
         {
-            if (!powerRelay.IsPowered())
+            if (!IsPowered())
             {
                 return;
             }

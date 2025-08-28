@@ -32,7 +32,7 @@ namespace Industrica.Network.Wire.Output
 
         private void OnUpdate(Container<T> container)
         {
-            if (!powerRelay.IsPowered())
+            if (!IsPowered())
             {
                 return;
             }
