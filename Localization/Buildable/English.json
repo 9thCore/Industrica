@@ -43,5 +43,7 @@
   "Invalid_IndustricaCoreSampleDrill": "Invalid placement",
   "InvalidSubscript_IndustricaCoreSampleDrill": "Requires terrain",
   "Working_IndustricaCoreSampleDrill": "Drilling",
-  "Finished_IndustricaCoreSampleDrill": "Pick up sample"
+  "Finished_IndustricaCoreSampleDrill": "Pick up sample",
+  "Activate_IndustricaCoreSampleDrill": "Activate",
+  "ActivateSubscript_IndustricaCoreSampleDrill": "Not currently drilling"
 }

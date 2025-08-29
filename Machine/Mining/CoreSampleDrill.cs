@@ -17,6 +17,7 @@ namespace Industrica.Machine.Mining
 
         private float drillTimeRemaining = DrillTimeRequired;
         private TechType coreSample = TechType.None;
+        private bool running = false;
         private SaveData data;
         private bool pickingUp = false;
         private bool validPlacement = false;
@@ -26,6 +27,7 @@ namespace Industrica.Machine.Mining
         public CoreSampleDrill WithHandTarget(GenericHandTarget handTarget)
         {
             this.handTarget = handTarget;
+            handTarget.enabled = false;
             return this;
         }
 
@@ -43,12 +45,6 @@ namespace Industrica.Machine.Mining
             handTarget.onHandHover = new();
             handTarget.onHandHover.AddListener(OnHandHover);
 
-            colliders.ForEach(collider => collider.enabled = false);
-
-            validPlacement = CheckValidPlacement(transform.position + transform.up * 0.1f, -transform.up);
-
-            colliders.ForEach(collider => collider.enabled = true);
-
             if (TryGetOreVein(transform.position, out AbstractOreVein oreVein)
                 && Vector3.SqrMagnitude(transform.position - oreVein.transform.position) <= oreVein.RangeSquared)
             {
@@ -63,7 +59,8 @@ namespace Industrica.Machine.Mining
 
         public void Update()
         {
-            if (!validPlacement
+            if (!running
+                || !validPlacement
                 || !StillDrilling())
             {
                 return;
@@ -111,6 +108,7 @@ namespace Industrica.Machine.Mining
                 return false;
             }
 
+            running = false;
             pickingUp = true;
             CoroutineHost.StartCoroutine(AddSampleAsync());
             return true;
@@ -132,6 +130,8 @@ namespace Industrica.Machine.Mining
             if (result == null
                 || !result.TryGetComponent(out Pickupable pickupable))
             {
+                pickingUp = false;
+                Reset();
                 yield break;
             }
 
@@ -159,6 +159,14 @@ namespace Industrica.Machine.Mining
                 return;
             }
 
+            if (!running)
+            {
+                HandReticle.main.SetIcon(HandReticle.IconType.Hand);
+                HandReticle.main.SetText(HandReticle.TextType.Hand, "Activate_IndustricaCoreSampleDrill", true, GameInput.Button.LeftHand);
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "ActivateSubscript_IndustricaCoreSampleDrill", true);
+                return;
+            }
+
             if (StillDrilling())
             {
                 HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1.5f);
@@ -177,12 +185,28 @@ namespace Industrica.Machine.Mining
 
         public void OnHandClick(HandTargetEventData data)
         {
+            if (!validPlacement)
+            {
+                return;
+            }
+
+            if (!running)
+            {
+                SetState(true);
+                return;
+            }
+
             if (StillDrilling())
             {
                 return;
             }
 
             TryAddSample();
+        }
+
+        private void SetState(bool state)
+        {
+            running = state;
         }
 
         public static bool TryGetOreVein(Vector3 position, out AbstractOreVein oreVein)
@@ -214,6 +238,8 @@ namespace Industrica.Machine.Mining
         {
             public float drillTimeRemaining = 0f;
             public TechType coreSample = TechType.None;
+            public bool running = false;
+            public bool validPlacement = false;
 
             public SaveData(CoreSampleDrill component) : base(component) { }
 
@@ -223,18 +249,34 @@ namespace Industrica.Machine.Mining
             {
                 drillTimeRemaining = data.drillTimeRemaining;
                 coreSample = data.coreSample;
+                running = data.running;
+                validPlacement = data.validPlacement;
             }
 
             public override void Load()
             {
                 Component.drillTimeRemaining = drillTimeRemaining;
                 Component.coreSample = coreSample;
+                Component.running = running;
+                Component.validPlacement = validPlacement;
+                Component.handTarget.enabled = true;
             }
 
             public override void Save()
             {
                 drillTimeRemaining = Component.drillTimeRemaining;
                 coreSample = Component.coreSample;
+                running = Component.running;
+                validPlacement = Component.validPlacement;
+            }
+
+            public override void Initialise()
+            {
+                Component.colliders.ForEach(collider => collider.enabled = false);
+                Component.validPlacement = CheckValidPlacement(Component.transform.position + Component.transform.up * 0.1f, -Component.transform.up);
+                Component.colliders.ForEach(collider => collider.enabled = true);
+
+                Component.handTarget.enabled = true;
             }
         }
     }
