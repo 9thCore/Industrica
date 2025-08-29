@@ -45,5 +45,13 @@
   "Working_IndustricaCoreSampleDrill": "Drilling",
   "Finished_IndustricaCoreSampleDrill": "Pick up sample",
   "Activate_IndustricaCoreSampleDrill": "Activate",
-  "ActivateSubscript_IndustricaCoreSampleDrill": "Not currently drilling"
+  "ActivateSubscript_IndustricaCoreSampleDrill": "Not currently drilling",
+
+  "IndustricaDrill": "Drill",
+  "Tooltip_IndustricaDrill": "Drills into the ground and extracts chunks that may or may not contain chunks and traces of ores.\nHigh power consumption and time between extractions.",
+  "Invalid_IndustricaDrill": "Invalid placement",
+  "InvalidSubscript_IndustricaDrill": "Requires terrain",
+  "Working_IndustricaDrill": "Drilling",
+  "Full_IndustricaDrill": "Inactive",
+  "FullSubscript_IndustricaDrill": "Storage is full"
 }

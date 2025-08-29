@@ -7,6 +7,7 @@ namespace Industrica.World.OreVein
     {
         public float RangeSquared => Range * Range;
         public abstract float Range { get; }
+        public abstract TechType ResourceTechType { get; }
         public abstract TechType OreVeinTechType { get; }
         public abstract TechType CoreSampleTechType { get; }
 

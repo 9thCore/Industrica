@@ -25,6 +25,7 @@ namespace Industrica.Save
         public SaveData<WireTimer.SaveData> wireTimerSaveData = new();
         public SaveData<TechTypeNetworkFilterHolder.SaveData> techTypeFilterSaveData = new();
         public SaveData<CoreSampleDrill.SaveData> coreSampleDrillSaveData = new();
+        public SaveData<Drill.SaveData> drillSaveData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)

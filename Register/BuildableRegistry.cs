@@ -19,6 +19,7 @@ namespace Industrica.Register
             BuildableInOutItemPassthrough.Register();
 
             BuildableCoreSampleDrill.Register();
+            BuildableDrill.Register();
 
             BuildableElectricLever.Register();
             BuildableElectricOperator.Register();

@@ -7,6 +7,7 @@ namespace Industrica.Register
     {
         public static void Register()
         {
+            FabricatorRecipes.Register();
 
             RecipeUtil.Clear();
         }

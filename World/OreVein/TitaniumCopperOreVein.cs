@@ -1,4 +1,5 @@
 ﻿using Industrica.Item.Mining.CoreSample;
+using Industrica.Item.Mining.OreVein;
 using Nautilus.Assets;
 using Nautilus.Utility;
 using UnityEngine;
@@ -33,6 +34,7 @@ namespace Industrica.World.OreVein
         }
 
         public override float Range => 10f;
+        public override TechType ResourceTechType => ItemOreVeinResourceTitaniumCopper.Info.TechType;
         public override TechType OreVeinTechType => Info.TechType;
         public override TechType CoreSampleTechType => ItemCoreSampleTitaniumCopper.Info.TechType;
     }

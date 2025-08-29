@@ -48,6 +48,7 @@ namespace Industrica
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Generic");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Item");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Wire");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Recipe");
         }
         
         private void InitializeSave()
