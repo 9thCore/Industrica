@@ -36,6 +36,7 @@ namespace Industrica.Save
 
             if (!SaveStorage.TryLoad(save))
             {
+                Initialise();
                 yield break;
             }
 
@@ -60,6 +61,11 @@ namespace Industrica.Save
             }
 
             Save();
+        }
+
+        public virtual void Initialise()
+        {
+            
         }
 
         public abstract void Load();
