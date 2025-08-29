@@ -207,8 +207,8 @@ namespace Industrica.Machine.Mining
         public const float RaycastDistance = 0.5f;
         public const float MaxPickupRange = 5f;
         public const float MaxPickupRangeSquared = MaxPickupRange * MaxPickupRange;
-        public const float DrillTimeRequired = 60f;
-        public const float EnergyUsagePerSecond = 1f;
+        public const float DrillTimeRequired = 10f;
+        public const float EnergyUsagePerSecond = 0.5f;
 
         public class SaveData : ComponentSaveData<SaveData, CoreSampleDrill>
         {

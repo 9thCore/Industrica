@@ -38,7 +38,7 @@
   "Tooltip_IndustricaInOutItemPassthrough": "Wall utility that allows pipes to pass through to the other side, in both directions.\nDoes not pump by itself - an item pump is still required for logistics, but a secondary pump on the other side is not required.\n<b>Can only be built on the end cap of a corridor, or where a corridor and another room may connect</b>.",
 
   "IndustricaCoreSampleDrill": "Core sample drill",
-  "Tooltip_IndustricaCoreSampleDrill": "Drills into the ground and extracts a sample of the local area, containing possible ore traces.\nRequires a long time to finish and presents a moderately high continuous power usage.",
+  "Tooltip_IndustricaCoreSampleDrill": "Drills into the ground and extracts a sample of the local area, containing possible ore traces.\nRequires a bit of time and moderately high power usage, but is cheaper to run than a drill.",
   "Ready_IndustricaCoreSampleDrill": "Core sample ready for pickup",
   "Invalid_IndustricaCoreSampleDrill": "Invalid placement",
   "InvalidSubscript_IndustricaCoreSampleDrill": "Requires terrain",
