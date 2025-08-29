@@ -40,6 +40,8 @@
   "IndustricaCoreSampleDrill": "Core sample drill",
   "Tooltip_IndustricaCoreSampleDrill": "Drills into the ground and extracts a sample of the local area, containing possible ore traces.\nRequires a long time to finish and presents a moderately high continuous power usage.",
   "Ready_IndustricaCoreSampleDrill": "Core sample ready for pickup",
+  "Invalid_IndustricaCoreSampleDrill": "Invalid placement",
+  "InvalidSubscript_IndustricaCoreSampleDrill": "Requires terrain",
   "Working_IndustricaCoreSampleDrill": "Drilling",
   "Finished_IndustricaCoreSampleDrill": "Pick up sample"
 }

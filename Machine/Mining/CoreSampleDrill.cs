@@ -13,11 +13,13 @@ namespace Industrica.Machine.Mining
     public class CoreSampleDrill : BaseMachineExternal
     {
         public GenericHandTarget handTarget;
+        public Collider[] colliders;
 
         private float drillTimeRemaining = DrillTimeRequired;
         private TechType coreSample = TechType.None;
         private SaveData data;
         private bool pickingUp = false;
+        private bool validPlacement = false;
 
         public override float PowerRelaySearchRange => 20f;
 
@@ -25,6 +27,11 @@ namespace Industrica.Machine.Mining
         {
             this.handTarget = handTarget;
             return this;
+        }
+
+        public void GatherColliders()
+        {
+            colliders = GetComponentsInChildren<Collider>(true);
         }
 
         public override void Start()
@@ -35,6 +42,12 @@ namespace Industrica.Machine.Mining
             handTarget.onHandClick.AddListener(OnHandClick);
             handTarget.onHandHover = new();
             handTarget.onHandHover.AddListener(OnHandHover);
+
+            colliders.ForEach(collider => collider.enabled = false);
+
+            validPlacement = CheckValidPlacement(transform.position + transform.up * 0.1f, -transform.up);
+
+            colliders.ForEach(collider => collider.enabled = true);
 
             if (TryGetOreVein(transform.position, out AbstractOreVein oreVein)
                 && Vector3.SqrMagnitude(transform.position - oreVein.transform.position) <= oreVein.RangeSquared)
@@ -50,7 +63,8 @@ namespace Industrica.Machine.Mining
 
         public void Update()
         {
-            if (!StillDrilling())
+            if (!validPlacement
+                || !StillDrilling())
             {
                 return;
             }
@@ -137,6 +151,14 @@ namespace Industrica.Machine.Mining
 
         public void OnHandHover(HandTargetEventData data)
         {
+            if (!validPlacement)
+            {
+                HandReticle.main.SetIcon(HandReticle.IconType.HandDeny);
+                HandReticle.main.SetText(HandReticle.TextType.Hand, "Invalid_IndustricaCoreSampleDrill", true);
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "InvalidSubscript_IndustricaCoreSampleDrill", true);
+                return;
+            }
+
             if (StillDrilling())
             {
                 HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1.5f);
@@ -176,6 +198,13 @@ namespace Industrica.Machine.Mining
             return false;
         }
 
+        public static bool CheckValidPlacement(Vector3 position, Vector3 direction)
+        {
+            return Physics.Raycast(position, direction, out RaycastHit info, RaycastDistance, Builder.placeLayerMask, QueryTriggerInteraction.Ignore)
+                && info.transform.gameObject.layer == LayerID.TerrainCollider;
+        }
+
+        public const float RaycastDistance = 0.5f;
         public const float MaxPickupRange = 5f;
         public const float MaxPickupRangeSquared = MaxPickupRange * MaxPickupRange;
         public const float DrillTimeRequired = 60f;
