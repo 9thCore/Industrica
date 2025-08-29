@@ -29,6 +29,7 @@ namespace Industrica
             ItemRegistry.Register();
             BuildableRegistry.Register();
             MiscRegistry.Register();
+            RecipeRegistry.Register();
             OreVeinRegistry.Register();
             VanillaPatch.Register();
 
