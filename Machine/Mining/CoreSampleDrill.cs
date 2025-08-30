@@ -1,5 +1,5 @@
 ﻿using Industrica.ClassBase;
-using Industrica.Item.Mining.CoreSample;
+using Industrica.Item.Generic;
 using Industrica.Register.EcoTarget;
 using Industrica.Save;
 using Industrica.Utility;
@@ -51,7 +51,7 @@ namespace Industrica.Machine.Mining
                 coreSample = oreVein.CoreSampleTechType;
             } else
             {
-                coreSample = ItemCoreSampleEmpty.Info.TechType;
+                coreSample = ItemsBasic.CoreSampleEmpty.TechType;
             }
 
             data = new SaveData(this);

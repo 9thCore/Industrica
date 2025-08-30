@@ -1,5 +1,5 @@
 ﻿using Industrica.ClassBase;
-using Industrica.Item.Mining.OreVein;
+using Industrica.Item.Generic;
 using Industrica.Register.EcoTarget;
 using Industrica.Save;
 using Industrica.World.OreVein;
@@ -57,7 +57,7 @@ namespace Industrica.Machine.Mining
             }
             else
             {
-                resource = ItemOreVeinResourceEmpty.Info.TechType;
+                resource = ItemsBasic.OreVeinResourceEmpty.TechType;
             }
 
             data = new SaveData(this);

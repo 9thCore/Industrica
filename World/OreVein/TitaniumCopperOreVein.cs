@@ -1,5 +1,4 @@
-﻿using Industrica.Item.Mining.CoreSample;
-using Industrica.Item.Mining.OreVein;
+﻿using Industrica.Item.Generic;
 using Nautilus.Assets;
 using Nautilus.Utility;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Industrica.World.OreVein
         public static void Register()
         {
             Info = PrefabInfo
-                .WithTechType("IndustricaOreVein_TitaniumCopper", false)
+                .WithTechType("IndustricaOreVeinTitaniumCopper", false)
                 .WithIcon(SpriteManager.Get(TechType.LimestoneChunk));
 
             var prefab = new CustomPrefab(Info);
@@ -34,8 +33,8 @@ namespace Industrica.World.OreVein
         }
 
         public override float Range => 10f;
-        public override TechType ResourceTechType => ItemOreVeinResourceTitaniumCopper.Info.TechType;
+        public override TechType ResourceTechType => ItemsBasic.OreVeinResourceTitaniumCopper.TechType;
         public override TechType OreVeinTechType => Info.TechType;
-        public override TechType CoreSampleTechType => ItemCoreSampleTitaniumCopper.Info.TechType;
+        public override TechType CoreSampleTechType => ItemsBasic.CoreSampleTitaniumCopper.TechType;
     }
 }

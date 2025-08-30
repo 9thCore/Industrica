@@ -55,5 +55,19 @@ namespace Industrica.Utility
 
             action.Invoke(result);
         }
+
+        public static void MakeBreakableChunkIntoItem(GameObject prefab)
+        {
+            Rigidbody rigidbody = prefab.EnsureComponent<Rigidbody>();
+            rigidbody.isKinematic = false;
+
+            ResourceTracker tracker = prefab.EnsureComponent<ResourceTracker>();
+            tracker.rb = rigidbody;
+            tracker.pickupable = prefab.EnsureComponent<Pickupable>();
+
+            GameObject.DestroyImmediate(prefab.GetComponent<VFXBurstModel>());
+            GameObject.DestroyImmediate(prefab.GetComponent<BreakableResource>());
+            GameObject.DestroyImmediate(prefab.GetComponent<EcoTarget>());
+        }
     }
 }

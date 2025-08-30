@@ -1,4 +1,4 @@
-﻿using Industrica.Item.Mining.OreVein;
+﻿using Industrica.Item.Generic;
 using Industrica.Utility;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
@@ -28,13 +28,13 @@ namespace Industrica.Recipe
                 {
                     Ingredients =
                     {
-                        new Ingredient(ItemOreVeinResourceTitaniumCopper.Info.TechType, 1)
+                        new Ingredient(ItemsBasic.OreVeinResourceTitaniumCopper.TechType, 1)
                     }
                 },
                 modifiers: new RecipeUtil.IPrefabModifier[] {
                     new RecipeUtil.CrafterRecipe(CraftTree.Type.Fabricator, $"Resources/{BasicProcessing}".AsCraftPath()),
                     new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
-                    new RecipeUtil.UnlockRequirement(ItemOreVeinResourceTitaniumCopper.Info.TechType)
+                    new RecipeUtil.UnlockRequirement(ItemsBasic.OreVeinResourceTitaniumCopper.TechType)
                 });
         }
     }
