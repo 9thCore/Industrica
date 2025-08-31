@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace Industrica.Network.Pipe.Item
 {
@@ -12,14 +11,6 @@ namespace Industrica.Network.Pipe.Item
         public override bool CanDeconstructPorts()
         {
             return CanDeconstruct(ports);
-        }
-
-        public override PortHandler CopyTo(GameObject prefab)
-        {
-            ports ??= new();
-            TransferItemPortHandler handler = prefab.EnsureComponent<TransferItemPortHandler>();
-            handler.ports = ports;
-            return handler;
         }
 
         public override void Register(TransferPort<Pickupable> port)

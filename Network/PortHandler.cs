@@ -13,14 +13,6 @@ namespace Industrica.Network
             this.provider = provider;
         }
 
-        public void Start()
-        {
-            if (provider != null)
-            {
-                provider.AddGeometryHandler(this);
-            }
-        }
-
         public bool IsDeconstructionObstacle()
         {
             return true;
@@ -45,6 +37,5 @@ namespace Industrica.Network
 
         public abstract string DeconstructionDeniedReason { get; }
         public abstract bool CanDeconstructPorts();
-        public abstract PortHandler CopyTo(GameObject prefab);
     }
 }
