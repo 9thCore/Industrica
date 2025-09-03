@@ -73,5 +73,11 @@ namespace Industrica.Utility
             obj.GetComponentsInChildren<Renderer>().ForEach(renderer => renderer.sharedMaterial = material);
             return obj;
         }
+
+        public static GameObject WithClassID<T>(this GameObject obj, string classID) where T : UniqueIdentifier
+        {
+            obj.EnsureComponent<T>().classId = classID;
+            return obj;
+        }
     }
 }

@@ -1,18 +1,13 @@
-﻿using TMPro;
+﻿using Industrica.UI.UIEvent;
+using System;
+using TMPro;
 using UnityEngine;
 
 namespace Industrica.UI.UIData
 {
-    public class BackedTextUIData : UIData
+    public class BackedTextUIData : TextUIData
     {
-        public TextMeshProUGUI text;
         public uGUI_Icon background;
-
-        public virtual void SetText(TextMeshProUGUI text)
-        {
-            this.text = text;
-            text.horizontalAlignment = HorizontalAlignmentOptions.Center;
-        }
 
         public virtual void SetBackground(uGUI_Icon background)
         {
@@ -21,16 +16,21 @@ namespace Industrica.UI.UIData
 
         public override void MoveUIData(Vector2 position)
         {
-            text.transform.localPosition = position;
+            base.MoveUIData(position);
             background.transform.localPosition = position;
         }
 
-        protected void InvokeUpdate()
+        public override void SetAnchor(Vector2 anchor)
         {
-            OnUpdate?.Invoke();
+            base.SetAnchor(anchor);
+            
+            background.rectTransform.anchorMin = anchor;
+            background.rectTransform.anchorMax = anchor;
         }
 
-        public delegate void DataUpdate();
-        public event DataUpdate OnUpdate;
+        public void AddOnClickCallback(Action callback)
+        {
+            background.gameObject.EnsureComponent<UIClickDetector>().onClick += callback;
+        }
     }
 }

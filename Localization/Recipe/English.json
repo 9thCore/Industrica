@@ -1,4 +1,10 @@
 {
   "FabricatorMenu_IndustricaBasicProcessing": "Basic mix processing",
-  "TechCategoryIndustricaBasicProcessing": "Basic Mix Processing"
+  "TechCategoryIndustricaBasicProcessing": "Basic Mix Processing",
+
+  "TechCategoryIndustricaSmelting": "Smelting",
+
+  "IndustricaHeatLevelLow": "Requires low heat",
+  "IndustricaHeatLevelMedium": "Requires medium heat",
+  "IndustricaHeatLevelHigh": "Requires high heat"
 }

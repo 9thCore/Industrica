@@ -16,5 +16,8 @@
   "Tooltip_IndustricaCoreSampleTitaniumCopper": "A sample extracted out of the ground.\nContains chunks of titanium and traces of copper.",
 
   "IndustricaOreVeinResourceTitaniumCopper": "Titocupric mix",
-  "Tooltip_IndustricaOreVeinResourceTitaniumCopper": "A mix of sediment, chunks of titanium and traces of copper.\n<b>Without serious processing, the copper cannot be extracted in any meaningful quantity</b>."
+  "Tooltip_IndustricaOreVeinResourceTitaniumCopper": "A mix of sediment, chunks of titanium and traces of copper.\n<b>Without serious processing, the copper cannot be extracted in any meaningful quantity</b>.",
+
+  "IndustricaSlag": "Slag",
+  "Tooltip_IndustricaSlag": "Industrial smelting trash byproduct."
 }

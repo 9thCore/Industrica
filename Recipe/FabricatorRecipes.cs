@@ -31,6 +31,7 @@ namespace Industrica.Recipe
                         new Ingredient(ItemsBasic.OreVeinResourceTitaniumCopper.TechType, 1)
                     }
                 },
+                craftTime: 1f,
                 modifiers: new RecipeUtil.IPrefabModifier[] {
                     new RecipeUtil.CrafterRecipe(CraftTree.Type.Fabricator, $"Resources/{BasicProcessing}".AsCraftPath()),
                     new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),

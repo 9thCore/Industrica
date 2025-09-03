@@ -1,4 +1,5 @@
 ﻿using Industrica.Machine.Mining;
+using Industrica.Machine.Processing;
 using Industrica.Network.Filter.Holder;
 using Industrica.Network.Pipe.Item;
 using Industrica.Network.Wire;
@@ -26,6 +27,7 @@ namespace Industrica.Save
         public SaveData<TechTypeNetworkFilterHolder.SaveData> techTypeFilterSaveData = new();
         public SaveData<CoreSampleDrill.SaveData> coreSampleDrillSaveData = new();
         public SaveData<Drill.SaveData> drillSaveData = new();
+        public SaveData<Smeltery.SaveData> smelterySaveData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Industrica.Recipe.Handler;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UWE;
 
@@ -7,6 +10,75 @@ namespace Industrica.Utility
 {
     public static class SNUtil
     {
+        public static IEnumerator TryGetItemPrefab(TechType techType, TaskResult<GameObject> result)
+        {
+            CoroutineTask<GameObject> task = CraftData.GetPrefabForTechTypeAsync(techType, false);
+            yield return task;
+
+            GameObject prefab = task.GetResult();
+            if (prefab == null
+                || !prefab.TryGetComponent(out Pickupable _))
+            {
+                yield break;
+            }
+
+            result.Set(prefab);
+        }
+
+        public static bool HasRoomFor(this ItemsContainer container, IEnumerable<Pickupable> items)
+        {
+            List<Vector2int> sizes = items.Select(item => TechData.GetItemSize(item.GetTechType())).ToList();
+            return container.HasRoomFor(sizes);
+        }
+
+        public static bool HasRoomFor(this ItemsContainer container, IEnumerable<RecipeHandler.RecipeOutput> outputs)
+        {
+            return outputs.All(output => output.HasRoomIn(container));
+        }
+
+        public static bool DisallowAction(Pickupable pickupable, bool verbose)
+        {
+            return false;
+        }
+
+        public static IEnumerator GetBasePieceDefinition(Base.Piece piece, IOut<Base.PieceDef> result)
+        {
+            if (!Base.initialized)
+            {
+                Plugin.Logger.LogWarning("Somehow, base pieces have not been initialized yet. Waiting for that...");
+                yield return new WaitUntil(() => Base.initialized);
+            }
+
+            result.Set(Base.pieces[(int)piece]);
+        }
+
+        public static void RestoreItems(IEnumerable<string> ids, List<Pickupable> result)
+        {
+            ids.ForEach(id =>
+            {
+                if (UniqueIdentifier.TryGetIdentifier(id, out UniqueIdentifier identifier)
+                && identifier.TryGetComponent(out Pickupable pickupable))
+                {
+                    result.Add(pickupable);
+                }
+            });
+        }
+
+        public static List<string> SerializeReferences<T>(IEnumerable<T> references) where T : Component
+        {
+            List<string> result = new();
+
+            references.ForEach(reference =>
+            {
+                if (reference.TryGetComponent(out UniqueIdentifier identifier))
+                {
+                    result.Add(identifier.Id);
+                }
+            });
+
+            return result;
+        }
+
         public static void GetNearestValidPowerRelay(Vector3 position, float range, Action<PowerRelay> callback, Func<PowerRelay, bool> validator = null, int timeout = 10)
         {
             CoroutineHost.StartCoroutine(GetNearestValidPowerRelayAsync(position, range, callback, validator, timeout));
@@ -65,5 +137,7 @@ namespace Industrica.Utility
 
             return validator(powerRelay);
         }
+
+        private record ItemContainerMapping(InventoryItem InventoryItem, IItemsContainer Container);
     }
 }

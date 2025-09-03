@@ -35,7 +35,7 @@
   "Tooltip_IndustricaBigItemLocker": "A variant of the freestanding locker that trades away some of its storage in favour of four item ports.",
 
   "IndustricaInOutItemPassthrough": "Item pipe wall passthrough",
-  "Tooltip_IndustricaInOutItemPassthrough": "Wall utility that allows pipes to pass through to the other side, in both directions.\nDoes not pump by itself - an item pump is still required for logistics, but a secondary pump on the other side is not required.\n<b>Can only be built on the end cap of a corridor, or where a corridor and another room may connect</b>.",
+  "Tooltip_IndustricaInOutItemPassthrough": "Wall utility that allows pipes to pass through to the other side, in both directions.\nDoes not pump by itself - an item pump is still required for logistics, but a secondary pump on the other side is not required.\n<b>Can only be built on the end cap of a corridor - where a corridor and another room may connect</b>.",
 
   "IndustricaCoreSampleDrill": "Core sample drill",
   "Tooltip_IndustricaCoreSampleDrill": "Drills into the ground and extracts a sample of the local area, containing possible ore traces.\nRequires a bit of time and moderately high power usage, but is cheaper to run than a drill.",
@@ -48,10 +48,19 @@
   "ActivateSubscript_IndustricaCoreSampleDrill": "Not currently drilling",
 
   "IndustricaDrill": "Drill",
-  "Tooltip_IndustricaDrill": "Drills into the ground and extracts chunks that may or may not contain chunks and traces of ores.\nHigh power consumption and time between extractions.",
+  "Tooltip_IndustricaDrill": "Drills into the ground and extracts rocks that may or may not contain chunks and traces of ores.\nHigh power consumption and time between extractions.",
   "Invalid_IndustricaDrill": "Invalid placement",
   "InvalidSubscript_IndustricaDrill": "Requires terrain",
   "Working_IndustricaDrill": "Drilling",
   "Full_IndustricaDrill": "Inactive",
-  "FullSubscript_IndustricaDrill": "Storage is full"
+  "FullSubscript_IndustricaDrill": "Storage is full",
+
+  "IndustricaSmeltery": "Industrial smeltery",
+  "Tooltip_IndustricaSmeltery": "Industrial grade machine capable of processing a wide range of materials.\nSupports automatically pumping items in - and out of - it.\nAutomatically moves resources which can be smelted together into its chamber, if it is empty.\n<b>Resources may not be, manually or otherwise, removed from the chamber until smelted.\nProduces slag after every process.\nIf the base runs out of power, the smelter will turn off automatically</b>.",
+  "SmeltMeter_IndustricaSmeltery": "Smelted {0}%",
+  "InfoHeat_IndustricaSmeltery": "Heat",
+  "InfoNoHeat_IndustricaSmeltery": "Off",
+  "InfoLowHeat_IndustricaSmeltery": "Low",
+  "InfoMediumHeat_IndustricaSmeltery": "Med",
+  "InfoHighHeat_IndustricaSmeltery": "High"
 }

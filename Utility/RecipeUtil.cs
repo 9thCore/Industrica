@@ -15,6 +15,7 @@ namespace Industrica.Utility
             TechType result,
             int count,
             RecipeData recipe,
+            float craftTime,
             IPrefabModifier[] modifiers = null,
             Action<CustomPrefab> callback = null)
         {
@@ -42,6 +43,8 @@ namespace Industrica.Utility
                 );
 
             prefab.SetRecipe(recipe);
+
+            CraftDataHandler.SetCraftingTime(prefab.Info.TechType, craftTime);
 
             modifiers?.ForEach(modifier => modifier.Modify(prefab));
 
