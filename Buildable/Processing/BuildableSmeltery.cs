@@ -27,6 +27,10 @@ namespace Industrica.Buildable.Processing
         public static readonly CraftData.BackgroundType InactiveType = CraftData.BackgroundType.Normal;
         public static readonly CraftData.BackgroundType ActiveType = CraftData.BackgroundType.PlantAirSeed;
 
+        public static readonly Vector2 InputContainerUIPosition = new Vector2(97f, 140f);
+        public static readonly Vector2 OutputContainerUIPosition = new Vector2(418f, 140f);
+        public static readonly Vector2 ChamberContainerUIPosition = new Vector2((InputContainerUIPosition.x + OutputContainerUIPosition.x) / 2f, -148f);
+
         public const int Width = 3;
         public const int Height = 3;
         public const int PreWidth = 6;

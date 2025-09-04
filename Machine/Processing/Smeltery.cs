@@ -285,6 +285,7 @@ namespace Industrica.Machine.Processing
 
             foreach (Pickupable item in items)
             {
+                item.inventoryItem.isEnabled = false;
                 item.inventoryItem.container.RemoveItem(item.inventoryItem, true, false);
                 chamber.container.UnsafeAdd(item.inventoryItem);
             }
@@ -304,8 +305,12 @@ namespace Industrica.Machine.Processing
         public void OnHandClick(HandTargetEventData data)
         {
             Inventory.main.SetUsedStorage(input.container);
-            Inventory.main.SetUsedStorage(output.container, true);
             Inventory.main.SetUsedStorage(chamber.container, true);
+            Inventory.main.SetUsedStorage(output.container, true);
+
+            UICustomContainerHandler.MoveContainerUI(UICustomContainerHandler.Torpedo1, BuildableSmeltery.InputContainerUIPosition);
+            UICustomContainerHandler.MoveContainerUI(UICustomContainerHandler.Torpedo2, BuildableSmeltery.ChamberContainerUIPosition);
+            UICustomContainerHandler.MoveContainerUI(UICustomContainerHandler.Torpedo3, BuildableSmeltery.OutputContainerUIPosition);
 
             Player.main.GetPDA().Open(PDATab.Inventory, transform);
         }
