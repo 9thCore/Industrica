@@ -1,4 +1,6 @@
-﻿using Nautilus.Assets;
+﻿using Industrica.Recipe;
+using Industrica.Recipe.Handler;
+using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
@@ -14,15 +16,14 @@ namespace Industrica.Utility
         public static void RegisterAlternativeRecipe(
             TechType result,
             int count,
-            RecipeData recipe,
-            float craftTime,
+            ExtendedRecipeData recipeData,
             IPrefabModifier[] modifiers = null,
             Action<CustomPrefab> callback = null)
         {
-            recipe.LinkedItems ??= new();
-            recipe.LinkedItems.AddRange(Enumerable.Repeat(result, count));
+            recipeData.LinkedItems ??= new();
+            recipeData.LinkedItems.AddRange(Enumerable.Repeat(result, count));
 
-            recipe.craftAmount = 0;
+            recipeData.craftAmount = 0;
 
             if (CloneCount.TryGetValue(result, out int clones))
             {
@@ -42,9 +43,7 @@ namespace Industrica.Utility
                 icon: SpriteManager.Get(result)
                 );
 
-            prefab.SetRecipe(recipe);
-
-            CraftDataHandler.SetCraftingTime(prefab.Info.TechType, craftTime);
+            prefab.SetRecipe(recipeData);
 
             modifiers?.ForEach(modifier => modifier.Modify(prefab));
 
@@ -55,6 +54,9 @@ namespace Industrica.Utility
             TranslationRemapping.Add(prefab.Info.TechType, new RemapData(result, count));
 
             prefab.Register();
+
+            // This has to be called after registry for some reason?
+            CraftDataHandler.SetCraftingTime(prefab.Info.TechType, recipeData.CraftTime);
         }
 
         public static void Clear()

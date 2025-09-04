@@ -1,5 +1,4 @@
-﻿using Industrica.Buildable.Electrical;
-using Industrica.Item.Generic.Builder;
+﻿using Industrica.Item.Generic.Builder;
 using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Crafting;
@@ -40,8 +39,7 @@ namespace Industrica.Recipe.Handler
         public static void Register(
             Recipe.Output[] outputs,
             HeatLevel heatLevel,
-            RecipeData recipeData,
-            float craftTime,
+            ExtendedRecipeData recipeData,
             List<RecipeUtil.IPrefabModifier> modifiers = null)
         {
             if (heatLevel == HeatLevel.None)
@@ -49,23 +47,20 @@ namespace Industrica.Recipe.Handler
                 return;
             }
 
-            Recipes.Add(new Recipe(outputs, heatLevel, recipeData, craftTime));
+            Recipes.Add(new Recipe(outputs, heatLevel, recipeData));
 
-            RecipeData fakeRecipe = new RecipeData()
-            {
-                Ingredients = new(recipeData.Ingredients)
-            };
+            ExtendedRecipeData fakeRecipeData = recipeData.CreateCopy();
 
             switch (heatLevel)
             {
                 case HeatLevel.Low:
-                    fakeRecipe.Ingredients.Add(new Ingredient(LowHeat.TechType, 1));
+                    fakeRecipeData.Ingredients.Add(new Ingredient(LowHeat.TechType, 1));
                     break;
                 case HeatLevel.Medium:
-                    fakeRecipe.Ingredients.Add(new Ingredient(MediumHeat.TechType, 1));
+                    fakeRecipeData.Ingredients.Add(new Ingredient(MediumHeat.TechType, 1));
                     break;
                 case HeatLevel.High:
-                    fakeRecipe.Ingredients.Add(new Ingredient(HighHeat.TechType, 1));
+                    fakeRecipeData.Ingredients.Add(new Ingredient(HighHeat.TechType, 1));
                     break;
                 default:
                     break;
@@ -73,7 +68,7 @@ namespace Industrica.Recipe.Handler
 
             modifiers ??= new();
             modifiers.Add(new RecipeUtil.GroupAndCategory(TechGroup.Resources, SmeltingCategory));
-            RecipeUtil.RegisterAlternativeRecipe(outputs[0].TechType, outputs[0].Count, fakeRecipe, craftTime, modifiers.ToArray());
+            RecipeUtil.RegisterAlternativeRecipe(outputs[0].TechType, outputs[0].Count, fakeRecipeData, modifiers.ToArray());
         }
 
         public static float GetSpeedMultiplier(HeatLevel currentHeatLevel, HeatLevel neededHeatLevel)
@@ -103,7 +98,7 @@ namespace Industrica.Recipe.Handler
         public const float HighLowSpeed = 1.5f;
         public const float HighMediumSpeed = HighLowSpeed / MediumLowSpeed;
 
-        public record Recipe(Recipe.Output[] Outputs, HeatLevel RequiredHeatLevel, RecipeData Data, float CraftTime)
+        public record Recipe(Recipe.Output[] Outputs, HeatLevel RequiredHeatLevel, ExtendedRecipeData Data)
             : RecipeHandler.MachineRecipe<Recipe.Input, Recipe.Output>(Outputs, Data)
         {
             public override bool Test(Input input)

@@ -18,14 +18,14 @@ namespace Industrica.Recipe
                     new SmelteryRecipeHandler.Recipe.Output(ItemsBasic.Slag.TechType, 1)
                 },
                 heatLevel: SmelteryRecipeHandler.HeatLevel.Low,
-                recipeData: new RecipeData()
+                recipeData: new()
                 {
                     Ingredients =
                     {
                         new Ingredient(ItemsBasic.OreVeinResourceTitaniumCopper.TechType, 1)
-                    }
+                    },
+                    CraftTime = 30f
                 },
-                craftTime: 30f,
                 modifiers: new List<RecipeUtil.IPrefabModifier>()
                 {
                     new RecipeUtil.UnlockRequirement(BuildableSmeltery.Info.TechType)

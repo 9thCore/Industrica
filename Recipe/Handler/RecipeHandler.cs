@@ -1,12 +1,9 @@
 ﻿using Industrica.Utility;
-using Nautilus.Crafting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using UnityEngine;
-using static Industrica.Recipe.Handler.SmelteryRecipeHandler.Recipe;
 
 namespace Industrica.Recipe.Handler
 {
@@ -123,7 +120,7 @@ namespace Industrica.Recipe.Handler
             }
         }
 
-        public abstract record MachineRecipe<I, O>(O[] Outputs, RecipeData Data) where I : RecipeInput where O : RecipeOutput
+        public abstract record MachineRecipe<I, O>(O[] Outputs, ExtendedRecipeData Data) where I : RecipeInput where O : RecipeOutput
         {
             public abstract bool Test(I input);
         }

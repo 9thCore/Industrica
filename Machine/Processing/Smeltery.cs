@@ -262,7 +262,7 @@ namespace Industrica.Machine.Processing
                 outputs,
                 items,
                 cachedRecipe.RequiredHeatLevel,
-                cachedRecipe.CraftTime));
+                cachedRecipe.Data.CraftTime));
 
             return true;
         }

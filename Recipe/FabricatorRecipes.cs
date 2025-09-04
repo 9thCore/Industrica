@@ -1,4 +1,5 @@
 ﻿using Industrica.Item.Generic;
+using Industrica.Recipe.Handler;
 using Industrica.Utility;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
@@ -24,14 +25,14 @@ namespace Industrica.Recipe
             RecipeUtil.RegisterAlternativeRecipe(
                 result: TechType.Titanium,
                 count: 1,
-                recipe: new RecipeData()
+                recipeData: new()
                 {
                     Ingredients =
                     {
                         new Ingredient(ItemsBasic.OreVeinResourceTitaniumCopper.TechType, 1)
-                    }
+                    },
+                    CraftTime = 2f
                 },
-                craftTime: 1f,
                 modifiers: new RecipeUtil.IPrefabModifier[] {
                     new RecipeUtil.CrafterRecipe(CraftTree.Type.Fabricator, $"Resources/{BasicProcessing}".AsCraftPath()),
                     new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
