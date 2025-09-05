@@ -51,6 +51,8 @@ namespace Industrica.Recipe.Handler
 
             ExtendedRecipeData fakeRecipeData = recipeData.CreateCopy();
 
+            fakeRecipeData.HandleCatalysts();
+
             switch (heatLevel)
             {
                 case HeatLevel.Low:
@@ -65,8 +67,7 @@ namespace Industrica.Recipe.Handler
                 default:
                     break;
             }
-
-            fakeRecipeData.HandleCatalysts();
+            fakeRecipeData.HandleCraftTime();
 
             modifiers ??= new();
             modifiers.Add(new RecipeUtil.GroupAndCategory(TechGroup.Resources, SmeltingCategory));

@@ -9,6 +9,8 @@
 
   "IndustricaCatalystFormat": "{0} (catalyst)",
 
+  "IndustricaTimeFormat": "Takes {0}s",
+
   "IndustricaHeatLevelLow": "Requires low heat",
   "IndustricaHeatLevelMedium": "Requires medium heat",
   "IndustricaHeatLevelHigh": "Requires high heat"

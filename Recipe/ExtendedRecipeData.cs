@@ -26,6 +26,12 @@ namespace Industrica.Recipe
             Catalysts = null;
         }
 
+        public void HandleCraftTime()
+        {
+            TechType fakeIngredient = GeneralFakeIngredients.GetOrCreateTimeIngredientFor(CraftTime);
+            Ingredients.Add(new Ingredient(fakeIngredient, 1));
+        }
+
         public ExtendedRecipeData CreateCopy()
         {
             return new ExtendedRecipeData

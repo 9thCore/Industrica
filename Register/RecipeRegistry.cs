@@ -14,6 +14,7 @@ namespace Industrica.Register
             SmelteryRecipes.Register();
 
             RecipeUtil.Clear();
+            GeneralFakeIngredients.Clear();
         }
     }
 }
