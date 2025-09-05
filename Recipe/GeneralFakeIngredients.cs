@@ -20,6 +20,7 @@ namespace Industrica.Recipe.Handler
             LocalizationUtil.RegisterLocalizationData(new RuntimeCatalystLocalizationData(catalystInfo.TechType, techType));
 
             CachedCatalysts.Add(techType, catalystInfo.TechType);
+            CatalystToOriginal.Add(catalystInfo.TechType, techType);
             return catalystInfo.TechType;
         }
 
@@ -57,6 +58,11 @@ namespace Industrica.Recipe.Handler
             FakeIngredients.Add(techType);
         }
 
+        public static bool TryGetOriginalFromCatalyst(TechType catalyst, out TechType original)
+        {
+            return CatalystToOriginal.TryGetValue(catalyst, out original);
+        }
+
         public static void Clear()
         {
             CachedCatalysts.Clear();
@@ -64,6 +70,7 @@ namespace Industrica.Recipe.Handler
         }
 
         private static readonly HashSet<TechType> FakeIngredients = new();
+        private static readonly Dictionary<TechType, TechType> CatalystToOriginal = new();
         private static readonly Dictionary<TechType, TechType> CachedCatalysts = new();
         private static readonly Dictionary<string, TechType> CachedCraftTimes = new();
 
