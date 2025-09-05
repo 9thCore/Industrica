@@ -34,6 +34,10 @@ namespace Industrica.Recipe.Handler
             new EmptyItemBuilder("IndustricaHeatLevelHigh")
                 .WithIcon(SpriteManager.Get(TechType.CyclopsFireSuppressionModule))
                 .Build(out HighHeat);
+
+            GeneralFakeIngredients.RegisterFakeIngredient(LowHeat.TechType);
+            GeneralFakeIngredients.RegisterFakeIngredient(MediumHeat.TechType);
+            GeneralFakeIngredients.RegisterFakeIngredient(HighHeat.TechType);
         }
 
         public static void Register(

@@ -37,6 +37,7 @@ namespace Industrica.Recipe.Handler
 
             LocalizationUtil.RegisterLocalizationData(new RuntimeCraftTimeLocalizationData(timeInfo.TechType, craftTime));
 
+            RegisterFakeIngredient(timeInfo.TechType);
             CachedCraftTimes.Add(formatted, timeInfo.TechType);
             return timeInfo.TechType;
         }
@@ -46,12 +47,23 @@ namespace Industrica.Recipe.Handler
             return craftTime.ToString("0.##");
         }
 
+        public static bool IsIngredientFake(TechType techType)
+        {
+            return FakeIngredients.Contains(techType);
+        }
+
+        public static void RegisterFakeIngredient(TechType techType)
+        {
+            FakeIngredients.Add(techType);
+        }
+
         public static void Clear()
         {
             CachedCatalysts.Clear();
             CachedCraftTimes.Clear();
         }
 
+        private static readonly HashSet<TechType> FakeIngredients = new();
         private static readonly Dictionary<TechType, TechType> CachedCatalysts = new();
         private static readonly Dictionary<string, TechType> CachedCraftTimes = new();
 
