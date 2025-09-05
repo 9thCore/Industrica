@@ -4,6 +4,9 @@
 
   "TechCategoryIndustricaSmelting": "Smelting",
 
+  "IndustricaAlternativeRecipeOneResult": "{0}",
+  "IndustricaAlternativeRecipeMultipleResults": "{0} (x{1})",
+
   "IndustricaHeatLevelLow": "Requires low heat",
   "IndustricaHeatLevelMedium": "Requires medium heat",
   "IndustricaHeatLevelHigh": "Requires high heat"

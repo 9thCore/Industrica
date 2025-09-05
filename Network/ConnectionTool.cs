@@ -65,7 +65,7 @@ namespace Industrica.Network
             if (segments.Count > 0)
             {
                 HandReticle.main.SetText(HandReticle.TextType.Hand, PlacingLangKey, true, GameInput.Button.LeftHand);
-                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, $"Tooltip_{PlacingLangKey}".Translate(segments.Count, MaxSegments), false);
+                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, PlacingLangKey.TranslateTooltip(segments.Count, MaxSegments), false);
             }
 
             placementTimeout -= Time.deltaTime;

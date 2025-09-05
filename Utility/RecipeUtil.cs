@@ -51,12 +51,13 @@ namespace Industrica.Utility
 
             callback?.Invoke(prefab);
 
-            TranslationRemapping.Add(prefab.Info.TechType, new RemapData(result, count));
-
             prefab.Register();
 
             // This has to be called after registry for some reason?
             CraftDataHandler.SetCraftingTime(prefab.Info.TechType, recipeData.CraftTime);
+
+            LocalizationUtil.RegisterLocalizationData(new AlternativeRecipeNameLocalizationData(prefab.Info.TechType, count, result));
+            LocalizationUtil.RegisterLocalizationData(new AlternativeRecipeTooltipLocalizationData(prefab.Info.TechType, result));
         }
 
         public static void Clear()
@@ -70,9 +71,31 @@ namespace Industrica.Utility
         }
 
         private static readonly Dictionary<TechType, int> CloneCount = new();
-        public static readonly Dictionary<TechType, RemapData> TranslationRemapping = new();
 
-        public record RemapData(TechType Result, int Count);
+        private record AlternativeRecipeNameLocalizationData(TechType TechType, int Amount, TechType CloneTechType)
+            : LocalizationUtil.RuntimeTechTypeLocalizationData(TechType)
+        {
+            public override string GetTranslation()
+            {
+                string cloneTranslation = CloneTechType.AsString().Translate();
+
+                if (Amount == 1)
+                {
+                    return LocalizationUtil.AltRecipeOneResultKey.Translate(cloneTranslation);
+                }
+
+                return LocalizationUtil.AltRecipeMultipleResultsKey.Translate(cloneTranslation, Amount);
+            }
+        }
+
+        private record AlternativeRecipeTooltipLocalizationData(TechType TechType, TechType CloneTechType)
+            : LocalizationUtil.RuntimeTechTypeTooltipLocalizationData(TechType)
+        {
+            public override string GetTranslation()
+            {
+                return CloneTechType.AsString().TranslateTooltip();
+            }
+        }
 
         public interface IPrefabModifier
         {
