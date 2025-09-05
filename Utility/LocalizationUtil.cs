@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Industrica.Utility
 {
@@ -7,6 +6,7 @@ namespace Industrica.Utility
     {
         public const string AltRecipeOneResultKey = "IndustricaAlternativeRecipeOneResult";
         public const string AltRecipeMultipleResultsKey = "IndustricaAlternativeRecipeMultipleResults";
+        public const string CatalystKey = "IndustricaCatalystFormat";
 
         public static string TranslateTooltip(this string localisationKey)
         {

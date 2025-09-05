@@ -66,6 +66,8 @@ namespace Industrica.Recipe.Handler
                     break;
             }
 
+            fakeRecipeData.HandleCatalysts();
+
             modifiers ??= new();
             modifiers.Add(new RecipeUtil.GroupAndCategory(TechGroup.Resources, SmeltingCategory));
             RecipeUtil.RegisterAlternativeRecipe(outputs[0].TechType, outputs[0].Count, fakeRecipeData, modifiers.ToArray());
@@ -108,7 +110,15 @@ namespace Industrica.Recipe.Handler
                     return false;
                 }
 
-                return input.Item.Test(Data.Ingredients);
+                if (Data.Catalysts == null)
+                {
+                    return input.Item.Test(Data.Ingredients);
+                }
+
+                // This fails if catalysts and ingredients have a shared
+                // ingredient, but whatever I'll just not have that I guess
+                return input.Item.Test(Data.Catalysts)
+                    && input.Item.Test(Data.Ingredients);
             }
 
             public IEnumerable<Pickupable> GetUsedItems(Input input)

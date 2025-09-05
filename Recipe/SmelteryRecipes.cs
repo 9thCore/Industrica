@@ -2,7 +2,6 @@
 using Industrica.Item.Generic;
 using Industrica.Recipe.Handler;
 using Industrica.Utility;
-using Nautilus.Crafting;
 using System.Collections.Generic;
 
 namespace Industrica.Recipe
