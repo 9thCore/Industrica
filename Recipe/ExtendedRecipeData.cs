@@ -1,4 +1,5 @@
 ﻿using Industrica.Recipe.Handler;
+using Industrica.Utility;
 using Nautilus.Crafting;
 using System.Collections.Generic;
 
@@ -19,17 +20,11 @@ namespace Industrica.Recipe
 
             foreach (Ingredient catalyst in Catalysts)
             {
-                TechType fakeIngredient = GeneralFakeIngredients.GetOrCreateCatalystCloneFor(catalyst.techType);
+                TechType fakeIngredient = ExtraIngredientHelper.GetOrCreateCatalystCloneFor(catalyst.techType);
                 Ingredients.Add(new Ingredient(fakeIngredient, catalyst.amount));
             }
 
             Catalysts = null;
-        }
-
-        public void HandleCraftTime()
-        {
-            TechType fakeIngredient = GeneralFakeIngredients.GetOrCreateTimeIngredientFor(CraftTime);
-            Ingredients.Add(new Ingredient(fakeIngredient, 1));
         }
 
         public ExtendedRecipeData CreateCopy()

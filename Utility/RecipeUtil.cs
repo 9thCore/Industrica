@@ -13,7 +13,7 @@ namespace Industrica.Utility
 {
     public static class RecipeUtil
     {
-        public static void RegisterAlternativeRecipe(
+        public static TechType RegisterAlternativeRecipe(
             TechType result,
             int count,
             ExtendedRecipeData recipeData,
@@ -58,6 +58,8 @@ namespace Industrica.Utility
 
             LocalizationUtil.RegisterLocalizationData(new AlternativeRecipeNameLocalizationData(prefab.Info.TechType, count, result));
             LocalizationUtil.RegisterLocalizationData(new AlternativeRecipeTooltipLocalizationData(prefab.Info.TechType, result));
+
+            return prefab.Info.TechType;
         }
 
         public static void Clear()

@@ -1,7 +1,5 @@
-﻿using Industrica.Item.Generic.Builder;
+﻿using Industrica.Buildable.Processing;
 using Industrica.Utility;
-using Nautilus.Assets;
-using Nautilus.Crafting;
 using Nautilus.Handlers;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,30 +13,7 @@ namespace Industrica.Recipe.Handler
         public static readonly TechCategory SmeltingCategory = EnumHandler.AddEntry<TechCategory>(Smelting)
             .RegisterToTechGroup(TechGroup.Resources);
 
-        public static PrefabInfo LowHeat;
-        public static PrefabInfo MediumHeat;
-        public static PrefabInfo HighHeat;
-
         public static readonly List<Recipe> Recipes = new();
-
-        public static void Register()
-        {
-            new EmptyItemBuilder("IndustricaHeatLevelLow")
-                .WithIcon(SpriteManager.Get(TechType.CyclopsFireSuppressionModule))
-                .Build(out LowHeat);
-
-            new EmptyItemBuilder("IndustricaHeatLevelMedium")
-                .WithIcon(SpriteManager.Get(TechType.CyclopsFireSuppressionModule))
-                .Build(out MediumHeat);
-
-            new EmptyItemBuilder("IndustricaHeatLevelHigh")
-                .WithIcon(SpriteManager.Get(TechType.CyclopsFireSuppressionModule))
-                .Build(out HighHeat);
-
-            GeneralFakeIngredients.RegisterFakeIngredient(LowHeat.TechType);
-            GeneralFakeIngredients.RegisterFakeIngredient(MediumHeat.TechType);
-            GeneralFakeIngredients.RegisterFakeIngredient(HighHeat.TechType);
-        }
 
         public static void Register(
             Recipe.Output[] outputs,
@@ -57,25 +32,11 @@ namespace Industrica.Recipe.Handler
 
             fakeRecipeData.HandleCatalysts();
 
-            switch (heatLevel)
-            {
-                case HeatLevel.Low:
-                    fakeRecipeData.Ingredients.Add(new Ingredient(LowHeat.TechType, 1));
-                    break;
-                case HeatLevel.Medium:
-                    fakeRecipeData.Ingredients.Add(new Ingredient(MediumHeat.TechType, 1));
-                    break;
-                case HeatLevel.High:
-                    fakeRecipeData.Ingredients.Add(new Ingredient(HighHeat.TechType, 1));
-                    break;
-                default:
-                    break;
-            }
-            fakeRecipeData.HandleCraftTime();
-
             modifiers ??= new();
             modifiers.Add(new RecipeUtil.GroupAndCategory(TechGroup.Resources, SmeltingCategory));
-            RecipeUtil.RegisterAlternativeRecipe(outputs[0].TechType, outputs[0].Count, fakeRecipeData, modifiers.ToArray());
+            TechType recipe = RecipeUtil.RegisterAlternativeRecipe(outputs[0].TechType, outputs[0].Count, fakeRecipeData, modifiers.ToArray());
+
+            RecipeDisplayUtil.SetRecipeInformation(recipe, new SmelteryInformation(recipeData.CraftTime, heatLevel));
         }
 
         public static float GetSpeedMultiplier(HeatLevel currentHeatLevel, HeatLevel neededHeatLevel)
@@ -145,6 +106,18 @@ namespace Industrica.Recipe.Handler
 
             public record Output(TechType TechType, int Count)
                 : RecipeHandler.RecipeOutput(TechType, Count);
+        }
+
+        public class SmelteryInformation : RecipeDisplayUtil.Information
+        {
+            public SmelteryInformation(float craftTime, HeatLevel heat) : base(
+                new TooltipIcon(
+                    SpriteManager.Get(BuildableSmeltery.Info.TechType),
+                    BuildableSmeltery.Info.TechType.AsString())
+                , craftTime)
+            {
+                extraIcons.Add(new TooltipIcon(SpriteManager.Get(TechType.CyclopsFireSuppressionModule), $"IndustricaSmelteryHeat{heat}"));
+            }
         }
 
         public enum HeatLevel

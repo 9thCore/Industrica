@@ -61,5 +61,45 @@ namespace Industrica.Utility
 
             return canvas;
         }
+
+        public static void IfActiveCalculateLayoutInputHorizontal(this uGUI_TooltipIcon icon)
+        {
+            if (icon != null
+                && icon.layoutGroup != null
+                && icon.isActiveAndEnabled)
+            {
+                icon.layoutGroup.CalculateLayoutInputHorizontal();
+            }
+        }
+
+        public static void IfActiveCalculateLayoutInputVertical(this uGUI_TooltipIcon icon)
+        {
+            if (icon != null
+                && icon.layoutGroup != null
+                && icon.isActiveAndEnabled)
+            {
+                icon.layoutGroup.CalculateLayoutInputVertical();
+            }
+        }
+
+        public static void IfActiveSetLayoutHorizontal(this uGUI_TooltipIcon icon)
+        {
+            if (icon != null
+                && icon.layoutGroup != null
+                && icon.isActiveAndEnabled)
+            {
+                icon.layoutGroup.SetLayoutHorizontal();
+            }
+        }
+
+        public static void IfActiveSetLayoutVertical(this uGUI_TooltipIcon icon)
+        {
+            if (icon != null
+                && icon.layoutGroup != null
+                && icon.isActiveAndEnabled)
+            {
+                icon.layoutGroup.SetLayoutVertical();
+            }
+        }
     }
 }

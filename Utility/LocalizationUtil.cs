@@ -8,6 +8,7 @@ namespace Industrica.Utility
         public const string AltRecipeMultipleResultsKey = "IndustricaAlternativeRecipeMultipleResults";
         public const string CatalystKey = "IndustricaCatalystFormat";
         public const string TimeKey = "IndustricaTimeFormat";
+        public const string MachineCraftKey = "IndustricaMachineCraftFormat";
 
         public static string TranslateTooltip(this string localisationKey)
         {
