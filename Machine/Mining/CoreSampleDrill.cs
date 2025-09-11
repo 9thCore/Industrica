@@ -1,6 +1,5 @@
 ﻿using Industrica.ClassBase;
 using Industrica.Item.Generic;
-using Industrica.Register.EcoTarget;
 using Industrica.Save;
 using Industrica.Utility;
 using Industrica.World.OreVein;
@@ -45,8 +44,7 @@ namespace Industrica.Machine.Mining
             handTarget.onHandHover = new();
             handTarget.onHandHover.AddListener(OnHandHover);
 
-            if (TryGetOreVein(transform.position, out AbstractOreVein oreVein)
-                && Vector3.SqrMagnitude(transform.position - oreVein.transform.position) <= oreVein.RangeSquared)
+            if (AbstractOreVein.TryFindIntersecting(transform.position, out AbstractOreVein oreVein))
             {
                 coreSample = oreVein.CoreSampleTechType;
             } else
@@ -207,19 +205,6 @@ namespace Industrica.Machine.Mining
         private void SetState(bool state)
         {
             running = state;
-        }
-
-        public static bool TryGetOreVein(Vector3 position, out AbstractOreVein oreVein)
-        {
-            IEcoTarget target = EcoRegionManager.main.FindNearestTarget(OreVeinEcoTarget.EcoTargetType, position);
-            if (target != null
-                && target.GetGameObject().TryGetComponent(out oreVein))
-            {
-                return true;
-            }
-
-            oreVein = default;
-            return false;
         }
 
         public static bool CheckValidPlacement(Vector3 position, Vector3 direction)

@@ -1,6 +1,10 @@
 ﻿using Industrica.Item.Generic;
+using Industrica.Utility;
 using Nautilus.Assets;
+using Nautilus.Assets.PrefabTemplates;
+using Nautilus.Handlers;
 using Nautilus.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Industrica.World.OreVein
@@ -16,25 +20,20 @@ namespace Industrica.World.OreVein
 
             var prefab = new CustomPrefab(Info);
 
-            prefab.SetGameObject(GetGameObject);
+            prefab.SetGameObject(() => GetGameObject<TitaniumCopperOreVein>(Info, VeinRange));
             prefab.Register();
+
+            Setup(Info, VeinRange, new Dictionary<BiomeType, WorldUtil.BiomeValidator>()
+            {
+                { BiomeType.GrassyPlateaus_Grass, new BiomeOreValidator(BiomeType.GrassyPlateaus_Grass, 3, 0.004f) }
+            });
         }
 
-        private static GameObject GetGameObject()
-        {
-            GameObject prefab = new GameObject();
-
-            PrefabUtils.AddBasicComponents(prefab, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Medium);
-
-            Setup(prefab);
-            prefab.EnsureComponent<TitaniumCopperOreVein>();
-
-            return prefab;
-        }
-
-        public override float Range => 10f;
         public override TechType ResourceTechType => ItemsBasic.OreVeinResourceTitaniumCopper.TechType;
         public override TechType OreVeinTechType => Info.TechType;
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleTitaniumCopper.TechType;
+        public override float Range => VeinRange;
+
+        public const float VeinRange = 5f;
     }
 }

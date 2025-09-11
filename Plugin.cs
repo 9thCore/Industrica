@@ -54,6 +54,7 @@ namespace Industrica
         private void InitializeSave()
         {
             SaveSystem.Register();
+            OreVeinSaveSystem.Register();
         }
 
         private void InitializeEquipment()
