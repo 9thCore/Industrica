@@ -39,7 +39,7 @@ namespace Industrica.World.OreVein
             GameObject prefab = new GameObject();
             prefab.SetActive(false);
 
-            Setup<TitaniumCopperOreVein>(prefab, info, range);
+            Setup<T>(prefab, info, range);
 
             return prefab;
         }
