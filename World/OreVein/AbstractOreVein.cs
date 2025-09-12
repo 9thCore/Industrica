@@ -3,6 +3,7 @@ using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Utility;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Industrica.World.OreVein
@@ -16,10 +17,10 @@ namespace Industrica.World.OreVein
         public abstract TechType CoreSampleTechType { get; }
         public abstract float Range { get; }
 
-        protected static void Setup(
+        protected static void AddSpawner(
             PrefabInfo info,
             float range,
-            IDictionary<BiomeType, WorldUtil.BiomeValidator> biomeSpawnData)
+            Dictionary<BiomeType, WorldUtil.BiomeValidator> biomeSpawnData)
         {
             WorldUtil.AddSpawner(new OreVeinSpawner(info.ClassID, range, biomeSpawnData));
         }
@@ -71,8 +72,9 @@ namespace Industrica.World.OreVein
 
         public const LargeWorldEntity.CellLevel CellLevel = LargeWorldEntity.CellLevel.Medium;
         public const float SafetyDistance = 7f;
+        public const float RotationClosenessFactor = 0.9f;
 
-        private record OreVeinSpawner(string ClassID, float Range, IDictionary<BiomeType, WorldUtil.BiomeValidator> BiomeSpawnData)
+        public record OreVeinSpawner(string ClassID, float Range, Dictionary<BiomeType, WorldUtil.BiomeValidator> BiomeSpawnData)
             : WorldUtil.Spawner(ClassID, AbstractOreVein.CellLevel, BiomeSpawnData)
         {
             public override void OnSpawn(in WorldUtil.PositionData positionData)
@@ -83,6 +85,11 @@ namespace Industrica.World.OreVein
 
             public override bool CanSpawn(in WorldUtil.PositionData positionData)
             {
+                if (Quaternion.Dot(Quaternion.identity, positionData.worldRotation) < RotationClosenessFactor)
+                {
+                    return false;
+                }
+
                 float virtualRange = SafetyDistance + Range;
                 foreach (OreVeinSaveSystem.OreVein oreVein in OreVeinSaveSystem.Instance.worldgenBlacklist)
                 {
@@ -101,7 +108,27 @@ namespace Industrica.World.OreVein
             }
         }
 
-        protected record BiomeOreValidator(BiomeType BiomeType, int MaxCount, float Chance)
+        public record OreVeinDepthSpawner(
+            string ClassID,
+            float Range,
+            Dictionary<BiomeType, WorldUtil.BiomeValidator> BiomeSpawnData,
+            float MinDepth = float.MinValue,
+            float MaxDepth = float.MaxValue)
+            : OreVeinSpawner(ClassID, Range, BiomeSpawnData)
+        {
+            public override bool CanSpawn(in WorldUtil.PositionData positionData)
+            {
+                if (positionData.worldPosition.y > -MinDepth
+                    || positionData.worldPosition.y < -MaxDepth)
+                {
+                    return false;
+                }
+
+                return base.CanSpawn(in positionData);
+            }
+        }
+
+        public record BiomeOreValidator(BiomeType BiomeType, int MaxCount, float Chance)
             : WorldUtil.BiomeSpawnCapValidator(() => OreVeinSaveSystem.Instance.spawnCount, BiomeType, MaxCount, Chance);
     }
 }

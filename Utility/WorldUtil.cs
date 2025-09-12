@@ -1,10 +1,7 @@
-﻿using Industrica.Save;
-using Industrica.World;
+﻿using Industrica.World;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UWE;
 
 namespace Industrica.Utility
 {
@@ -58,8 +55,13 @@ namespace Industrica.Utility
         public abstract record Spawner(
             string ClassID,
             LargeWorldEntity.CellLevel CellLevel,
-            IDictionary<BiomeType, BiomeValidator> BiomeSpawnData)
+            Dictionary<BiomeType, BiomeValidator> BiomeSpawnData)
         {
+            public void Register()
+            {
+                AddSpawner(this);
+            }
+
             public bool Valid(IEntitySlot entitySlot)
             {
                 return ValidEntitySlot(entitySlot)
@@ -105,6 +107,7 @@ namespace Industrica.Utility
             public readonly Vector3 localPosition;
             public readonly Quaternion localRotation;
             public readonly Vector3 worldPosition;
+            public readonly Quaternion worldRotation;
 
             public PositionData(BiomeType biomeType, Transform parent, Vector3 localPosition, Quaternion localRotation)
             {
@@ -114,6 +117,7 @@ namespace Industrica.Utility
                 this.localRotation = localRotation;
 
                 worldPosition = parent.TransformPoint(localPosition);
+                worldRotation = parent.rotation * localRotation;
             }
         }
 
@@ -130,7 +134,7 @@ namespace Industrica.Utility
             }
         }
 
-        public record BiomeSpawnCapValidator(Func<IDictionary<BiomeType, int>> CounterGetter, BiomeType BiomeType, int MaxCount, float Chance)
+        public record BiomeSpawnCapValidator(Func<Dictionary<BiomeType, int>> CounterGetter, BiomeType BiomeType, int MaxCount, float Chance)
             : BiomeChanceValidator(Chance)
         {
             public override bool CanSpawn()

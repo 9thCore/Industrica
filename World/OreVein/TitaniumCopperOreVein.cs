@@ -23,12 +23,19 @@ namespace Industrica.World.OreVein
             prefab.SetGameObject(() => GetGameObject<TitaniumCopperOreVein>(Info, VeinRange));
             prefab.Register();
 
-            Setup(Info, VeinRange, new Dictionary<BiomeType, WorldUtil.BiomeValidator>()
+            new OreVeinDepthSpawner(Info.ClassID, VeinRange, new()
             {
-                { BiomeType.GrassyPlateaus_Grass, new BiomeOreValidator(BiomeType.GrassyPlateaus_Grass, 3, 0.004f) }
-            });
-        }
+                { BiomeType.SparseReef_Sand, new BiomeOreValidator(BiomeType.SparseReef_Sand, 2, 0.1f) },
+                { BiomeType.SparseReef_DeepFloor, new BiomeOreValidator(BiomeType.SparseReef_DeepFloor, 3, 0.1f) }
+            }, MinDepth: 200f).Register();
 
+            new OreVeinDepthSpawner(Info.ClassID, VeinRange, new()
+            {
+                { BiomeType.Mountains_Sand, new BiomeOreValidator(BiomeType.Mountains_Sand, 2, 0.09f) },
+                { BiomeType.KooshZone_Sand, new BiomeOreValidator(BiomeType.KooshZone_Sand, 2, 0.015f) }
+            }, MinDepth: 200f, MaxDepth: 340f).Register();
+        }
+        
         public override TechType ResourceTechType => ItemsBasic.OreVeinResourceTitaniumCopper.TechType;
         public override TechType OreVeinTechType => Info.TechType;
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleTitaniumCopper.TechType;
