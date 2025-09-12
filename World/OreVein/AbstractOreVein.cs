@@ -17,14 +17,6 @@ namespace Industrica.World.OreVein
         public abstract TechType CoreSampleTechType { get; }
         public abstract float Range { get; }
 
-        protected static void AddSpawner(
-            PrefabInfo info,
-            float range,
-            Dictionary<BiomeType, WorldUtil.BiomeValidator> biomeSpawnData)
-        {
-            WorldUtil.AddSpawner(new OreVeinSpawner(info.ClassID, range, biomeSpawnData));
-        }
-
         protected static void Setup<T>(GameObject prefab, PrefabInfo info, float range) where T : AbstractOreVein
         {
             PrefabUtils.AddBasicComponents(prefab, info.ClassID, info.TechType, CellLevel);
@@ -75,13 +67,13 @@ namespace Industrica.World.OreVein
         public const float SafetyDistance = 7f;
         public const float RotationClosenessFactor = 0.9f;
 
-        public record OreVeinSpawner(string ClassID, float Range, Dictionary<BiomeType, WorldUtil.BiomeValidator> BiomeSpawnData)
+        public record OreVeinSpawner(OreVeinType OreVeinType, string ClassID, float Range, Dictionary<BiomeType, WorldUtil.BiomeValidator> BiomeSpawnData)
             : WorldUtil.Spawner(ClassID, AbstractOreVein.CellLevel, BiomeSpawnData)
         {
             public override void OnSpawn(in WorldUtil.PositionData positionData)
             {
                 OreVeinSaveSystem.Instance.worldgenBlacklist.Add(new(positionData.worldPosition, Range));
-                OreVeinSaveSystem.Instance.IncreaseSpawnCount(positionData.biomeType);
+                OreVeinSaveSystem.Instance.IncreaseSpawnCount(OreVeinType, positionData.biomeType);
             }
 
             public override bool CanSpawn(in WorldUtil.PositionData positionData)
@@ -110,12 +102,13 @@ namespace Industrica.World.OreVein
         }
 
         public record OreVeinDepthSpawner(
+            OreVeinType OreVeinType,
             string ClassID,
             float Range,
             Dictionary<BiomeType, WorldUtil.BiomeValidator> BiomeSpawnData,
             float MinDepth = float.MinValue,
             float MaxDepth = float.MaxValue)
-            : OreVeinSpawner(ClassID, Range, BiomeSpawnData)
+            : OreVeinSpawner(OreVeinType, ClassID, Range, BiomeSpawnData)
         {
             public override bool CanSpawn(in WorldUtil.PositionData positionData)
             {
@@ -129,7 +122,17 @@ namespace Industrica.World.OreVein
             }
         }
 
-        public record BiomeOreValidator(BiomeType BiomeType, int MaxCount, float Chance)
-            : WorldUtil.BiomeSpawnCapValidator(() => OreVeinSaveSystem.Instance.spawnCount, BiomeType, MaxCount, Chance);
+        public record BiomeOreValidator(OreVeinType OreVeinType, BiomeType BiomeType, int MaxCount, float Chance)
+            : WorldUtil.BiomeSpawnCapValidator(
+                () => OreVeinSaveSystem.Instance.GetSpawnCount(OreVeinType, BiomeType),
+                BiomeType,
+                MaxCount,
+                Chance);
+
+        public enum OreVeinType
+        {
+            TitaniumCopper,
+            CopperSilver
+        }
     }
 }

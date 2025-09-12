@@ -134,7 +134,7 @@ namespace Industrica.Utility
             }
         }
 
-        public record BiomeSpawnCapValidator(Func<Dictionary<BiomeType, int>> CounterGetter, BiomeType BiomeType, int MaxCount, float Chance)
+        public record BiomeSpawnCapValidator(Func<int> CurrentSpawnCount, BiomeType BiomeType, int MaxCount, float Chance)
             : BiomeChanceValidator(Chance)
         {
             public override bool CanSpawn()
@@ -144,12 +144,7 @@ namespace Industrica.Utility
                     return false;
                 }
 
-                if (!CounterGetter().TryGetValue(BiomeType, out int spawnCount))
-                {
-                    return true;
-                }
-
-                return spawnCount < MaxCount;
+                return CurrentSpawnCount() < MaxCount;
             }
         }
     }

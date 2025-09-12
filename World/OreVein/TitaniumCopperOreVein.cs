@@ -17,16 +17,16 @@ namespace Industrica.World.OreVein
             prefab.SetGameObject(() => GetGameObject<TitaniumCopperOreVein>(Info, VeinRange));
             prefab.Register();
 
-            new OreVeinDepthSpawner(Info.ClassID, VeinRange, new()
+            new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.SparseReef_Sand, new BiomeOreValidator(BiomeType.SparseReef_Sand, 2, 0.1f) },
-                { BiomeType.SparseReef_DeepFloor, new BiomeOreValidator(BiomeType.SparseReef_DeepFloor, 3, 0.1f) }
+                { BiomeType.SparseReef_Sand, new BiomeOreValidator(Vein, BiomeType.SparseReef_Sand, 2, 0.1f) },
+                { BiomeType.SparseReef_DeepFloor, new BiomeOreValidator(Vein, BiomeType.SparseReef_DeepFloor, 3, 0.1f) }
             }, MinDepth: 200f).Register();
 
-            new OreVeinDepthSpawner(Info.ClassID, VeinRange, new()
+            new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.Mountains_Sand, new BiomeOreValidator(BiomeType.Mountains_Sand, 2, 0.09f) },
-                { BiomeType.KooshZone_Sand, new BiomeOreValidator(BiomeType.KooshZone_Sand, 2, 0.015f) }
+                { BiomeType.Mountains_Sand, new BiomeOreValidator(Vein, BiomeType.Mountains_Sand, 2, 0.09f) },
+                { BiomeType.KooshZone_Sand, new BiomeOreValidator(Vein, BiomeType.KooshZone_Sand, 2, 0.015f) }
             }, MinDepth: 200f, MaxDepth: 340f).Register();
         }
         
@@ -36,5 +36,6 @@ namespace Industrica.World.OreVein
         public override float Range => VeinRange;
 
         public const float VeinRange = 5f;
+        public const OreVeinType Vein = OreVeinType.TitaniumCopper;
     }
 }

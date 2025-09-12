@@ -17,19 +17,19 @@ namespace Industrica.World.OreVein
             prefab.SetGameObject(() => GetGameObject<CopperSilverOreVein>(Info, VeinRange));
             prefab.Register();
 
-            new OreVeinSpawner(Info.ClassID, VeinRange, new()
+            new OreVeinSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.JellyshroomCaves_CaveFloor, new BiomeOreValidator(BiomeType.JellyshroomCaves_CaveFloor, 2, 0.25f) }
+                { BiomeType.JellyshroomCaves_CaveFloor, new BiomeOreValidator(Vein, BiomeType.JellyshroomCaves_CaveFloor, 2, 0.25f) }
             }).Register();
 
-            new OreVeinDepthSpawner(Info.ClassID, VeinRange, new()
+            new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.CragField_Ground, new BiomeOreValidator(BiomeType.CragField_Ground, 5, 0.1f) },
+                { BiomeType.CragField_Ground, new BiomeOreValidator(Vein, BiomeType.CragField_Ground, 5, 0.1f) },
             }, MinDepth: 175f).Register();
 
-            new OreVeinDepthSpawner(Info.ClassID, VeinRange, new()
+            new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.MushroomForest_Grass, new BiomeOreValidator(BiomeType.MushroomForest_Grass, 2, 0.2f) }
+                { BiomeType.MushroomForest_Grass, new BiomeOreValidator(Vein, BiomeType.MushroomForest_Grass, 2, 0.2f) }
             }, MinDepth: 200f).Register();
         }
 
@@ -39,5 +39,6 @@ namespace Industrica.World.OreVein
         public override float Range => VeinRange;
 
         public const float VeinRange = 5f;
+        public const OreVeinType Vein = OreVeinType.CopperSilver;
     }
 }
