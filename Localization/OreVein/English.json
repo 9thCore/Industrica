@@ -1,3 +1,25 @@
 {
-  "IndustricaOreVeinTitaniumCopper": "Ore vein"
+  "IndustricaCoreSampleEmpty": "Core sample",
+  "Tooltip_IndustricaCoreSampleEmpty": "A sample extracted out of the ground.\nContains no ores in any significant quantity.",
+
+  "IndustricaOreVeinResourceEmpty": "Dud rock",
+  "Tooltip_IndustricaOreVeinResourceEmpty": "A rock that contains no ores in any significant quantity.\nNothing can be done with this, aside from trashing it out.",
+
+
+  "IndustricaOreVeinTitaniumCopper": "Ore vein",
+
+  "IndustricaCoreSampleTitaniumCopper": "Core sample",
+  "Tooltip_IndustricaCoreSampleTitaniumCopper": "A sample extracted out of the ground.\nContains chunks of titanium and traces of copper.",
+
+  "IndustricaOreVeinResourceTitaniumCopper": "Titocupric mix",
+  "Tooltip_IndustricaOreVeinResourceTitaniumCopper": "A mix of sediment, chunks of titanium and traces of copper.\n<b>Without significant processing, the copper cannot be extracted in any meaningful quantity</b>.",
+
+
+  "IndustricaOreVeinCopperSilver": "Ore vein",
+
+  "IndustricaCoreSampleCopperSilver": "Core sample",
+  "Tooltip_IndustricaCoreSampleCopperSilver": "A sample extracted out of the ground.\nContains chunks of copper and traces of silver.",
+
+  "IndustricaOreVeinResourceCopperSilver": "Wiric mix",
+  "Tooltip_IndustricaOreVeinResourceCopperSilver": "A mix of sediment, chunks of copper and traces of silver.\n<b>Without significant processing, the silver cannot be extracted in any meaningful quantity</b>."
 }

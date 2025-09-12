@@ -10,7 +10,7 @@ namespace Industrica.World.OreVein
         {
             Info = PrefabInfo
                 .WithTechType("IndustricaOreVeinTitaniumCopper", false)
-                .WithIcon(SpriteManager.Get(TechType.LimestoneChunk));
+                .WithIcon(OreVeinSprite);
 
             var prefab = new CustomPrefab(Info);
 

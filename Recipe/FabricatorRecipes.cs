@@ -38,6 +38,23 @@ namespace Industrica.Recipe
                     new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
                     new RecipeUtil.UnlockRequirement(ItemsBasic.OreVeinResourceTitaniumCopper.TechType)
                 });
+
+            RecipeUtil.RegisterAlternativeRecipe(
+                result: TechType.Copper,
+                count: 1,
+                recipeData: new()
+                {
+                    Ingredients =
+                    {
+                        new Ingredient(ItemsBasic.OreVeinResourceCopperSilver.TechType, 1)
+                    },
+                    CraftTime = 2f
+                },
+                modifiers: new RecipeUtil.IPrefabModifier[] {
+                    new RecipeUtil.CrafterRecipe(CraftTree.Type.Fabricator, $"Resources/{BasicProcessing}".AsCraftPath()),
+                    new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
+                    new RecipeUtil.UnlockRequirement(ItemsBasic.OreVeinResourceCopperSilver.TechType)
+                });
         }
     }
 }

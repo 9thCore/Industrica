@@ -8,9 +8,11 @@ namespace Industrica.Item.Generic
     {
         public static PrefabInfo CoreSampleEmpty;
         public static PrefabInfo CoreSampleTitaniumCopper;
+        public static PrefabInfo CoreSampleCopperSilver;
 
         public static PrefabInfo OreVeinResourceEmpty;
         public static PrefabInfo OreVeinResourceTitaniumCopper;
+        public static PrefabInfo OreVeinResourceCopperSilver;
 
         public static PrefabInfo Slag;
 
@@ -22,6 +24,9 @@ namespace Industrica.Item.Generic
             new CloneItemBuilder($"Industrica{nameof(CoreSampleTitaniumCopper)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
                 .Build(out CoreSampleTitaniumCopper);
 
+            new CloneItemBuilder($"Industrica{nameof(CoreSampleCopperSilver)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
+                .Build(out CoreSampleCopperSilver);
+
             new CloneItemBuilder($"Industrica{nameof(OreVeinResourceEmpty)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
                 .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
                 .Build(out OreVeinResourceEmpty);
@@ -29,6 +34,10 @@ namespace Industrica.Item.Generic
             new CloneItemBuilder($"Industrica{nameof(OreVeinResourceTitaniumCopper)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
                 .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
                 .Build(out OreVeinResourceTitaniumCopper);
+
+            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceCopperSilver)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
+                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
+                .Build(out OreVeinResourceCopperSilver);
 
             new CloneItemBuilder($"Industrica{nameof(Slag)}", TechType.SeaTreaderPoop, LargeWorldEntity.CellLevel.Near)
                 .Build(out Slag);

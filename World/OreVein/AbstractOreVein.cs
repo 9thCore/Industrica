@@ -70,6 +70,7 @@ namespace Industrica.World.OreVein
             OreVeinHolder.Instance.AllOreVeins.Remove(this);
         }
 
+        public static readonly Sprite OreVeinSprite = SpriteManager.Get(TechType.LimestoneChunk);
         public const LargeWorldEntity.CellLevel CellLevel = LargeWorldEntity.CellLevel.Medium;
         public const float SafetyDistance = 7f;
         public const float RotationClosenessFactor = 0.9f;
