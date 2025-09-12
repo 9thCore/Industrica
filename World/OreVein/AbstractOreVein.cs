@@ -101,6 +101,25 @@ namespace Industrica.World.OreVein
             }
         }
 
+        public record OreVeinBoundedSpawner(
+            OreVeinType OreVeinType,
+            string ClassID,
+            float Range,
+            Dictionary<BiomeType, WorldUtil.BiomeValidator> BiomeSpawnData,
+            Bounds Bounds)
+            : OreVeinSpawner(OreVeinType, ClassID, Range, BiomeSpawnData)
+        {
+            public override bool CanSpawn(in WorldUtil.PositionData positionData)
+            {
+                if (!Bounds.Contains(positionData.worldPosition))
+                {
+                    return false;
+                }
+
+                return base.CanSpawn(in positionData);
+            }
+        }
+
         public record OreVeinDepthSpawner(
             OreVeinType OreVeinType,
             string ClassID,
@@ -132,7 +151,8 @@ namespace Industrica.World.OreVein
         public enum OreVeinType
         {
             TitaniumCopper,
-            CopperSilver
+            CopperSilver,
+            QuartzDiamond
         }
     }
 }

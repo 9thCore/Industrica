@@ -8,6 +8,7 @@ namespace Industrica.Register
         {
             TitaniumCopperOreVein.Register();
             CopperSilverOreVein.Register();
+            QuartzDiamondOreVein.Register();
         }
     }
 }

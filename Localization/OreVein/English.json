@@ -21,5 +21,14 @@
   "Tooltip_IndustricaCoreSampleCopperSilver": "A sample extracted out of the ground.\nContains chunks of copper and traces of silver.",
 
   "IndustricaOreVeinResourceCopperSilver": "Wiric mix",
-  "Tooltip_IndustricaOreVeinResourceCopperSilver": "A mix of sediment, chunks of copper and traces of silver.\n<b>Without significant processing, the silver cannot be extracted in any meaningful quantity</b>."
+  "Tooltip_IndustricaOreVeinResourceCopperSilver": "A mix of sediment, chunks of copper and traces of silver.\n<b>Without significant processing, the silver cannot be extracted in any meaningful quantity</b>.",
+
+
+  "IndustricaOreVeinQuartzDiamond": "Ore vein",
+
+  "IndustricaCoreSampleQuartzDiamond": "Core sample",
+  "Tooltip_IndustricaCoreSampleQuartzDiamond": "A sample extracted out of the ground.\nContains chunks of quartz and traces of diamonds.",
+
+  "IndustricaOreVeinResourceQuartzDiamond": "Silicarbonic mix",
+  "Tooltip_IndustricaOreVeinResourceQuartzDiamond": "A mix of sediment, chunks of quartz and traces of diamonds.\n<b>Without significant processing, the diamonds cannot be extracted in any meaningful quantity</b>."
 }
