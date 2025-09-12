@@ -1,11 +1,5 @@
 ﻿using Industrica.Item.Generic;
-using Industrica.Utility;
 using Nautilus.Assets;
-using Nautilus.Assets.PrefabTemplates;
-using Nautilus.Handlers;
-using Nautilus.Utility;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Industrica.World.OreVein
 {
