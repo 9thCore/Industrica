@@ -157,7 +157,9 @@ namespace Industrica.World.OreVein
             QuartzDiamond,
             QuartzDiamondGuaranteed,
             SilverGold,
-            SilverGoldGuaranteed
+            SilverGoldGuaranteed,
+            LeadUraninite,
+            LeadUraniniteGuaranteed
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Industrica.Recipe
             RegisterBasic(ItemsBasic.OreVeinResourceCopperSilver.TechType, TechType.Copper, craftTime: 30f);
             RegisterBasic(ItemsBasic.OreVeinResourceQuartzDiamond.TechType, TechType.Quartz, craftTime: 30f);
             RegisterBasic(ItemsBasic.OreVeinResourceSilverGold.TechType, TechType.Silver, craftTime: 30f);
+            RegisterBasic(ItemsBasic.OreVeinResourceLeadUraninite.TechType, TechType.Lead, craftTime: 30f);
         }
         
         private static void RegisterBasic(TechType input, TechType output, int count = 1, float craftTime = 5f, List<RecipeUtil.IPrefabModifier> modifiers = null)

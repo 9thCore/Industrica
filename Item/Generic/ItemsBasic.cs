@@ -11,12 +11,14 @@ namespace Industrica.Item.Generic
         public static PrefabInfo CoreSampleCopperSilver;
         public static PrefabInfo CoreSampleQuartzDiamond;
         public static PrefabInfo CoreSampleSilverGold;
+        public static PrefabInfo CoreSampleLeadUraninite;
 
         public static PrefabInfo OreVeinResourceEmpty;
         public static PrefabInfo OreVeinResourceTitaniumCopper;
         public static PrefabInfo OreVeinResourceCopperSilver;
         public static PrefabInfo OreVeinResourceQuartzDiamond;
         public static PrefabInfo OreVeinResourceSilverGold;
+        public static PrefabInfo OreVeinResourceLeadUraninite;
 
         public static PrefabInfo Slag;
 
@@ -37,6 +39,9 @@ namespace Industrica.Item.Generic
             new CloneItemBuilder($"Industrica{nameof(CoreSampleSilverGold)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
                 .Build(out CoreSampleSilverGold);
 
+            new CloneItemBuilder($"Industrica{nameof(CoreSampleLeadUraninite)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
+                .Build(out CoreSampleLeadUraninite);
+
             new CloneItemBuilder($"Industrica{nameof(OreVeinResourceEmpty)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
                 .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
                 .Build(out OreVeinResourceEmpty);
@@ -56,6 +61,10 @@ namespace Industrica.Item.Generic
             new CloneItemBuilder($"Industrica{nameof(OreVeinResourceSilverGold)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
                 .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
                 .Build(out OreVeinResourceSilverGold);
+
+            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceLeadUraninite)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
+                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
+                .Build(out OreVeinResourceLeadUraninite);
 
             new CloneItemBuilder($"Industrica{nameof(Slag)}", TechType.SeaTreaderPoop, LargeWorldEntity.CellLevel.Near)
                 .Build(out Slag);

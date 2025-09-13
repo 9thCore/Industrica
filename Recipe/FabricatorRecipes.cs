@@ -89,6 +89,23 @@ namespace Industrica.Recipe
                     new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
                     new RecipeUtil.UnlockRequirement(ItemsBasic.OreVeinResourceSilverGold.TechType)
                 });
+
+            RecipeUtil.RegisterAlternativeRecipe(
+                result: TechType.Lead,
+                count: 1,
+                recipeData: new()
+                {
+                    Ingredients =
+                    {
+                        new Ingredient(ItemsBasic.OreVeinResourceLeadUraninite.TechType, 1)
+                    },
+                    CraftTime = 2f
+                },
+                modifiers: new RecipeUtil.IPrefabModifier[] {
+                    new RecipeUtil.CrafterRecipe(CraftTree.Type.Fabricator, $"Resources/{BasicProcessing}".AsCraftPath()),
+                    new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
+                    new RecipeUtil.UnlockRequirement(ItemsBasic.OreVeinResourceLeadUraninite.TechType)
+                });
         }
     }
 }
