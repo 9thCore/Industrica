@@ -152,7 +152,8 @@ namespace Industrica.World.OreVein
         {
             TitaniumCopper,
             CopperSilver,
-            QuartzDiamond
+            QuartzDiamond,
+            SilverGold
         }
     }
 }
