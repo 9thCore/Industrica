@@ -11,6 +11,7 @@ namespace Industrica.Register
             QuartzDiamondOreVein.Register();
             SilverGoldOreVein.Register();
             LeadUraniniteOreVein.Register();
+            MagnetiteLithiumOreVein.Register();
         }
     }
 }

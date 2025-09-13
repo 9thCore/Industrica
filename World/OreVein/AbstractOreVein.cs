@@ -159,7 +159,9 @@ namespace Industrica.World.OreVein
             SilverGold,
             SilverGoldGuaranteed,
             LeadUraninite,
-            LeadUraniniteGuaranteed
+            LeadUraniniteGuaranteed,
+            MagnetiteLithium,
+            MagnetiteLithiumGuaranteed
         }
     }
 }

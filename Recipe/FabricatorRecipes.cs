@@ -106,6 +106,23 @@ namespace Industrica.Recipe
                     new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
                     new RecipeUtil.UnlockRequirement(ItemsBasic.OreVeinResourceLeadUraninite.TechType)
                 });
+
+            RecipeUtil.RegisterAlternativeRecipe(
+                result: TechType.Magnetite,
+                count: 1,
+                recipeData: new()
+                {
+                    Ingredients =
+                    {
+                        new Ingredient(ItemsBasic.OreVeinResourceMagnetiteLithium.TechType, 1)
+                    },
+                    CraftTime = 2f
+                },
+                modifiers: new RecipeUtil.IPrefabModifier[] {
+                    new RecipeUtil.CrafterRecipe(CraftTree.Type.Fabricator, $"Resources/{BasicProcessing}".AsCraftPath()),
+                    new RecipeUtil.GroupAndCategory(TechGroup.Resources, BasicProcessingCategory),
+                    new RecipeUtil.UnlockRequirement(ItemsBasic.OreVeinResourceMagnetiteLithium.TechType)
+                });
         }
     }
 }

@@ -48,5 +48,14 @@
   "Tooltip_IndustricaCoreSampleLeadUraninite": "A sample extracted out of the ground.\nContains chunks of lead and traces of uraninite.",
 
   "IndustricaOreVeinResourceLeadUraninite": "Radiatite mix",
-  "Tooltip_IndustricaOreVeinResourceLeadUraninite": "A mix of sediment, chunks of lead and traces of uraninite.\n<b>Without significant processing, the uraninite cannot be extracted in any meaningful quantity</b>."
+  "Tooltip_IndustricaOreVeinResourceLeadUraninite": "A mix of sediment, chunks of lead and traces of uraninite.\n<b>Without significant processing, the uraninite cannot be extracted in any meaningful quantity</b>.",
+
+
+  "IndustricaOreVeinMagnetiteLithium": "Ore vein",
+
+  "IndustricaCoreSampleMagnetiteLithium": "Core sample",
+  "Tooltip_IndustricaCoreSampleMagnetiteLithium": "A sample extracted out of the ground.\nContains chunks of magnetite and traces of lithium.",
+
+  "IndustricaOreVeinResourceMagnetiteLithium": "Depositine mix",
+  "Tooltip_IndustricaOreVeinResourceMagnetiteLithium": "A mix of sediment, chunks of magnetite and traces of lithium.\n<b>Without significant processing, the lithium cannot be extracted in any meaningful quantity</b>."
 }

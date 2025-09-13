@@ -12,6 +12,7 @@ namespace Industrica.Item.Generic
         public static PrefabInfo CoreSampleQuartzDiamond;
         public static PrefabInfo CoreSampleSilverGold;
         public static PrefabInfo CoreSampleLeadUraninite;
+        public static PrefabInfo CoreSampleMagnetiteLithium;
 
         public static PrefabInfo OreVeinResourceEmpty;
         public static PrefabInfo OreVeinResourceTitaniumCopper;
@@ -19,6 +20,7 @@ namespace Industrica.Item.Generic
         public static PrefabInfo OreVeinResourceQuartzDiamond;
         public static PrefabInfo OreVeinResourceSilverGold;
         public static PrefabInfo OreVeinResourceLeadUraninite;
+        public static PrefabInfo OreVeinResourceMagnetiteLithium;
 
         public static PrefabInfo Slag;
 
@@ -41,6 +43,9 @@ namespace Industrica.Item.Generic
 
             new CloneItemBuilder($"Industrica{nameof(CoreSampleLeadUraninite)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
                 .Build(out CoreSampleLeadUraninite);
+
+            new CloneItemBuilder($"Industrica{nameof(CoreSampleMagnetiteLithium)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
+                .Build(out CoreSampleMagnetiteLithium);
 
             new CloneItemBuilder($"Industrica{nameof(OreVeinResourceEmpty)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
                 .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
@@ -65,6 +70,10 @@ namespace Industrica.Item.Generic
             new CloneItemBuilder($"Industrica{nameof(OreVeinResourceLeadUraninite)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
                 .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
                 .Build(out OreVeinResourceLeadUraninite);
+
+            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceMagnetiteLithium)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
+                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
+                .Build(out OreVeinResourceMagnetiteLithium);
 
             new CloneItemBuilder($"Industrica{nameof(Slag)}", TechType.SeaTreaderPoop, LargeWorldEntity.CellLevel.Near)
                 .Build(out Slag);
