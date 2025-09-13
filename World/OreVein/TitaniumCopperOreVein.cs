@@ -17,10 +17,15 @@ namespace Industrica.World.OreVein
             prefab.SetGameObject(() => GetGameObject<TitaniumCopperOreVein>(Info, VeinRange));
             prefab.Register();
 
+            new OreVeinSpawner(VeinGuaranteed, Info.ClassID, VeinRange, new()
+            {
+                { BiomeType.SparseReef_DeepFloor, new BiomeOreValidator(VeinGuaranteed, BiomeType.SparseReef_DeepFloor, 1, 1f) }
+            }).Register();
+
             new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
                 { BiomeType.SparseReef_Sand, new BiomeOreValidator(Vein, BiomeType.SparseReef_Sand, 2, 0.1f) },
-                { BiomeType.SparseReef_DeepFloor, new BiomeOreValidator(Vein, BiomeType.SparseReef_DeepFloor, 3, 0.1f) }
+                { BiomeType.SparseReef_DeepFloor, new BiomeOreValidator(Vein, BiomeType.SparseReef_DeepFloor, 2, 0.1f) }
             }, MinDepth: 200f).Register();
 
             new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
@@ -37,5 +42,6 @@ namespace Industrica.World.OreVein
 
         public const float VeinRange = 5f;
         public const OreVeinType Vein = OreVeinType.TitaniumCopper;
+        public const OreVeinType VeinGuaranteed = OreVeinType.TitaniumCopperGuaranteed;
     }
 }

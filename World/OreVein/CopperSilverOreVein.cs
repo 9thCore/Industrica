@@ -22,10 +22,16 @@ namespace Industrica.World.OreVein
                 { BiomeType.JellyshroomCaves_CaveFloor, new BiomeOreValidator(Vein, BiomeType.JellyshroomCaves_CaveFloor, 2, 0.25f) }
             }).Register();
 
+            float minCragDepth = 175f;
+            new OreVeinDepthSpawner(VeinGuaranteed, Info.ClassID, VeinRange, new()
+            {
+                { BiomeType.CragField_Ground, new BiomeOreValidator(VeinGuaranteed, BiomeType.CragField_Ground, 1, 1f) },
+            }, MinDepth: minCragDepth).Register();
+
             new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.CragField_Ground, new BiomeOreValidator(Vein, BiomeType.CragField_Ground, 5, 0.1f) },
-            }, MinDepth: 175f).Register();
+                { BiomeType.CragField_Ground, new BiomeOreValidator(Vein, BiomeType.CragField_Ground, 4, 0.1f) },
+            }, MinDepth: minCragDepth).Register();
 
             new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
@@ -40,5 +46,6 @@ namespace Industrica.World.OreVein
 
         public const float VeinRange = 5f;
         public const OreVeinType Vein = OreVeinType.CopperSilver;
+        public const OreVeinType VeinGuaranteed = OreVeinType.CopperSilverGuaranteed;
     }
 }

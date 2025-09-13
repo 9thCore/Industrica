@@ -151,9 +151,13 @@ namespace Industrica.World.OreVein
         public enum OreVeinType
         {
             TitaniumCopper,
+            TitaniumCopperGuaranteed,
             CopperSilver,
+            CopperSilverGuaranteed,
             QuartzDiamond,
-            SilverGold
+            QuartzDiamondGuaranteed,
+            SilverGold,
+            SilverGoldGuaranteed
         }
     }
 }

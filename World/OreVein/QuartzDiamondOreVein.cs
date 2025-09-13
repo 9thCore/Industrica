@@ -30,9 +30,14 @@ namespace Industrica.World.OreVein
             }, Bounds: kooshCaveSpawn).Register();
 
             Bounds mountainsSpawn = new Bounds(center: new Vector3(660f, -380f, 1377f), size: new Vector3(130f, 20f, 200f));
+            new OreVeinBoundedSpawner(VeinGuaranteed, Info.ClassID, VeinRange, new()
+            {
+                { BiomeType.Mountains_Sand, new BiomeOreValidator(VeinGuaranteed, BiomeType.Mountains_Sand, 1, 1f) }
+            }, Bounds: mountainsSpawn).Register();
+
             new OreVeinBoundedSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.Mountains_Sand, new BiomeOreValidator(Vein, BiomeType.Mountains_Sand, 3, 0.5f) }
+                { BiomeType.Mountains_Sand, new BiomeOreValidator(Vein, BiomeType.Mountains_Sand, 2, 0.5f) }
             }, Bounds: mountainsSpawn).Register();
         }
 
@@ -43,5 +48,6 @@ namespace Industrica.World.OreVein
 
         public const float VeinRange = 4f;
         public const OreVeinType Vein = OreVeinType.QuartzDiamond;
+        public const OreVeinType VeinGuaranteed = OreVeinType.QuartzDiamondGuaranteed;
     }
 }

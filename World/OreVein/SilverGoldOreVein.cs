@@ -18,10 +18,16 @@ namespace Industrica.World.OreVein
             prefab.SetGameObject(() => GetGameObject<SilverGoldOreVein>(Info, VeinRange));
             prefab.Register();
 
+            float dunesDepth = 345f;
+            new OreVeinDepthSpawner(VeinGuaranteed, Info.ClassID, VeinRange, new()
+            {
+                { BiomeType.Dunes_SandDune, new BiomeOreValidator(VeinGuaranteed, BiomeType.Dunes_SandDune, 3, 1f) }
+            }, MinDepth: dunesDepth).Register();
+
             new OreVeinDepthSpawner(Vein, Info.ClassID, VeinRange, new()
             {
-                { BiomeType.Dunes_SandDune, new BiomeOreValidator(Vein, BiomeType.Dunes_SandDune, 3, 0.08f) }
-            }, MinDepth: 345f).Register();
+                { BiomeType.Dunes_SandDune, new BiomeOreValidator(Vein, BiomeType.Dunes_SandDune, 2, 0.08f) }
+            }, MinDepth: dunesDepth).Register();
 
             new OreVeinSpawner(Vein, Info.ClassID, VeinRange, new()
             {
@@ -55,5 +61,6 @@ namespace Industrica.World.OreVein
 
         public const float VeinRange = 5f;
         public const OreVeinType Vein = OreVeinType.SilverGold;
+        public const OreVeinType VeinGuaranteed = OreVeinType.SilverGoldGuaranteed;
     }
 }
