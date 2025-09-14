@@ -1,91 +1,85 @@
-﻿using Industrica.Item.Generic.Builder;
-using Industrica.Utility;
+﻿using Industrica.Item.Generic.Attributes;
+using Industrica.Item.Generic.Builder;
 using Nautilus.Assets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Industrica.Item.Generic
 {
     public static class ItemsBasic
     {
-        public static PrefabInfo CoreSampleEmpty;
-        public static PrefabInfo CoreSampleTitaniumCopper;
-        public static PrefabInfo CoreSampleCopperSilver;
-        public static PrefabInfo CoreSampleQuartzDiamond;
-        public static PrefabInfo CoreSampleSilverGold;
-        public static PrefabInfo CoreSampleLeadUraninite;
-        public static PrefabInfo CoreSampleMagnetiteLithium;
-        public static PrefabInfo CoreSampleRubyKyanite;
+        [CloneItem(TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)]
+        public static PrefabInfo CoreSampleEmpty,
+            CoreSampleTitaniumCopper,
+            CoreSampleCopperSilver,
+            CoreSampleQuartzDiamond,
+            CoreSampleSilverGold,
+            CoreSampleLeadUraninite,
+            CoreSampleMagnetiteLithium,
+            CoreSampleRubyKyanite;
 
-        public static PrefabInfo OreVeinResourceEmpty;
-        public static PrefabInfo OreVeinResourceTitaniumCopper;
-        public static PrefabInfo OreVeinResourceCopperSilver;
-        public static PrefabInfo OreVeinResourceQuartzDiamond;
-        public static PrefabInfo OreVeinResourceSilverGold;
-        public static PrefabInfo OreVeinResourceLeadUraninite;
-        public static PrefabInfo OreVeinResourceMagnetiteLithium;
-        public static PrefabInfo OreVeinResourceRubyKyanite;
+        [CloneItem(TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)]
+        [ItemBreakableChunkPrefabModifier]
+        public static PrefabInfo OreVeinResourceEmpty,
+            OreVeinResourceTitaniumCopper,
+            OreVeinResourceCopperSilver,
+            OreVeinResourceQuartzDiamond,
+            OreVeinResourceSilverGold,
+            OreVeinResourceLeadUraninite,
+            OreVeinResourceMagnetiteLithium,
+            OreVeinResourceRubyKyanite;
 
+        [CloneItem(TechType.SeaTreaderPoop, LargeWorldEntity.CellLevel.Near)]
         public static PrefabInfo Slag;
+
+        private static IEnumerable<FieldInfo> ItemDefinitions => typeof(ItemsBasic)
+            .GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Where(info => info.FieldType == typeof(PrefabInfo));
 
         public static void Register()
         {
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleEmpty)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleEmpty);
+            RegisterAuto();
+        }
 
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleTitaniumCopper)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleTitaniumCopper);
+        public static void RegisterAuto()
+        {
+            foreach (FieldInfo field in ItemDefinitions)
+            {
+                Attribute[] attributes = Attribute.GetCustomAttributes(field);
 
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleCopperSilver)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleCopperSilver);
+                AbstractItemBuilder itemBuilder = null;
 
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleQuartzDiamond)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleQuartzDiamond);
+                // Ensure the builder is set up before applying modifiers
+                foreach (Attribute attribute in attributes)
+                {
+                    if (attribute is AbstractItemAttribute itemAttribute)
+                    {
+                        itemBuilder = itemAttribute.GetBuilder($"Industrica{field.Name}");
+                        break;
+                    }
+                }
 
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleSilverGold)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleSilverGold);
+                if (itemBuilder == null)
+                {
+                    continue;
+                }
 
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleLeadUraninite)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleLeadUraninite);
+                if (itemBuilder is CloneItemBuilder cloneItemBuilder)
+                {
+                    foreach (Attribute attribute in attributes)
+                    {
+                        if (attribute is AbstractPrefabModifierAttribute prefabModifierAttribute)
+                        {
+                            prefabModifierAttribute.Apply(cloneItemBuilder);
+                        }
+                    }
+                }
 
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleMagnetiteLithium)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleMagnetiteLithium);
-
-            new CloneItemBuilder($"Industrica{nameof(CoreSampleRubyKyanite)}", TechType.LabContainer3, LargeWorldEntity.CellLevel.Near)
-                .Build(out CoreSampleRubyKyanite);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceEmpty)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceEmpty);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceTitaniumCopper)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceTitaniumCopper);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceCopperSilver)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceCopperSilver);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceQuartzDiamond)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceQuartzDiamond);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceSilverGold)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceSilverGold);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceLeadUraninite)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceLeadUraninite);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceMagnetiteLithium)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceMagnetiteLithium);
-
-            new CloneItemBuilder($"Industrica{nameof(OreVeinResourceRubyKyanite)}", TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)
-                .ModifyPrefab(PrefabUtil.MakeBreakableChunkIntoItem)
-                .Build(out OreVeinResourceRubyKyanite);
-
-            new CloneItemBuilder($"Industrica{nameof(Slag)}", TechType.SeaTreaderPoop, LargeWorldEntity.CellLevel.Near)
-                .Build(out Slag);
+                itemBuilder.Build(out PrefabInfo prefabInfo);
+                field.SetValue(null, prefabInfo);
+            }
         }
     }
 }
