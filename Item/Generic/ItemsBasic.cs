@@ -19,17 +19,25 @@ namespace Industrica.Item.Generic
             CoreSampleLeadUraninite,
             CoreSampleMagnetiteLithium,
             CoreSampleRubyKyanite,
-            CoreSampleLithiumNickel;
+            CoreSampleLithiumNickel,
+            CoreSampleCrashPowderSulfur;
 
         [CloneItem(TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)]
         [ItemBreakableChunkPrefabModifier]
         public static PrefabInfo OreVeinResourceEmpty,
             OreVeinResourceTitaniumCopper,
             OreVeinResourceCopperSilver,
-            OreVeinResourceQuartzDiamond,
-            OreVeinResourceSilverGold,
-            OreVeinResourceLeadUraninite,
+            OreVeinResourceSilverGold;
+
+        [CloneItem(TechType.SandstoneChunk, LargeWorldEntity.CellLevel.Near)]
+        [ItemBreakableChunkPrefabModifier]
+        public static PrefabInfo OreVeinResourceQuartzDiamond,
             OreVeinResourceMagnetiteLithium,
+            OreVeinResourceLeadUraninite;
+
+        [CloneItem(TechType.ShaleChunk, LargeWorldEntity.CellLevel.Near)]
+        [ItemBreakableChunkPrefabModifier]
+        public static PrefabInfo OreVeinResourceCrashPowderSulfur,
             OreVeinResourceRubyKyanite,
             OreVeinResourceLithiumNickel;
 

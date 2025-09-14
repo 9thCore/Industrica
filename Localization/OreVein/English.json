@@ -75,5 +75,14 @@
   "Tooltip_IndustricaCoreSampleLithiumNickel": "A sample extracted out of the ground.\nContains chunks of lithium and traces of nickel.",
 
   "IndustricaOreVeinResourceLithiumNickel": "Batterine mix",
-  "Tooltip_IndustricaOreVeinResourceLithiumNickel": "A mix of sediment, chunks of lithium and traces of nickel.\n<b>Without significant processing, the nickel cannot be extracted in any meaningful quantity</b>."
+  "Tooltip_IndustricaOreVeinResourceLithiumNickel": "A mix of sediment, chunks of lithium and traces of nickel.\n<b>Without significant processing, the nickel cannot be extracted in any meaningful quantity</b>.",
+
+
+  "IndustricaOreVeinCrashPowderSulfur": "Ore vein",
+
+  "IndustricaCoreSampleCrashPowderSulfur": "Core sample",
+  "Tooltip_IndustricaCoreSampleCrashPowderSulfur": "A sample extracted out of the ground.\nContains chunks of cave sulfur and traces of crystalline sulfur.",
+
+  "IndustricaOreVeinResourceCrashPowderSulfur": "Sulfuric mix",
+  "Tooltip_IndustricaOreVeinResourceCrashPowderSulfur": "A mix of sediment, chunks of cave sulfur and traces of crystalline sulfur.\n<b>Without significant processing, the crystalline sulfur cannot be extracted in any meaningful quantity</b>."
 }

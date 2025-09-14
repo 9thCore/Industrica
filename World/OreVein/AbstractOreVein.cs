@@ -166,6 +166,8 @@ namespace Industrica.World.OreVein
             RubyKyaniteGuaranteed,
             LithiumNickel,
             LithiumNickelGuaranteed,
+            CrashPowderSulfur,
+            CrashPowderSulfurGuaranteed
         }
     }
 }

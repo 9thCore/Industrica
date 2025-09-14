@@ -52,6 +52,7 @@ namespace Industrica.Buildable.Mining
             GameObject.DestroyImmediate(go.FindChild("model/root/head"));
             GameObject.DestroyImmediate(go.FindChild("Sphere"));
             GameObject.DestroyImmediate(go.FindChild("UI"));
+            GameObject.DestroyImmediate(go.GetComponent<LiveMixin>());
             GameObject.DestroyImmediate(go.GetComponent<ThermalPlant>());
             GameObject.DestroyImmediate(go.GetComponent<PowerSource>());
             GameObject.DestroyImmediate(go.GetComponent<PowerRelay>());

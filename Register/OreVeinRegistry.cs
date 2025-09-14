@@ -8,12 +8,13 @@ namespace Industrica.Register
         {
             TitaniumCopperOreVein.Register();
             CopperSilverOreVein.Register();
-            QuartzDiamondOreVein.Register();
             SilverGoldOreVein.Register();
+            QuartzDiamondOreVein.Register();
             LeadUraniniteOreVein.Register();
             MagnetiteLithiumOreVein.Register();
             RubyKyaniteOreVein.Register();
             LithiumNickelOreVein.Register();
+            CrashPowderSulfurOreVein.Register();
         }
     }
 }
