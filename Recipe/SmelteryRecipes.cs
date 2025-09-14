@@ -36,7 +36,7 @@ namespace Industrica.Recipe
                 {
                     Ingredients =
                     {
-                        new Ingredient(input, 1)
+                        new Ingredient(input, 3)
                     },
                     CraftTime = craftTime
                 },
