@@ -13,6 +13,7 @@ namespace Industrica.Register
             LeadUraniniteOreVein.Register();
             MagnetiteLithiumOreVein.Register();
             RubyKyaniteOreVein.Register();
+            LithiumNickelOreVein.Register();
         }
     }
 }

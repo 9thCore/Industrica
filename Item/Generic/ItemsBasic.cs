@@ -18,7 +18,8 @@ namespace Industrica.Item.Generic
             CoreSampleSilverGold,
             CoreSampleLeadUraninite,
             CoreSampleMagnetiteLithium,
-            CoreSampleRubyKyanite;
+            CoreSampleRubyKyanite,
+            CoreSampleLithiumNickel;
 
         [CloneItem(TechType.LimestoneChunk, LargeWorldEntity.CellLevel.Near)]
         [ItemBreakableChunkPrefabModifier]
@@ -29,7 +30,8 @@ namespace Industrica.Item.Generic
             OreVeinResourceSilverGold,
             OreVeinResourceLeadUraninite,
             OreVeinResourceMagnetiteLithium,
-            OreVeinResourceRubyKyanite;
+            OreVeinResourceRubyKyanite,
+            OreVeinResourceLithiumNickel;
 
         [CloneItem(TechType.SeaTreaderPoop, LargeWorldEntity.CellLevel.Near)]
         public static PrefabInfo Slag;

@@ -66,5 +66,14 @@
   "Tooltip_IndustricaCoreSampleRubyKyanite": "A sample extracted out of the ground.\nContains chunks of ruby and traces of kyanite.",
 
   "IndustricaOreVeinResourceRubyKyanite": "Crystallite mix",
-  "Tooltip_IndustricaOreVeinResourceRubyKyanite": "A mix of sediment, chunks of ruby and traces of kyanite.\n<b>Without significant processing, the kyanite cannot be extracted in any meaningful quantity</b>."
+  "Tooltip_IndustricaOreVeinResourceRubyKyanite": "A mix of sediment, chunks of ruby and traces of kyanite.\n<b>Without significant processing, the kyanite cannot be extracted in any meaningful quantity</b>.",
+
+
+  "IndustricaOreVeinLithiumNickel": "Ore vein",
+
+  "IndustricaCoreSampleLithiumNickel": "Core sample",
+  "Tooltip_IndustricaCoreSampleLithiumNickel": "A sample extracted out of the ground.\nContains chunks of lithium and traces of nickel.",
+
+  "IndustricaOreVeinResourceLithiumNickel": "Batterine mix",
+  "Tooltip_IndustricaOreVeinResourceLithiumNickel": "A mix of sediment, chunks of lithium and traces of nickel.\n<b>Without significant processing, the nickel cannot be extracted in any meaningful quantity</b>."
 }

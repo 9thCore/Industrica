@@ -164,6 +164,8 @@ namespace Industrica.World.OreVein
             MagnetiteLithiumGuaranteed,
             RubyKyanite,
             RubyKyaniteGuaranteed,
+            LithiumNickel,
+            LithiumNickelGuaranteed,
         }
     }
 }
