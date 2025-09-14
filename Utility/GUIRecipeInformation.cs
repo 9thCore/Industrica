@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Industrica.Utility
 {
@@ -186,59 +187,148 @@ namespace Industrica.Utility
             }
         }
 
-        public void OnLayout()
+        public void AddExtraIcons(uGUI_Tooltip instance)
         {
-            float height = rectTransform.sizeDelta.y;
-            OnLayoutMachine(ref height);
+            if (machine != null)
+            {
+                instance.icons.Add(machine);
+            }
 
-            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+            if (craftTimeDisplay != null)
+            {
+                instance.icons.Add(craftTimeDisplay);
+            }
+
+            if (extraIcons != null
+                && extraIcons.Count > 0)
+            {
+                instance.icons.AddRange(extraIcons);
+            }
         }
 
-        private void OnLayoutMachine(ref float height)
+        public void RemoveExtraIcons(uGUI_Tooltip instance)
         {
-            if (machineInfoLayout == null)
+            if (machine != null)
+            {
+                instance.icons.Remove(machine);
+            }
+
+            if (craftTimeDisplay != null)
+            {
+                instance.icons.Remove(craftTimeDisplay);
+            }
+
+            if (extraIcons != null
+                && extraIcons.Count > 0)
+            {
+                foreach (uGUI_TooltipIcon icon in extraIcons)
+                {
+                    instance.icons.Remove(icon);
+                }
+            }
+        }
+
+        public void CalculateLayoutInputHorizontal()
+        {
+            machineInfoLayout.CalculateLayoutInputHorizontal();
+
+            float width = Mathf.Max(rectTransform.sizeDelta.x, machineInfoLayout.preferredWidth + MachineInfoLayoutPadding * 2f);
+            machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        }
+
+        public static void IfExistsCalculateLayoutInputHorizontal()
+        {
+            if (Instance == null
+                || Instance.machineInfoLayout == null)
             {
                 return;
             }
 
-            machine.IfActiveCalculateLayoutInputHorizontal();
-            craftTimeDisplay.IfActiveCalculateLayoutInputHorizontal();
-            foreach (uGUI_TooltipIcon icon in extraIcons)
-            {
-                icon.IfActiveCalculateLayoutInputHorizontal();
-            }
-            machineInfoLayout.CalculateLayoutInputHorizontal();
+            Instance.CalculateLayoutInputHorizontal();
+        }
 
-            machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rectTransform.sizeDelta.x);
-
+        public void SetLayoutHorizontal()
+        {
             machineInfoLayout.SetLayoutHorizontal();
-            machine.IfActiveSetLayoutHorizontal();
-            craftTimeDisplay.IfActiveSetLayoutHorizontal();
-            foreach (uGUI_TooltipIcon icon in extraIcons)
+        }
+
+        public static void IfExistsSetLayoutHorizontal()
+        {
+            if (Instance == null
+                || Instance.machineInfoLayout == null)
             {
-                icon.IfActiveSetLayoutHorizontal();
+                return;
             }
 
-            machine.IfActiveCalculateLayoutInputVertical();
-            craftTimeDisplay.IfActiveCalculateLayoutInputVertical();
-            foreach (uGUI_TooltipIcon icon in extraIcons)
-            {
-                icon.IfActiveCalculateLayoutInputVertical();
-            }
+            Instance.SetLayoutHorizontal();
+        }
+
+        public void CalculateLayoutInputVertical()
+        {
             machineInfoLayout.CalculateLayoutInputVertical();
+        }
 
-            machineInfoLayout.SetLayoutVertical();
-            machine.IfActiveSetLayoutVertical();
-            craftTimeDisplay.IfActiveSetLayoutVertical();
-            foreach (uGUI_TooltipIcon icon in extraIcons)
+        public static void IfExistsCalculateLayoutInputVertical()
+        {
+            if (Instance == null
+                || Instance.machineInfoLayout == null)
             {
-                icon.IfActiveSetLayoutVertical();
+                return;
             }
 
-            machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, machineInfoLayout.preferredHeight);
-            machineInfoLayout.rectTransform.anchoredPosition = new Vector2(rectTransform.sizeDelta.x / 2f, rectTransform.offsetMin.y - machineInfoLayout.preferredHeight / 2f);
+            Instance.CalculateLayoutInputVertical();
+        }
 
-            height += machineInfoLayout.rectTransform.sizeDelta.y;
+        public void SetLayoutVertical()
+        {
+            machineInfoLayout.SetLayoutVertical();
+        }
+
+        public static void IfExistsSetLayoutVertical()
+        {
+            if (Instance == null
+                || Instance.machineInfoLayout == null)
+            {
+                return;
+            }
+
+            Instance.SetLayoutVertical();
+        }
+
+        public float GetNewWidth(float currentWidth)
+        {
+            return Mathf.Max(currentWidth, machineInfoLayout.preferredWidth + 2f * MachineInfoLayoutPadding);
+        }
+
+        public static float IfExistsGetNewWidth(float currentWidth)
+        {
+            if (Instance == null
+                || Instance.machineInfoLayout == null)
+            {
+                return currentWidth;
+            }
+
+            return Instance.GetNewWidth(currentWidth);
+        }
+
+        public float PositionLayoutAndGetNewHeight(float width, float currentHeight)
+        {
+            float preferredHeight = machineInfoLayout.preferredHeight;
+            machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredHeight);
+            machineInfoLayout.rectTransform.anchoredPosition = new Vector2(20f + width / 2f, -currentHeight - preferredHeight / 2f);
+
+            return currentHeight + preferredHeight;
+        }
+
+        public static float IfExistsPositionLayoutAndGetNewHeight(float width, float currentHeight)
+        {
+            if (Instance == null
+                || Instance.machineInfoLayout == null)
+            {
+                return currentHeight;
+            }
+
+            return Instance.PositionLayoutAndGetNewHeight(width, currentHeight);
         }
 
         public void UpdatePosition()
@@ -290,5 +380,6 @@ namespace Industrica.Utility
         }
 
         public const float IconSize = 110f;
+        public const float MachineInfoLayoutPadding = 10f;
     }
 }
