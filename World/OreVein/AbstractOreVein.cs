@@ -161,7 +161,9 @@ namespace Industrica.World.OreVein
             LeadUraninite,
             LeadUraniniteGuaranteed,
             MagnetiteLithium,
-            MagnetiteLithiumGuaranteed
+            MagnetiteLithiumGuaranteed,
+            RubyKyanite,
+            RubyKyaniteGuaranteed,
         }
     }
 }
