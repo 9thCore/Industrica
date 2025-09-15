@@ -42,6 +42,8 @@ namespace Industrica.Buildable.Mining
 
         private static void ModifyPrefab(GameObject go)
         {
+            go.EnsureComponent<DelayedStart>();
+
             PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
             ThermalPlantModel model = go.GetComponentInChildren<ThermalPlantModel>(true);

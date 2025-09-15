@@ -23,6 +23,8 @@ namespace Industrica.Network.Pipe
 
             obj.ModifyPrefab += go =>
             {
+                go.EnsureComponent<DelayedStart>();
+
                 PrefabUtils.AddBasicComponents(go, info.ClassID, info.TechType, LargeWorldEntity.CellLevel.Global);
                 OxygenPipe oxygen = go.GetComponent<OxygenPipe>();
                 P pipe = go.EnsureComponent<P>();

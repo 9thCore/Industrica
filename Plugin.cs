@@ -34,7 +34,7 @@ namespace Industrica
             OreVeinRegistry.Register();
             VanillaPatch.Register();
 
-            WaitScreenHandler.RegisterLateAsyncLoadTask("Industrica", StartDelayer.EnableObjects);
+            WaitScreenHandler.RegisterLateAsyncLoadTask("Industrica", DelayedStart.EnableObjects);
 
             new Harmony(PluginInfo.PLUGIN_GUID).PatchAll();
 

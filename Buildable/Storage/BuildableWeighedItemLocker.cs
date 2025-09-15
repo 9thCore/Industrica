@@ -2,6 +2,7 @@
 using Industrica.Network.Pipe.Item;
 using Industrica.Network.Wire;
 using Industrica.Network.Wire.Output;
+using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -28,6 +29,8 @@ namespace Industrica.Buildable.Storage
 
             template.ModifyPrefab += (GameObject go) =>
             {
+                go.EnsureComponent<DelayedStart>();
+
                 PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
                 GameObject.DestroyImmediate(go.GetComponentInChildren<ColoredLabel>());

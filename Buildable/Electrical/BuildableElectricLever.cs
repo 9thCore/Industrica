@@ -24,6 +24,8 @@ namespace Industrica.Buildable.Electrical
 
             template.ModifyPrefab += (GameObject obj) =>
             {
+                obj.EnsureComponent<DelayedStart>();
+
                 Renderer renderer = obj.GetComponentInChildren<Renderer>();
 
                 PrefabUtils.AddBasicComponents(obj, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);

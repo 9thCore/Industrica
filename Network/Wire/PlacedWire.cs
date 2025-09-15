@@ -28,6 +28,8 @@ namespace Industrica.Network.Wire
 
             obj.ModifyPrefab += go =>
             {
+                go.EnsureComponent<DelayedStart>();
+
                 PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
                 OxygenPipe oxygen = go.GetComponent<OxygenPipe>();
                 PlacedWire wire = go.EnsureComponent<PlacedWire>();

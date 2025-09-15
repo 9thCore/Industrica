@@ -23,6 +23,8 @@ namespace Industrica.Buildable.Storage
 
             template.ModifyPrefab += (GameObject go) =>
             {
+                go.EnsureComponent<DelayedStart>();
+
                 PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
                 ChildObjectIdentifier identifier = go.CreateChild("StorageRoot")

@@ -41,6 +41,8 @@ namespace Industrica.Buildable.Storage
             GameObject prefab = new GameObject(Info.ClassID);
             prefab.SetActive(false);
 
+            prefab.EnsureComponent<DelayedStart>();
+
             result.Set(prefab);
 
             GameObject inOut = prefab.CreateChild(nameof(inOut));

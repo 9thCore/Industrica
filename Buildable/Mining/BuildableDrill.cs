@@ -1,4 +1,5 @@
 ﻿using Industrica.Machine.Mining;
+using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -44,6 +45,8 @@ namespace Industrica.Buildable.Mining
 
         private static void ModifyPrefab(GameObject go)
         {
+            go.EnsureComponent<DelayedStart>();
+
             PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
             ThermalPlantModel model = go.GetComponentInChildren<ThermalPlantModel>(true);

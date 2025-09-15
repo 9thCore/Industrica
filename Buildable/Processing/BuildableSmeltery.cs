@@ -76,7 +76,7 @@ namespace Industrica.Buildable.Processing
 
         private static void ModifyPrefab(GameObject prefab)
         {
-            prefab.EnsureComponent<StartDelayer>();
+            prefab.EnsureComponent<DelayedStart>();
 
             prefab.EnsureComponent<PrefabIdentifier>().classId = Info.ClassID;
             prefab.EnsureComponent<TechTag>().type = Info.TechType;

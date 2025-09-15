@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Industrica.Utility
 {
-    public class StartDelayer : MonoBehaviour
+    public class DelayedStart : MonoBehaviour
     {
         public void Awake()
         {
@@ -51,7 +51,7 @@ namespace Industrica.Utility
             DeferredEnables.Clear();
         }
 
-        private static readonly List<StartDelayer> DeferredEnables = new();
+        private static readonly List<DelayedStart> DeferredEnables = new();
         public const int Timeout = 40;
     }
 }
