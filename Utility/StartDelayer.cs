@@ -10,7 +10,7 @@ namespace Industrica.Utility
         {
             if (LargeWorldStreamer.main.globalRoot == null)
             {
-                Plugin.Logger.LogInfo($"{gameObject} got initialised too quickly, and {nameof(LargeWorldStreamer)}.{nameof(LargeWorldStreamer.globalRoot)} does not yet exist. Waiting before re-enabling...");
+                //Plugin.Logger.LogInfo($"{gameObject} got initialised too quickly, and {nameof(LargeWorldStreamer)}.{nameof(LargeWorldStreamer.globalRoot)} does not yet exist. Waiting before re-enabling...");
 
                 gameObject.SetActive(false);
                 CoroutineHost.StartCoroutine(EnableLater());
@@ -25,7 +25,7 @@ namespace Industrica.Utility
             }
 
             gameObject.SetActive(true);
-            Plugin.Logger.LogInfo($"{nameof(LargeWorldStreamer)}.{nameof(LargeWorldStreamer.globalRoot)} now exists, so {gameObject} has been re-enabled.");
+            //Plugin.Logger.LogInfo($"{nameof(LargeWorldStreamer)}.{nameof(LargeWorldStreamer.globalRoot)} now exists, so {gameObject} has been re-enabled.");
         }
     }
 }
