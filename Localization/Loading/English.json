@@ -1,3 +1,4 @@
 {
-  "IndustricaLoading_Patching": "Patching {0}"
+  "IndustricaLoading_Patching": "Patching {0}",
+  "IndustricaLoading_StartDelayerEnable": "Enabling: {0}/{1}"
 }

@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using Nautilus.Handlers;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UWE;
 
 namespace Industrica.Utility
 {
@@ -10,22 +11,47 @@ namespace Industrica.Utility
         {
             if (LargeWorldStreamer.main.globalRoot == null)
             {
-                //Plugin.Logger.LogInfo($"{gameObject} got initialised too quickly, and {nameof(LargeWorldStreamer)}.{nameof(LargeWorldStreamer.globalRoot)} does not yet exist. Waiting before re-enabling...");
-
                 gameObject.SetActive(false);
-                CoroutineHost.StartCoroutine(EnableLater());
+                DeferredEnables.Add(this);
             }
         }
 
-        private IEnumerator EnableLater()
+        public static IEnumerator EnableObjects(WaitScreenHandler.WaitScreenTask task)
         {
+            if (DeferredEnables.Count == 0)
+            {
+                yield break;
+            }
+
+            // This should exist, but just in case
             while (LargeWorldStreamer.main.globalRoot == null)
             {
                 yield return null;
             }
 
-            gameObject.SetActive(true);
-            //Plugin.Logger.LogInfo($"{nameof(LargeWorldStreamer)}.{nameof(LargeWorldStreamer.globalRoot)} now exists, so {gameObject} has been re-enabled.");
+            int total = DeferredEnables.Count;
+            if (total < Timeout)
+            {
+                yield break;
+            }
+
+            int nextTimeout = Timeout;
+            for (int i = 0; i < total; i++)
+            {
+                if (i == nextTimeout)
+                {
+                    nextTimeout += Timeout;
+                    task.Status = "IndustricaLoading_StartDelayerEnable".Translate(i - 1, total);
+                    yield return null;
+                }
+
+                DeferredEnables[i].gameObject.SetActive(true);
+            }
+
+            DeferredEnables.Clear();
         }
+
+        private static readonly List<StartDelayer> DeferredEnables = new();
+        public const int Timeout = 40;
     }
 }

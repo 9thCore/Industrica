@@ -5,6 +5,7 @@ using Industrica.Patch.Vanilla;
 using Industrica.Register;
 using Industrica.Register.Equipment;
 using Industrica.Save;
+using Industrica.Utility;
 using Nautilus.Handlers;
 
 namespace Industrica
@@ -32,6 +33,8 @@ namespace Industrica
             RecipeRegistry.Register();
             OreVeinRegistry.Register();
             VanillaPatch.Register();
+
+            WaitScreenHandler.RegisterLateAsyncLoadTask("Industrica", StartDelayer.EnableObjects);
 
             new Harmony(PluginInfo.PLUGIN_GUID).PatchAll();
 
