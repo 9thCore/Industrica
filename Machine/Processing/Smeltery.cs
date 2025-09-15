@@ -165,13 +165,17 @@ namespace Industrica.Machine.Processing
             {
                 SmelteryGroup group = groups[i];
 
-                if (group.requiredHeatLevel > currentHeat
-                    || group.timeRemaining <= 0f)
+                if (!group.readyToProcess
+                    || group.requiredHeatLevel > currentHeat)
                 {
                     continue;
                 }
 
-                group.timeRemaining -= DayNightCycle.main.deltaTime * SmelteryRecipeHandler.GetSpeedMultiplier(currentHeat, group.requiredHeatLevel);
+                if (group.timeRemaining > 0f)
+                {
+                    group.timeRemaining -= DayNightCycle.main.deltaTime * SmelteryRecipeHandler.GetSpeedMultiplier(currentHeat, group.requiredHeatLevel);
+                }
+                
                 FinishSmelting(group, i);
             }
         }
@@ -277,7 +281,8 @@ namespace Industrica.Machine.Processing
             {
                 timeRemaining = craftTime,
                 timeTotal = craftTime,
-                requiredHeatLevel = requiredHeatLevel
+                requiredHeatLevel = requiredHeatLevel,
+                readyToProcess = false
             };
             groups.Add(group);
 
@@ -300,6 +305,8 @@ namespace Industrica.Machine.Processing
                     preOutput.container.UnsafeAdd(new InventoryItem(pickupable));
                 });
             }
+
+            group.readyToProcess = true;
         }
         
         public void OnHandClick(HandTargetEventData data)
@@ -378,6 +385,7 @@ namespace Industrica.Machine.Processing
         {
             public readonly List<Pickupable> inputs = new();
             public readonly List<Pickupable> outputs = new();
+            public bool readyToProcess = true;
             public float timeRemaining;
             public float timeTotal;
             public SmelteryRecipeHandler.HeatLevel requiredHeatLevel;
