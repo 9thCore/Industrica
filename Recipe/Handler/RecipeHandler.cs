@@ -93,9 +93,9 @@ namespace Industrica.Recipe.Handler
                             yield return item.item;
 
                             remainingMatches--;
-                            if (remainingMatches < 0)
+                            if (remainingMatches <= 0)
                             {
-                                continue;
+                                break;
                             }
                         }
                     }

@@ -247,7 +247,7 @@ namespace Industrica.Machine.Processing
                 return false;
             }
 
-            IEnumerable<Pickupable> items = recipe.GetUsedItems(recipeInput);
+            List<Pickupable> items = recipe.GetUsedItems(recipeInput).ToList();
             SmelteryRecipeHandler.Recipe.Output[] outputs = recipe.Outputs;
 
             if (!chamber.container.HasRoomFor(items)
