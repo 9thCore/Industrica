@@ -34,29 +34,39 @@ namespace Industrica.Recipe.Handler
             public abstract bool Valid();
         }
 
-        public record RecipeItemInput(InventoryItem[] Items)
+        public record RecipeItemInput(ItemsContainer ItemsContainer)
         {
             public bool Test(IEnumerable<Ingredient> ingredients)
             {
                 foreach (Ingredient ingredient in ingredients)
                 {
-                    int amountUnaccountedFor = ingredient.amount;
-                    foreach (InventoryItem item in Items)
-                    {
-                        if (ingredient.Test(item))
-                        {
-                            amountUnaccountedFor--;
-
-                            if (amountUnaccountedFor == 0)
-                            {
-                                break;
-                            }
-                        }
-                    }
-
-                    if (amountUnaccountedFor > 0)
+                    if (!ItemsContainer._items.TryGetValue(ingredient.techType, out ItemsContainer.ItemGroup group))
                     {
                         return false;
+                    }
+
+                    List<InventoryItem> items = group.items;
+                    if (items == null)
+                    {
+                        return false;
+                    }
+
+                    int itemLeeway = items.Count - ingredient.amount;
+                    if (itemLeeway < 0)
+                    {
+                        return false;
+                    }
+
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        if (!ingredient.Test(items[i]))
+                        {
+                            itemLeeway--;
+                            if (itemLeeway < 0)
+                            {
+                                return false;
+                            }
+                        }
                     }
                 }
 
@@ -67,24 +77,25 @@ namespace Industrica.Recipe.Handler
             {
                 foreach (Ingredient ingredient in ingredients)
                 {
-                    List<InventoryItem> usedItemsForThisIngredient = new();
-
-                    int amountUnaccountedFor = ingredient.amount;
-                    for (int i = Items.Count() - 1; i >= 0; i--)
+                    if (!ItemsContainer._items.TryGetValue(ingredient.techType, out ItemsContainer.ItemGroup group))
                     {
-                        InventoryItem item = Items[i];
+                        yield break;
+                    }
+
+                    List<InventoryItem> items = group.items;
+                    int remainingMatches = ingredient.amount;
+
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        InventoryItem item = items[i];
                         if (ingredient.Test(item))
                         {
-                            amountUnaccountedFor--;
-                            usedItemsForThisIngredient.Add(item);
+                            yield return item.item;
 
-                            if (amountUnaccountedFor == 0)
+                            remainingMatches--;
+                            if (remainingMatches < 0)
                             {
-                                foreach (InventoryItem used in usedItemsForThisIngredient)
-                                {
-                                    yield return used.item;
-                                }
-                                break;
+                                continue;
                             }
                         }
                     }

@@ -26,7 +26,7 @@ namespace Industrica.Machine.Processing
         public BackedTextUIData noHeatUIData, lowHeatUIData, medHeatUIData, highHeatUIData;
 
         private SmelteryRecipeHandler.HeatLevel currentHeat = SmelteryRecipeHandler.HeatLevel.None;
-        private SmelteryRecipeHandler.Recipe cachedRecipe;
+        private SmelteryRecipeHandler.Recipe.Input recipeInput;
         private readonly List<SmelteryGroup> groups = new();
         private SaveData saveData;
 
@@ -135,6 +135,8 @@ namespace Industrica.Machine.Processing
             medHeatUIData.AddOnClickCallback(SetMediumHeat);
             highHeatUIData.AddOnClickCallback(SetHighHeat);
 
+            recipeInput = new(input.container);
+
             saveData = new(this);
         }
 
@@ -237,24 +239,16 @@ namespace Industrica.Machine.Processing
                 return false;
             }
 
-            SmelteryRecipeHandler.Recipe.Input recipeInput = new(input.container.ToArray());
-
-            if (cachedRecipe == null
-                || !cachedRecipe.Test(recipeInput))
+            if (!RecipeHandler.TryGetRecipe<SmelteryRecipeHandler.Recipe.Input, SmelteryRecipeHandler.Recipe.Output, SmelteryRecipeHandler.Recipe>(
+                SmelteryRecipeHandler.Recipes,
+                recipeInput,
+                out SmelteryRecipeHandler.Recipe recipe))
             {
-                if (!RecipeHandler.TryGetRecipe<SmelteryRecipeHandler.Recipe.Input, SmelteryRecipeHandler.Recipe.Output, SmelteryRecipeHandler.Recipe>(
-                    SmelteryRecipeHandler.Recipes,
-                    recipeInput,
-                    out SmelteryRecipeHandler.Recipe recipe))
-                {
-                    return false;
-                }
-
-                cachedRecipe = recipe;
+                return false;
             }
 
-            IEnumerable<Pickupable> items = cachedRecipe.GetUsedItems(recipeInput);
-            SmelteryRecipeHandler.Recipe.Output[] outputs = cachedRecipe.Outputs;
+            IEnumerable<Pickupable> items = recipe.GetUsedItems(recipeInput);
+            SmelteryRecipeHandler.Recipe.Output[] outputs = recipe.Outputs;
 
             if (!chamber.container.HasRoomFor(items)
                 || !preOutput.container.HasRoomFor(outputs))
@@ -265,8 +259,8 @@ namespace Industrica.Machine.Processing
             StartCoroutine(StartSmelting(
                 outputs,
                 items,
-                cachedRecipe.RequiredHeatLevel,
-                cachedRecipe.Data.CraftTime));
+                recipe.RequiredHeatLevel,
+                recipe.Data.CraftTime));
 
             return true;
         }

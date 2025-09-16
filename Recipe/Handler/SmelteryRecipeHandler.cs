@@ -92,15 +92,14 @@ namespace Industrica.Recipe.Handler
                 return input.Item.GetUsedItems(Data.Ingredients);
             }
 
-            public record Input(InventoryItem[] Items)
+            public record Input(ItemsContainer ItemsContainer)
                 : RecipeHandler.RecipeInput
             {
-                public readonly RecipeHandler.RecipeItemInput Item = new(Items);
+                public readonly RecipeHandler.RecipeItemInput Item = new(ItemsContainer);
 
                 public override bool Valid()
                 {
-                    return Items != null
-                        && Items.Any();
+                    return ItemsContainer.count > 0;
                 }
             }
 
