@@ -9,7 +9,7 @@ namespace Industrica.Recipe.Handler
 {
     public static class RecipeHandler
     {
-        public static bool TryGetRecipe<I, O, R>(IEnumerable<R> recipeStorage, I input, out R resultRecipe) where I : RecipeInput where O : RecipeOutput where R : MachineRecipe<I, O>
+        public static bool TryGetRecipe<I, O, R>(IEnumerable<R> recipeStorage, I input, out R resultRecipe) where I : RecipeInput where O : RecipeOutput where R : Recipe<I, O>
         {
             foreach (R recipe in recipeStorage)
             {
@@ -131,7 +131,7 @@ namespace Industrica.Recipe.Handler
             }
         }
 
-        public abstract record MachineRecipe<I, O>(O[] Outputs, ExtendedRecipeData Data) where I : RecipeInput where O : RecipeOutput
+        public abstract record Recipe<I, O>(O[] Outputs, ExtendedRecipeData Data) where I : RecipeInput where O : RecipeOutput
         {
             public abstract bool Test(I input);
         }

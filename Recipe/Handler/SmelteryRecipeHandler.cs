@@ -67,7 +67,7 @@ namespace Industrica.Recipe.Handler
         public const float HighMediumSpeed = HighLowSpeed / MediumLowSpeed;
 
         public record Recipe(Recipe.Output[] Outputs, HeatLevel RequiredHeatLevel, ExtendedRecipeData Data)
-            : RecipeHandler.MachineRecipe<Recipe.Input, Recipe.Output>(Outputs, Data)
+            : RecipeHandler.Recipe<Recipe.Input, Recipe.Output>(Outputs, Data)
         {
             public override bool Test(Input input)
             {
