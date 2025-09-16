@@ -1,4 +1,7 @@
 {
   "IndustricaLoading_Patching": "Patching {0}",
-  "IndustricaLoading_StartDelayerEnable": "Enabling: {0}/{1}"
+  "IndustricaLoading_StartDelayerEnable": "Enabling: {0}/{1}",
+
+  "IndustricaLoading_Localization": "Registering: localization",
+  "IndustricaLoading_SmelteryRecipes": "Registering: smeltery ({0}/{1})"
 }

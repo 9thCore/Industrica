@@ -30,10 +30,10 @@ namespace Industrica
             ItemRegistry.Register();
             BuildableRegistry.Register();
             MiscRegistry.Register();
-            RecipeRegistry.Register();
             OreVeinRegistry.Register();
             VanillaPatch.Register();
 
+            WaitScreenHandler.RegisterEarlyAsyncLoadTask("Industrica", RecipeRegistry.Register);
             WaitScreenHandler.RegisterLateAsyncLoadTask("Industrica", DelayedStart.EnableObjects);
 
             new Harmony(PluginInfo.PLUGIN_GUID).PatchAll();

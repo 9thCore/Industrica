@@ -1,4 +1,7 @@
-﻿namespace Industrica.Recipe
+﻿using Nautilus.Handlers;
+using System.Collections;
+
+namespace Industrica.Recipe
 {
     public static class FabricatorRecipes
     {
@@ -7,8 +10,10 @@
         //public static readonly TechCategory BasicProcessingCategory = EnumHandler.AddEntry<TechCategory>(BasicProcessing)
         //    .RegisterToTechGroup(TechGroup.Resources);
 
-        public static void Register()
+        public static IEnumerator Register(WaitScreenHandler.WaitScreenTask task)
         {
+            yield break;
+
             //CraftTreeHandler.AddTabNode(
             //    CraftTree.Type.Fabricator,
             //    BasicProcessing,

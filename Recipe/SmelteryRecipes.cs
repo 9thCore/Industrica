@@ -3,14 +3,19 @@ using Industrica.Item.Generic;
 using Industrica.Recipe.ExtendedRecipe;
 using Industrica.Recipe.Handler;
 using Industrica.Utility;
+using Nautilus.Handlers;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Industrica.Recipe
 {
     public static class SmelteryRecipes
     {
-        public static void Register()
+        public static IEnumerator Register(WaitScreenHandler.WaitScreenTask task)
         {
+            task.Status = SmelteryLoadingKey.Translate(1, SmelteryRecipeSteps);
+            yield return null;
+
             RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceTitaniumCopper.TechType, TechType.Titanium);
             RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceCopperSilver.TechType, TechType.Copper);
             RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceSilverGold.TechType, TechType.Silver);
@@ -50,5 +55,8 @@ namespace Industrica.Recipe
                 },
                 modifiers: modifiers);
         }
+
+        public const string SmelteryLoadingKey = "IndustricaLoading_SmelteryRecipes";
+        public const int SmelteryRecipeSteps = 1;
     }
 }
