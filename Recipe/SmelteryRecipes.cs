@@ -10,21 +10,26 @@ namespace Industrica.Recipe
     {
         public static void Register()
         {
-            RegisterBasic(ItemsBasic.OreVeinResourceTitaniumCopper.TechType, TechType.Titanium, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceCopperSilver.TechType, TechType.Copper, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceSilverGold.TechType, TechType.Silver, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceQuartzDiamond.TechType, TechType.Quartz, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceLeadUraninite.TechType, TechType.Lead, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceMagnetiteLithium.TechType, TechType.Magnetite, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceRubyKyanite.TechType, TechType.AluminumOxide, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceLithiumNickel.TechType, TechType.Lithium, craftTime: 30f);
-            RegisterBasic(ItemsBasic.OreVeinResourceCrashPowderSulfur.TechType, TechType.CrashPowder, craftTime: 30f);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceTitaniumCopper.TechType, TechType.Titanium);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceCopperSilver.TechType, TechType.Copper);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceSilverGold.TechType, TechType.Silver);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceQuartzDiamond.TechType, TechType.Quartz);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceLeadUraninite.TechType, TechType.Lead);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceMagnetiteLithium.TechType, TechType.Magnetite);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceRubyKyanite.TechType, TechType.AluminumOxide);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceLithiumNickel.TechType, TechType.Lithium);
+            RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceCrashPowderSulfur.TechType, TechType.CrashPowder);
+        }
+
+        private static void RegisterBasicMixProcessing(TechType input, TechType output)
+        {
+            RegisterBasic(new Ingredient(input, 3), output, craftTime: 30f);
         }
         
-        private static void RegisterBasic(TechType input, TechType output, int count = 1, float craftTime = 5f, List<RecipeUtil.IPrefabModifier> modifiers = null)
+        private static void RegisterBasic(Ingredient input, TechType output, int count = 1, float craftTime = 5f, List<RecipeUtil.IPrefabModifier> modifiers = null)
         {
             modifiers ??= new();
-            modifiers.Add(new RecipeUtil.UnlockRequirement(input));
+            modifiers.Add(new RecipeUtil.UnlockRequirement(input.techType));
             modifiers.Add(new RecipeUtil.UnlockRequirement(BuildableSmeltery.Info.TechType));
 
             SmelteryRecipeHandler.Register(
@@ -38,7 +43,7 @@ namespace Industrica.Recipe
                 {
                     Ingredients =
                     {
-                        new Ingredient(input, 3)
+                        input
                     },
                     CraftTime = craftTime
                 },
