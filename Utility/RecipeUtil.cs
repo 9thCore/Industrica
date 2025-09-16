@@ -1,4 +1,4 @@
-﻿using Industrica.Recipe;
+﻿using Industrica.Recipe.ExtendedRecipe;
 using Industrica.Recipe.Handler;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
@@ -23,7 +23,7 @@ namespace Industrica.Utility
             recipeData.LinkedItems ??= new();
             recipeData.LinkedItems.AddRange(Enumerable.Repeat(result, count));
 
-            recipeData.craftAmount = 0;
+            recipeData.CraftAmount = 0;
 
             if (CloneCount.TryGetValue(result, out int clones))
             {

@@ -1,5 +1,6 @@
 ﻿using Industrica.Buildable.Processing;
 using Industrica.Item.Generic;
+using Industrica.Recipe.ExtendedRecipe;
 using Industrica.Recipe.Handler;
 using Industrica.Utility;
 using System.Collections.Generic;
@@ -23,13 +24,13 @@ namespace Industrica.Recipe
 
         private static void RegisterBasicMixProcessing(TechType input, TechType output)
         {
-            RegisterBasic(new Ingredient(input, 3), output, craftTime: 30f);
+            RegisterBasic(new ItemIngredient(input, 3), output, craftTime: 30f);
         }
         
-        private static void RegisterBasic(Ingredient input, TechType output, int count = 1, float craftTime = 5f, List<RecipeUtil.IPrefabModifier> modifiers = null)
+        private static void RegisterBasic(ItemIngredient input, TechType output, int count = 1, float craftTime = 5f, List<RecipeUtil.IPrefabModifier> modifiers = null)
         {
             modifiers ??= new();
-            modifiers.Add(new RecipeUtil.UnlockRequirement(input.techType));
+            modifiers.Add(new RecipeUtil.UnlockRequirement(input.TechType));
             modifiers.Add(new RecipeUtil.UnlockRequirement(BuildableSmeltery.Info.TechType));
 
             SmelteryRecipeHandler.Register(
@@ -41,7 +42,7 @@ namespace Industrica.Recipe
                 heatLevel: SmelteryRecipeHandler.HeatLevel.Low,
                 recipeData: new()
                 {
-                    Ingredients =
+                    ItemIngredients =
                     {
                         input
                     },

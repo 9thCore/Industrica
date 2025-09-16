@@ -1,4 +1,5 @@
 ﻿using Industrica.Buildable.Processing;
+using Industrica.Recipe.ExtendedRecipe;
 using Industrica.Utility;
 using Nautilus.Handlers;
 using System.Collections.Generic;
@@ -76,20 +77,20 @@ namespace Industrica.Recipe.Handler
                     return false;
                 }
 
-                if (Data.Catalysts == null)
+                if (Data.ItemCatalysts == null)
                 {
-                    return input.Item.Test(Data.Ingredients);
+                    return input.Item.Test(Data.ItemIngredients);
                 }
 
                 // This fails if catalysts and ingredients have a shared
                 // ingredient, but whatever I'll just not have that I guess
-                return input.Item.Test(Data.Catalysts)
-                    && input.Item.Test(Data.Ingredients);
+                return input.Item.Test(Data.ItemCatalysts)
+                    && input.Item.Test(Data.ItemIngredients);
             }
 
             public IEnumerable<Pickupable> GetUsedItems(Input input)
             {
-                return input.Item.GetUsedItems(Data.Ingredients);
+                return input.Item.GetUsedItems(Data.ItemIngredients);
             }
 
             public record Input(ItemsContainer ItemsContainer)

@@ -1,4 +1,5 @@
-﻿using Industrica.Utility;
+﻿using Industrica.Recipe.ExtendedRecipe;
+using Industrica.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,11 +25,6 @@ namespace Industrica.Recipe.Handler
             return false;
         }
 
-        public static bool Test(this Ingredient ingredient, InventoryItem inventoryItem)
-        {
-            return ingredient.techType == inventoryItem.techType;
-        }
-
         public abstract record RecipeInput()
         {
             public abstract bool Valid();
@@ -36,11 +32,11 @@ namespace Industrica.Recipe.Handler
 
         public record RecipeItemInput(ItemsContainer ItemsContainer)
         {
-            public bool Test(IEnumerable<Ingredient> ingredients)
+            public bool Test(IEnumerable<ItemIngredient> ingredients)
             {
-                foreach (Ingredient ingredient in ingredients)
+                foreach (ItemIngredient ingredient in ingredients)
                 {
-                    if (!ItemsContainer._items.TryGetValue(ingredient.techType, out ItemsContainer.ItemGroup group))
+                    if (!ItemsContainer._items.TryGetValue(ingredient.TechType, out ItemsContainer.ItemGroup group))
                     {
                         return false;
                     }
@@ -51,7 +47,7 @@ namespace Industrica.Recipe.Handler
                         return false;
                     }
 
-                    int itemLeeway = items.Count - ingredient.amount;
+                    int itemLeeway = items.Count - ingredient.Amount;
                     if (itemLeeway < 0)
                     {
                         return false;
@@ -73,17 +69,17 @@ namespace Industrica.Recipe.Handler
                 return true;
             }
 
-            public IEnumerable<Pickupable> GetUsedItems(IEnumerable<Ingredient> ingredients)
+            public IEnumerable<Pickupable> GetUsedItems(IEnumerable<ItemIngredient> ingredients)
             {
-                foreach (Ingredient ingredient in ingredients)
+                foreach (ItemIngredient ingredient in ingredients)
                 {
-                    if (!ItemsContainer._items.TryGetValue(ingredient.techType, out ItemsContainer.ItemGroup group))
+                    if (!ItemsContainer._items.TryGetValue(ingredient.TechType, out ItemsContainer.ItemGroup group))
                     {
                         yield break;
                     }
 
                     List<InventoryItem> items = group.items;
-                    int remainingMatches = ingredient.amount;
+                    int remainingMatches = ingredient.Amount;
 
                     for (int i = 0; i < items.Count; i++)
                     {
