@@ -105,10 +105,9 @@ namespace Industrica.Recipe.Handler
 
         public abstract record RecipeOutput(TechType TechType, int Count)
         {
-            public bool HasRoomIn(ItemsContainer container)
+            public void GetSizes(List<Vector2int> outputList)
             {
-                List<Vector2int> sizes = Enumerable.Repeat(TechData.GetItemSize(TechType), Count).ToList();
-                return container.HasRoomFor(sizes);
+                outputList.AddRange(Enumerable.Repeat(TechData.GetItemSize(TechType), Count));
             }
 
             public IEnumerator RunOnItems(Action<Pickupable> callback)

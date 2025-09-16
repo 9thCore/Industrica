@@ -33,7 +33,13 @@ namespace Industrica.Utility
 
         public static bool HasRoomFor(this ItemsContainer container, IEnumerable<RecipeHandler.RecipeOutput> outputs)
         {
-            return outputs.All(output => output.HasRoomIn(container));
+            List<Vector2int> result = new();
+            foreach (var output in outputs)
+            {
+                output.GetSizes(result);
+            }
+
+            return container.HasRoomFor(result);
         }
 
         public static bool DisallowAction(Pickupable pickupable, bool verbose)
