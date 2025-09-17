@@ -105,7 +105,7 @@ namespace Industrica.Recipe.Handler
             }
 
             public record Output(TechType TechType, int Count)
-                : RecipeHandler.RecipeOutput(TechType, Count);
+                : RecipeHandler.RecipeItemOutput(TechType, Count);
         }
 
         public class SmelteryInformation : RecipeDisplayUtil.Information

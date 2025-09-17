@@ -99,7 +99,9 @@ namespace Industrica.Recipe.Handler
             }
         }
 
-        public abstract record RecipeOutput(TechType TechType, int Count)
+        public abstract record RecipeOutput(TechType TechType, int Count);
+
+        public abstract record RecipeItemOutput(TechType TechType, int Count) : RecipeOutput(TechType, Count)
         {
             public void GetSizes(List<Vector2int> outputList)
             {

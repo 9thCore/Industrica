@@ -31,7 +31,7 @@ namespace Industrica.Utility
             return container.HasRoomFor(sizes);
         }
 
-        public static bool HasRoomFor(this ItemsContainer container, IEnumerable<RecipeHandler.RecipeOutput> outputs)
+        public static bool HasRoomFor(this ItemsContainer container, IEnumerable<RecipeHandler.RecipeItemOutput> outputs)
         {
             List<Vector2int> result = new();
             foreach (var output in outputs)
