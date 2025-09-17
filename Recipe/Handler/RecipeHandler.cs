@@ -99,10 +99,26 @@ namespace Industrica.Recipe.Handler
             }
         }
 
-        public abstract record RecipeOutput(TechType TechType, int Count);
+        public abstract record RecipeOutput(TechType TechType, int Count)
+        {
+            public abstract TooltipIcon GetTooltipIcon();
+        }
 
         public abstract record RecipeItemOutput(TechType TechType, int Count) : RecipeOutput(TechType, Count)
         {
+            public override TooltipIcon GetTooltipIcon()
+            {
+                Sprite sprite = SpriteManager.Get(TechType);
+                string name = TechType.AsString().Translate();
+
+                if (Count == 1)
+                {
+                    return new TooltipIcon(sprite, "IndustricaItemByproductFormatOne".Translate(name));
+                }
+
+                return new TooltipIcon(sprite, "IndustricaItemByproductFormatMultiple".Translate(name, Count));
+            }
+
             public void GetSizes(List<Vector2int> outputList)
             {
                 outputList.AddRange(Enumerable.Repeat(TechData.GetItemSize(TechType), Count));

@@ -37,7 +37,7 @@ namespace Industrica.Recipe.Handler
             modifiers.Add(new RecipeUtil.GroupAndCategory(TechGroup.Resources, SmeltingCategory));
             TechType recipe = RecipeUtil.RegisterAlternativeRecipe(outputs[0].TechType, outputs[0].Count, fakeRecipeData, modifiers.ToArray());
 
-            RecipeDisplayUtil.SetRecipeInformation(recipe, new SmelteryInformation(recipeData.CraftTime, heatLevel));
+            RecipeDisplayUtil.SetRecipeInformation(recipe, new SmelteryInformation(recipeData.CraftTime, heatLevel, outputs));
         }
 
         public static float GetSpeedMultiplier(HeatLevel currentHeatLevel, HeatLevel neededHeatLevel)
@@ -110,11 +110,12 @@ namespace Industrica.Recipe.Handler
 
         public class SmelteryInformation : RecipeDisplayUtil.Information
         {
-            public SmelteryInformation(float craftTime, HeatLevel heat) : base(
+            public SmelteryInformation(float craftTime, HeatLevel heat, Recipe.Output[] outputs) : base(
                 new TooltipIcon(
                     SpriteManager.Get(BuildableSmeltery.Info.TechType),
                     BuildableSmeltery.Info.TechType.AsString())
-                , craftTime)
+                , craftTime
+                , outputs)
             {
                 extraIcons.Add(new TooltipIcon(SpriteManager.Get(TechType.CyclopsFireSuppressionModule), $"IndustricaSmelteryHeat{heat}"));
             }

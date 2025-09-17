@@ -13,6 +13,9 @@
 
   "IndustricaMachineCraftFormat": "<color=#ADADAD>Crafted in</color>\n{0}",
 
+  "IndustricaItemByproductFormatOne": "<size=18><color=#ADADAD>Byproduct</color></size>\n{0}",
+  "IndustricaItemByproductFormatMultiple": "<size=18><color=#ADADAD>Byproduct</color></size>\n{0} (x{1})",
+
   "IndustricaSmelteryHeatLow": "<color=#ADADAD>Requires heat</color>\nLow",
   "IndustricaSmelteryHeatMedium": "<color=#ADADAD>Requires heat</color>\nMedium",
   "IndustricaSmelteryHeatHigh": "<color=#ADADAD>Requires heat</color>\nHigh"

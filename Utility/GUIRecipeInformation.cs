@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Industrica.Recipe.Handler;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Industrica.Utility
 {
@@ -11,9 +12,11 @@ namespace Industrica.Utility
         private RecipeDisplayUtil.Information previousInformation;
         private RectTransform rectTransform;
         private FlexibleGridLayout machineInfoLayout;
+        private FlexibleGridLayout byproductsLayout;
         private uGUI_TooltipIcon machine;
         private uGUI_TooltipIcon craftTimeDisplay;
         private List<uGUI_TooltipIcon> extraIcons;
+        private List<uGUI_TooltipIcon> byproductIcons;
         private TechType techType;
         
         private void Awake()
@@ -46,6 +49,7 @@ namespace Industrica.Utility
             ResetMachine();
             ResetCraftTime();
             ResetIcons();
+            ResetByproducts();
         }
 
         private void SetInformation(RecipeDisplayUtil.Information information)
@@ -75,22 +79,41 @@ namespace Industrica.Utility
             {
                 SetIcons(information.extraIcons);
             }
+
+            if (information.byproducts != null)
+            {
+                SetByproducts(information.byproducts);
+            }
         }
-        
+
         private Transform GetOrCreateMachineInfoLayout()
         {
             if (machineInfoLayout == null)
             {
                 GameObject layout = uGUI_Tooltip.main.iconCanvas.transform.parent.gameObject.CreateChild($"Industrica{nameof(machineInfoLayout)}");
+                layout.layer = LayerID.UI;
                 machineInfoLayout = layout.AddComponent<FlexibleGridLayout>();
                 machineInfoLayout.horizontalAlignment = FlexibleGridLayout.HorizontalAlignment.Center;
                 machineInfoLayout.rectTransform.anchorMin = Vector2.up;
                 machineInfoLayout.rectTransform.anchorMax = Vector2.up;
-                machineInfoLayout.clampMaxWidth = true;
-                machineInfoLayout.useOnlyMinWidth = true;
             }
 
             return machineInfoLayout.transform;
+        }
+
+        private Transform GetOrCreateByproductsLayout()
+        {
+            if (byproductsLayout == null)
+            {
+                GameObject layout = uGUI_Tooltip.main.iconCanvas.transform.parent.gameObject.CreateChild($"Industrica{nameof(byproductsLayout)}");
+                layout.layer = LayerID.UI;
+                byproductsLayout = layout.AddComponent<FlexibleGridLayout>();
+                byproductsLayout.horizontalAlignment = FlexibleGridLayout.HorizontalAlignment.Center;
+                byproductsLayout.rectTransform.anchorMin = Vector2.up;
+                byproductsLayout.rectTransform.anchorMax = Vector2.up;
+            }
+
+            return byproductsLayout.transform;
         }
 
         private uGUI_TooltipIcon CreateTooltipIcon(Transform parent, float width, float height)
@@ -127,10 +150,7 @@ namespace Industrica.Utility
 
         private void SetIcons(List<TooltipIcon> icons)
         {
-            if (extraIcons == null)
-            {
-                extraIcons = new();
-            }
+            extraIcons ??= new();
 
             while (extraIcons.Count < icons.Count)
             {
@@ -150,6 +170,31 @@ namespace Industrica.Utility
             for (; i < extraIcons.Count; i++)
             {
                 extraIcons[i].gameObject.SetActive(false);
+            }
+        }
+
+        private void SetByproducts(RecipeHandler.RecipeOutput[] byproducts)
+        {
+            byproductIcons ??= new();
+
+            while (byproductIcons.Count < byproducts.Length)
+            {
+                byproductIcons.Add(CreateTooltipIcon(GetOrCreateByproductsLayout(), ByproductIconSize, ByproductIconSize));
+            }
+
+            int i;
+            for (i = 0; i < byproducts.Length; i++)
+            {
+                uGUI_TooltipIcon byproduct = byproductIcons[i];
+                TooltipIcon icon = byproducts[i].GetTooltipIcon();
+                byproduct.SetIcon(icon.sprite);
+                byproduct.SetText(icon.text);
+                byproduct.gameObject.SetActive(true);
+            }
+
+            for (; i < byproductIcons.Count; i++)
+            {
+                byproductIcons[i].gameObject.SetActive(false);
             }
         }
 
@@ -187,6 +232,20 @@ namespace Industrica.Utility
             }
         }
 
+        private void ResetByproducts()
+        {
+            if (byproductIcons == null
+                || byproductIcons.Count == 0)
+            {
+                return;
+            }
+
+            foreach (uGUI_TooltipIcon icon in byproductIcons)
+            {
+                icon.gameObject.SetActive(false);
+            }
+        }
+
         public void AddExtraIcons(uGUI_Tooltip instance)
         {
             if (machine != null)
@@ -203,6 +262,12 @@ namespace Industrica.Utility
                 && extraIcons.Count > 0)
             {
                 instance.icons.AddRange(extraIcons);
+            }
+
+            if (byproductIcons != null
+                && byproductIcons.Count > 0)
+            {
+                instance.icons.AddRange(byproductIcons);
             }
         }
 
@@ -226,20 +291,43 @@ namespace Industrica.Utility
                     instance.icons.Remove(icon);
                 }
             }
+
+            if (byproductIcons != null
+                && byproductIcons.Count > 0)
+            {
+                foreach (uGUI_TooltipIcon icon in byproductIcons)
+                {
+                    instance.icons.Remove(icon);
+                }
+            }
         }
 
         public void CalculateLayoutInputHorizontal()
         {
-            machineInfoLayout.CalculateLayoutInputHorizontal();
+            float width = rectTransform.sizeDelta.x;
 
-            float width = Mathf.Max(rectTransform.sizeDelta.x, machineInfoLayout.preferredWidth + MachineInfoLayoutPadding * 2f);
-            machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            if (machineInfoLayout != null)
+            {
+                machineInfoLayout.CalculateLayoutInputHorizontal();
+                width = Mathf.Max(width, machineInfoLayout.preferredWidth + MachineInfoLayoutPadding * 2f);
+            }
+
+            if (byproductsLayout != null)
+            {
+                byproductsLayout.CalculateLayoutInputHorizontal();
+                width = Mathf.Max(width, byproductsLayout.preferredWidth + ByproductLayoutPadding * 2f);
+                byproductsLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            }
+
+            if (machineInfoLayout != null)
+            {
+                machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            }
         }
 
         public static void IfExistsCalculateLayoutInputHorizontal()
         {
-            if (Instance == null
-                || Instance.machineInfoLayout == null)
+            if (Instance == null)
             {
                 return;
             }
@@ -249,13 +337,20 @@ namespace Industrica.Utility
 
         public void SetLayoutHorizontal()
         {
-            machineInfoLayout.SetLayoutHorizontal();
+            if (machineInfoLayout != null)
+            {
+                machineInfoLayout.SetLayoutHorizontal();
+            }
+            
+            if (byproductsLayout != null)
+            {
+                byproductsLayout.SetLayoutHorizontal();
+            }
         }
 
         public static void IfExistsSetLayoutHorizontal()
         {
-            if (Instance == null
-                || Instance.machineInfoLayout == null)
+            if (Instance == null)
             {
                 return;
             }
@@ -265,13 +360,20 @@ namespace Industrica.Utility
 
         public void CalculateLayoutInputVertical()
         {
-            machineInfoLayout.CalculateLayoutInputVertical();
+            if (machineInfoLayout != null)
+            {
+                machineInfoLayout.CalculateLayoutInputVertical();
+            }
+            
+            if (byproductsLayout != null)
+            {
+                byproductsLayout.CalculateLayoutInputVertical();
+            }
         }
 
         public static void IfExistsCalculateLayoutInputVertical()
         {
-            if (Instance == null
-                || Instance.machineInfoLayout == null)
+            if (Instance == null)
             {
                 return;
             }
@@ -281,13 +383,20 @@ namespace Industrica.Utility
 
         public void SetLayoutVertical()
         {
-            machineInfoLayout.SetLayoutVertical();
+            if (machineInfoLayout != null)
+            {
+                machineInfoLayout.SetLayoutVertical();
+            }
+            
+            if (byproductsLayout != null)
+            {
+                byproductsLayout.SetLayoutVertical();
+            }
         }
 
         public static void IfExistsSetLayoutVertical()
         {
-            if (Instance == null
-                || Instance.machineInfoLayout == null)
+            if (Instance == null)
             {
                 return;
             }
@@ -297,13 +406,22 @@ namespace Industrica.Utility
 
         public float GetNewWidth(float currentWidth)
         {
-            return Mathf.Max(currentWidth, machineInfoLayout.preferredWidth + 2f * MachineInfoLayoutPadding);
+            if (machineInfoLayout != null)
+            {
+                currentWidth = Mathf.Max(currentWidth, machineInfoLayout.preferredWidth + 2f * MachineInfoLayoutPadding);
+            }
+
+            if (byproductsLayout != null)
+            {
+                currentWidth = Mathf.Max(currentWidth, byproductsLayout.preferredWidth + 2f * ByproductLayoutPadding);
+            }
+
+            return currentWidth;
         }
 
         public static float IfExistsGetNewWidth(float currentWidth)
         {
-            if (Instance == null
-                || Instance.machineInfoLayout == null)
+            if (Instance == null)
             {
                 return currentWidth;
             }
@@ -313,17 +431,30 @@ namespace Industrica.Utility
 
         public float PositionLayoutAndGetNewHeight(float width, float currentHeight)
         {
-            float preferredHeight = machineInfoLayout.preferredHeight;
-            machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredHeight);
-            machineInfoLayout.rectTransform.anchoredPosition = new Vector2(20f + width / 2f, -currentHeight - preferredHeight / 2f);
+            if (byproductsLayout != null)
+            {
+                float preferredHeight = byproductsLayout.preferredHeight;
+                byproductsLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredHeight);
+                byproductsLayout.rectTransform.anchoredPosition = new Vector2(20f + width / 2f, -currentHeight - preferredHeight / 2f);
 
-            return currentHeight + preferredHeight;
+                currentHeight += preferredHeight;
+            }
+
+            if (machineInfoLayout != null)
+            {
+                float preferredHeight = machineInfoLayout.preferredHeight;
+                machineInfoLayout.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredHeight);
+                machineInfoLayout.rectTransform.anchoredPosition = new Vector2(20f + width / 2f, -currentHeight - preferredHeight / 2f);
+
+                currentHeight += preferredHeight;
+            }
+
+            return currentHeight;
         }
 
         public static float IfExistsPositionLayoutAndGetNewHeight(float width, float currentHeight)
         {
-            if (Instance == null
-                || Instance.machineInfoLayout == null)
+            if (Instance == null)
             {
                 return currentHeight;
             }
@@ -336,6 +467,7 @@ namespace Industrica.Utility
             UpdatePositionMachine();
             UpdatePositionCraftTime();
             UpdatePositionIcons();
+            UpdatePositionByproducts();
         }
 
         private void UpdatePositionMachine()
@@ -379,7 +511,28 @@ namespace Industrica.Utility
             }
         }
 
+        private void UpdatePositionByproducts()
+        {
+            if (byproductIcons == null
+                || byproductIcons.Count == 0)
+            {
+                return;
+            }
+
+            foreach (uGUI_TooltipIcon icon in byproductIcons)
+            {
+                if (!icon.isActiveAndEnabled)
+                {
+                    continue;
+                }
+
+                icon.title.SetScaleDirty();
+            }
+        }
+
         public const float IconSize = 110f;
+        public const float ByproductIconSize = 86f;
         public const float MachineInfoLayoutPadding = 10f;
+        public const float ByproductLayoutPadding = 10f;
     }
 }

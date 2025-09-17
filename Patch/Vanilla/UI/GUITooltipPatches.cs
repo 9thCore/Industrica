@@ -52,7 +52,6 @@ namespace Industrica.Patch.Vanilla.UI
                 return;
             }
 
-            
             GUIRecipeInformation.Instance.RemoveExtraIcons(__instance);
         }
 
