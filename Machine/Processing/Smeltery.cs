@@ -1,6 +1,6 @@
 ﻿using Industrica.Buildable.Processing;
 using Industrica.ClassBase;
-using Industrica.ClassBase.Addons.Machine;
+using Industrica.ClassBase.Modules.ProcessingMachine;
 using Industrica.Recipe.Handler;
 using Industrica.Save;
 using Industrica.UI.Bar;
@@ -14,50 +14,42 @@ using UnityEngine;
 
 namespace Industrica.Machine.Processing
 {
-    public class Smeltery : BaseMachine, IRelayPowerChangeListener
+    public class Smeltery : BaseProcessingMachine<
+        SmelteryRecipeHandler.Recipe.Input,
+        SmelteryRecipeHandler.Recipe.Output,
+        SmelteryRecipeHandler.Recipe,
+        Smeltery.SmelteryGroup,
+        Smeltery.SerialisedSmelteryGroup>
     {
-        public GenericHandTarget handTarget;
-        public StorageContainer input;
-        public StorageContainer output;
-        public StorageContainer chamber;
-        public StorageContainer preOutput;
-
         public TextUIData heatInfoUIData;
         public BackedTextUIData noHeatUIData, lowHeatUIData, medHeatUIData, highHeatUIData;
+        public ProcessingMachineItemModule inputModule, chamberModule, temporaryOutputModule, outputModule;
 
         private SmelteryRecipeHandler.HeatLevel currentHeat = SmelteryRecipeHandler.HeatLevel.None;
-        private SmelteryRecipeHandler.Recipe.Input recipeInput;
-        private readonly List<SmelteryGroup> groups = new();
         private SaveData saveData;
 
-        public Smeltery WithHandTarget(GenericHandTarget handTarget)
+        public ProcessingMachineItemModule BeginInputModuleSetup()
         {
-            this.handTarget = handTarget;
-            return this;
+            inputModule = AddProcessingItemModule<ProcessingMachineItemModule>();
+            return inputModule;
         }
 
-        public Smeltery WithInput(StorageContainer input)
+        public ProcessingMachineItemModule BeginChamberModuleSetup()
         {
-            this.input = input;
-            return this;
+            chamberModule = AddProcessingItemModule<ProcessingMachineItemModule>();
+            return chamberModule;
         }
 
-        public Smeltery WithOutput(StorageContainer output)
+        public ProcessingMachineItemModule BeginPreOutputModuleSetup()
         {
-            this.output = output;
-            return this;
+            temporaryOutputModule = AddProcessingItemModule<ProcessingMachineItemModule>();
+            return temporaryOutputModule;
         }
 
-        public Smeltery WithChamber(StorageContainer chamber)
+        public ProcessingMachineItemModule BeginOutputModuleSetup()
         {
-            this.chamber = chamber;
-            return this;
-        }
-
-        public Smeltery WithPreOutput(StorageContainer preOutput)
-        {
-            this.preOutput = preOutput;
-            return this;
+            outputModule = AddProcessingItemModule<ProcessingMachineItemModule>();
+            return outputModule;
         }
 
         public Smeltery SetupUI(GameObject screen)
@@ -111,36 +103,15 @@ namespace Industrica.Machine.Processing
         {
             base.Start();
 
-            input.isValidHandTarget = false;
-            output.isValidHandTarget = false;
-            chamber.isValidHandTarget = false;
-            preOutput.isValidHandTarget = false;
-
-            handTarget.onHandClick = new();
-            handTarget.onHandClick.AddListener(OnHandClick);
-            handTarget.onHandHover = new();
-            handTarget.onHandHover.AddListener(OnHandHover);
-
-            input.container.onAddItem += OnAddItem;
-            output.container.onRemoveItem += OnRemoveItem;
-            
-            output.container.isAllowedToAdd = SNUtil.DisallowAction;
-            chamber.container.isAllowedToAdd = SNUtil.DisallowAction;
-            chamber.container.isAllowedToRemove = SNUtil.DisallowAction;
-            preOutput.container.isAllowedToAdd = SNUtil.DisallowAction;
-            preOutput.container.isAllowedToRemove = SNUtil.DisallowAction;
-
             noHeatUIData.AddOnClickCallback(SetNoHeat);
             lowHeatUIData.AddOnClickCallback(SetLowHeat);
             medHeatUIData.AddOnClickCallback(SetMediumHeat);
             highHeatUIData.AddOnClickCallback(SetHighHeat);
 
-            recipeInput = new(input.container);
-
             saveData = new(this);
         }
 
-        public void Update()
+        public override void OnUpdate()
         {
             switch (currentHeat)
             {
@@ -156,102 +127,54 @@ namespace Industrica.Machine.Processing
                 default:
                     break;
             }
+        }
+        
+        public override bool CanProcessGroups() => IsPowered();
 
-            if (groups.Count == 0
-                || !IsPowered())
-            {
-                return;
-            }
-
-            for (int i = groups.Count - 1; i >= 0; i--)
-            {
-                SmelteryGroup group = groups[i];
-
-                if (!group.readyToProcess
-                    || group.requiredHeatLevel > currentHeat)
-                {
-                    continue;
-                }
-
-                if (group.timeRemaining > 0f)
-                {
-                    group.timeRemaining -= DayNightCycle.main.deltaTime * SmelteryRecipeHandler.GetSpeedMultiplier(currentHeat, group.requiredHeatLevel);
-                }
-                
-                FinishSmelting(group, i);
-            }
+        public override float GetProcessingSpeed(SmelteryGroup group)
+        {
+            return SmelteryRecipeHandler.GetSpeedMultiplier(currentHeat, group.requiredHeatLevel);
         }
 
-        private void FinishSmelting(SmelteryGroup group, int index)
+        public override bool CanProcess(SmelteryGroup group)
         {
-            if (group.timeRemaining > 0f
-                || !output.container.HasRoomFor(group.outputs))
+            return group.requiredHeatLevel <= currentHeat;
+        }
+
+        public override bool TryFinishProcessing(SmelteryGroup group)
+        {
+            if (!outputModule.ItemsContainer.HasRoomFor(group.outputs))
             {
-                return;
+                return false;
             }
 
             group.inputs.ForEach(pickupable =>
             {
-                chamber.container.RemoveItem(pickupable, true);
+                chamberModule.ItemsContainer.RemoveItem(pickupable, true);
                 GameObject.Destroy(pickupable.gameObject);
             });
 
             group.outputs.ForEach(pickupable =>
             {
-                preOutput.container.RemoveItem(pickupable, true);
-                output.container.UnsafeAdd(new InventoryItem(pickupable));
+                temporaryOutputModule.ItemsContainer.RemoveItem(pickupable, true);
+                outputModule.ItemsContainer.UnsafeAdd(new InventoryItem(pickupable));
             });
 
-            groups.RemoveAt(index);
-
-            while (MoveIntoChamberIfAvailable()) { }
+            return true;
         }
 
-        public void OnDestroy()
+        public override SmelteryRecipeHandler.Recipe.Input GetRecipeInput()
         {
-            saveData.Invalidate();
+            return new(inputModule.ItemsContainer);
         }
 
-        private void OnAddItem(InventoryItem item)
+        public override bool TryStartGroupCreation(SmelteryRecipeHandler.Recipe recipe)
         {
-            StartCoroutine(MoveIntoChamberIfAvailableLate());
-        }
-
-        private void OnRemoveItem(InventoryItem item)
-        {
-            for (int i = groups.Count - 1; i >= 0; i--)
-            {
-                SmelteryGroup group = groups[i];
-                FinishSmelting(group, i);
-            }
-        }
-
-        private IEnumerator MoveIntoChamberIfAvailableLate()
-        {
-            yield return null;
-            MoveIntoChamberIfAvailable();
-        }
-
-        private bool MoveIntoChamberIfAvailable()
-        {
-            if (input.container.IsEmpty())
-            {
-                return false;
-            }
-
-            if (!RecipeHandler.TryGetRecipe<SmelteryRecipeHandler.Recipe.Input, SmelteryRecipeHandler.Recipe.Output, SmelteryRecipeHandler.Recipe>(
-                SmelteryRecipeHandler.Recipes,
-                recipeInput,
-                out SmelteryRecipeHandler.Recipe recipe))
-            {
-                return false;
-            }
-
             List<Pickupable> items = recipe.GetUsedItems(recipeInput).ToList();
             SmelteryRecipeHandler.Recipe.Output[] outputs = recipe.Outputs;
 
-            if (!chamber.container.HasRoomFor(items)
-                || !preOutput.container.HasRoomFor(outputs))
+            if (!chamberModule.ItemsContainer.HasRoomFor(items)
+                || !temporaryOutputModule.ItemsContainer.HasRoomFor(outputs))
             {
                 return false;
             }
@@ -265,9 +188,19 @@ namespace Industrica.Machine.Processing
             return true;
         }
 
+        protected override bool WorthToLookupRecipe()
+        {
+            return !inputModule.ItemsContainer.IsEmpty();
+        }
+
+        public override IEnumerable<SmelteryRecipeHandler.Recipe> GetRecipeStorage()
+        {
+            return SmelteryRecipeHandler.Recipes;
+        }
+
         private IEnumerator StartSmelting(
             SmelteryRecipeHandler.Recipe.Output[] outputs,
-            IEnumerable<Pickupable> items,
+            List<Pickupable> items,
             SmelteryRecipeHandler.HeatLevel requiredHeatLevel,
             float craftTime)
         {
@@ -278,15 +211,15 @@ namespace Industrica.Machine.Processing
                 requiredHeatLevel = requiredHeatLevel,
                 readyToProcess = false
             };
+
             groups.Add(group);
 
             group.inputs.AddRange(items);
 
             foreach (Pickupable item in items)
             {
-                item.inventoryItem.isEnabled = false;
                 item.inventoryItem.container.RemoveItem(item.inventoryItem, true, false);
-                chamber.container.UnsafeAdd(item.inventoryItem);
+                chamberModule.ItemsContainer.UnsafeAdd(item.inventoryItem);
             }
 
             group.PrepareInputs();
@@ -296,92 +229,32 @@ namespace Industrica.Machine.Processing
                 yield return output.RunOnItems(pickupable =>
                 {
                     group.outputs.Add(pickupable);
-                    preOutput.container.UnsafeAdd(new InventoryItem(pickupable));
+                    temporaryOutputModule.ItemsContainer.UnsafeAdd(new InventoryItem(pickupable));
                 });
             }
 
             group.readyToProcess = true;
         }
-        
-        public void OnHandClick(HandTargetEventData data)
+
+        public void OnDestroy()
         {
-            Inventory.main.SetUsedStorage(input.container);
-            Inventory.main.SetUsedStorage(chamber.container, true);
-            Inventory.main.SetUsedStorage(output.container, true);
-
-            UICustomContainerHandler.MoveContainerUI(UICustomContainerHandler.Torpedo1, BuildableSmeltery.InputContainerUIPosition);
-            UICustomContainerHandler.MoveContainerUI(UICustomContainerHandler.Torpedo2, BuildableSmeltery.ChamberContainerUIPosition);
-            UICustomContainerHandler.MoveContainerUI(UICustomContainerHandler.Torpedo3, BuildableSmeltery.OutputContainerUIPosition);
-
-            Player.main.GetPDA().Open(PDATab.Inventory, transform);
+            saveData.Invalidate();
         }
 
-        public void OnHandHover(HandTargetEventData data)
-        {
-            HandReticle.main.SetText(HandReticle.TextType.Hand, "OpenStorage", true, GameInput.Button.LeftHand);
-            HandReticle.main.SetIcon(HandReticle.IconType.Hand);
-
-            if (input.IsEmpty()
-                && output.IsEmpty()
-                && chamber.IsEmpty())
-            {
-                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "Empty", true);
-            }
-        }
-
-        public void PowerUpEvent(PowerRelay relay)
-        {
-            while (MoveIntoChamberIfAvailable()) { }
-        }
-
-        public void PowerDownEvent(PowerRelay relay)
+        public override void PowerDownEvent(PowerRelay relay)
         {
             currentHeat = SmelteryRecipeHandler.HeatLevel.None;
             UpdateUI();
-        }
-
-        private void LoadGroups(IEnumerable<SaveData.SerializedSmelteryGroup> serializedGroups)
-        {
-            if (serializedGroups == null)
-            {
-                return;
-            }
-
-            foreach (SaveData.SerializedSmelteryGroup serializedGroup in serializedGroups)
-            {
-                if (serializedGroup.inputs == null
-                    || serializedGroup.outputs == null)
-                {
-                    Plugin.Logger.LogWarning("Skipping group that does not have inputs or outputs");
-                    continue;
-                }
-
-                SmelteryGroup group = new()
-                {
-                    timeRemaining = serializedGroup.timeRemaining,
-                    timeTotal = serializedGroup.timeTotal,
-                    requiredHeatLevel = serializedGroup.requiredHeatLevel
-                };
-
-                SNUtil.RestoreItems(serializedGroup.inputs, group.inputs);
-                SNUtil.RestoreItems(serializedGroup.outputs, group.outputs);
-
-                group.PrepareInputs();
-                groups.Add(group);
-            }
         }
 
         public const float LowHeatEnergyUsage = 0.5f;
         public const float MediumHeatEnergyUsage = 1f;
         public const float HighHeatEnergyUsage = 2.5f;
 
-        public class SmelteryGroup
+        public class SmelteryGroup : Group
         {
             public readonly List<Pickupable> inputs = new();
             public readonly List<Pickupable> outputs = new();
-            public bool readyToProcess = true;
-            public float timeRemaining;
-            public float timeTotal;
             public SmelteryRecipeHandler.HeatLevel requiredHeatLevel;
 
             public void PrepareInputs()
@@ -389,14 +262,69 @@ namespace Industrica.Machine.Processing
                 inputs.ForEach(pickupable =>
                 {
                     pickupable.gameObject.EnsureComponent<SmelteryItemBar>().group = this;
+                    pickupable.inventoryItem.isEnabled = false;
                 });
+            }
+
+            public override bool TrySerialise(out SerialisedSmelteryGroup serialisedGroup)
+            {
+                if (inputs == null
+                    || inputs.Count == 0
+                    || outputs == null
+                    || outputs.Count == 0)
+                {
+                    serialisedGroup = default;
+                    return false;
+                }
+
+                serialisedGroup = new()
+                {
+                    inputs = SNUtil.SerializeReferences(inputs),
+                    outputs = SNUtil.SerializeReferences(outputs),
+                    requiredHeatLevel = requiredHeatLevel,
+                    timeRemaining = timeRemaining,
+                    timeTotal = timeTotal
+                };
+
+                return true;
             }
         }
 
-        public class SaveData : ComponentSaveData<SaveData, Smeltery>
+        public class SerialisedSmelteryGroup : SerialisedGroup
+        {
+            public List<string> inputs;
+            public List<string> outputs;
+            public SmelteryRecipeHandler.HeatLevel requiredHeatLevel;
+
+            public override bool TryDeserialise(out SmelteryGroup group)
+            {
+                if (inputs == null
+                    || inputs.Count == 0
+                    || outputs == null
+                    || outputs.Count == 0)
+                {
+                    group = default;
+                    return false;
+                }
+
+                group = new()
+                {
+                    requiredHeatLevel = requiredHeatLevel,
+                    timeRemaining = timeRemaining,
+                    timeTotal = timeTotal
+                };
+
+                SNUtil.RestoreItems(inputs, group.inputs);
+                SNUtil.RestoreItems(outputs, group.outputs);
+
+                group.PrepareInputs();
+                return true;
+            }
+        }
+
+        public class SaveData : ProcessingSaveData<SaveData, Smeltery>
         {
             public SmelteryRecipeHandler.HeatLevel currentHeat;
-            public List<SerializedSmelteryGroup> groups;
 
             public SaveData(Smeltery component) : base(component) { }
 
@@ -404,54 +332,21 @@ namespace Industrica.Machine.Processing
 
             public override void CopyFromStorage(SaveData data)
             {
+                base.CopyFromStorage(data);
                 currentHeat = data.currentHeat;
-                groups = data.groups;
             }
 
             public override void Load()
             {
+                base.Load();
                 Component.currentHeat = currentHeat;
-                Component.LoadGroups(groups);
                 Component.UpdateUI();
             }
 
             public override void Save()
             {
+                base.Save();
                 currentHeat = Component.currentHeat;
-
-                if (Component.groups.Count == 0)
-                {
-                    groups = null;
-                } else
-                {
-                    groups = new();
-                    foreach (SmelteryGroup group in Component.groups)
-                    {
-                        groups.Add(new()
-                        {
-                            inputs = SNUtil.SerializeReferences(group.inputs),
-                            outputs = SNUtil.SerializeReferences(group.outputs),
-                            timeRemaining = group.timeRemaining,
-                            timeTotal = group.timeTotal,
-                            requiredHeatLevel = group.requiredHeatLevel,
-                        });
-                    }
-                }
-            }
-
-            public bool ShouldSerializegroups()
-            {
-                return groups != null
-                    && groups.Count > 0;
-            }
-
-            public class SerializedSmelteryGroup
-            {
-                public List<string> inputs;
-                public List<string> outputs;
-                public float timeRemaining;
-                public float timeTotal;
-                public SmelteryRecipeHandler.HeatLevel requiredHeatLevel;
             }
         }
     }

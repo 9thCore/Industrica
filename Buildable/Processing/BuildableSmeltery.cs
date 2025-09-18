@@ -1,4 +1,5 @@
-﻿using Industrica.Machine.Processing;
+﻿using Industrica.ClassBase.Modules.ProcessingMachine;
+using Industrica.Machine.Processing;
 using Industrica.Network;
 using Industrica.Network.Container.Provider.Item;
 using Industrica.Network.Pipe.Item;
@@ -151,20 +152,33 @@ namespace Industrica.Buildable.Processing
                 PortType.Output);
 
             GameObject chamber = prefab.CreateChild(ChamberRoot)
-                .WithClassID<ChildObjectIdentifier>(ChamberRoot)
-                .EnsureComponentChained<StorageContainerProvider>(out _);
+                .WithClassID<ChildObjectIdentifier>(ChamberRoot);
 
             GameObject preOutput = prefab.CreateChild(PreOutputRoot)
-                .WithClassID<ChildObjectIdentifier>(PreOutputRoot)
-                .EnsureComponentChained<StorageContainerProvider>(out _);
+                .WithClassID<ChildObjectIdentifier>(PreOutputRoot);
 
-            Smeltery smeltery = prefab.EnsureComponent<Smeltery>()
-                .WithHandTarget(handTarget.EnsureComponent<GenericHandTarget>())
-                .WithInput(PrefabUtils.AddStorageContainer(input, InputStorageRoot, InputStorageRoot, Width, Height))
-                .WithOutput(PrefabUtils.AddStorageContainer(output, OutputStorageRoot, OutputStorageRoot, Width, Height))
-                .WithChamber(PrefabUtils.AddStorageContainer(chamber, ChamberStorageRoot, ChamberStorageRoot, Width, Height))
-                .WithPreOutput(PrefabUtils.AddStorageContainer(preOutput, PreOutputStorageRoot, PreOutputStorageRoot, PreWidth, PreHeight))
-                .SetupUI(screen.gameObject);
+            Smeltery smeltery = prefab.EnsureComponent<Smeltery>();
+            smeltery.SetHandTarget(handTarget.EnsureComponent<GenericHandTarget>());
+            smeltery.SetupUI(screen.gameObject);
+
+            smeltery.BeginInputModuleSetup().WithStorageContainer(
+                PrefabUtils.AddStorageContainer(input, InputStorageRoot, InputStorageRoot, Width, Height),
+                validHandTarget: false,
+                InputContainerUIPosition).SetInteraction(ProcessingMachineModule.Interaction.InputContainer);
+
+            smeltery.BeginChamberModuleSetup().WithStorageContainer(
+                PrefabUtils.AddStorageContainer(chamber, ChamberStorageRoot, ChamberStorageRoot, Width, Height),
+                validHandTarget: false,
+                ChamberContainerUIPosition).SetInteraction(ProcessingMachineModule.Interaction.NoInteraction);
+
+            smeltery.BeginOutputModuleSetup().WithStorageContainer(
+                PrefabUtils.AddStorageContainer(output, OutputStorageRoot, OutputStorageRoot, Width, Height),
+                validHandTarget: false,
+                OutputContainerUIPosition).SetInteraction(ProcessingMachineModule.Interaction.OutputContainer);
+
+            smeltery.BeginPreOutputModuleSetup().WithStorageContainer(
+                PrefabUtils.AddStorageContainer(preOutput, PreOutputStorageRoot, PreOutputStorageRoot, PreWidth, PreHeight),
+                validHandTarget: false).SetInteraction(ProcessingMachineModule.Interaction.HiddenContainer);
 
             Vector2 iconSize = new Vector2(100f, 100f);
             float radius = 20f;
