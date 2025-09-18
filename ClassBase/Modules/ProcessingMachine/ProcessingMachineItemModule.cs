@@ -54,12 +54,10 @@ namespace Industrica.ClassBase.Modules.ProcessingMachine
                 return;
             }
 
-            Plugin.Logger.LogWarning($"Adding {index} to used storage.");
             Inventory.main.SetUsedStorage(ItemsContainer, append);
 
             if (uiPosition != default)
             {
-                Plugin.Logger.LogWarning($"Moving {index} to {uiPosition}.");
                 UICustomContainerHandler.MoveContainerUI(UICustomContainerHandler.Tab.torpedoStorage[index], uiPosition);
             }
         }
