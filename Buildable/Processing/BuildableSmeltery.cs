@@ -166,11 +166,6 @@ namespace Industrica.Buildable.Processing
                 validHandTarget: false,
                 InputContainerUIPosition).SetInteraction(ProcessingMachineModule.Interaction.InputContainer);
 
-            smeltery.BeginChamberModuleSetup().WithStorageContainer(
-                PrefabUtils.AddStorageContainer(chamber, ChamberStorageRoot, ChamberStorageRoot, Width, Height),
-                validHandTarget: false,
-                ChamberContainerUIPosition).SetInteraction(ProcessingMachineModule.Interaction.NoInteraction);
-
             smeltery.BeginOutputModuleSetup().WithStorageContainer(
                 PrefabUtils.AddStorageContainer(output, OutputStorageRoot, OutputStorageRoot, Width, Height),
                 validHandTarget: false,

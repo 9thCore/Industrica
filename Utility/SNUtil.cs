@@ -42,6 +42,11 @@ namespace Industrica.Utility
             return container.HasRoomFor(result);
         }
 
+        public static bool HasRoomFor(this ItemsContainer container, IEnumerable<InventoryItem> items)
+        {
+            return container.HasRoomFor(items.Select(item => item.item));
+        }
+
         public static bool DisallowAction(Pickupable pickupable, bool verbose)
         {
             return false;
@@ -56,33 +61,6 @@ namespace Industrica.Utility
             }
 
             result.Set(Base.pieces[(int)piece]);
-        }
-
-        public static void RestoreItems(IEnumerable<string> ids, List<Pickupable> result)
-        {
-            ids.ForEach(id =>
-            {
-                if (UniqueIdentifier.TryGetIdentifier(id, out UniqueIdentifier identifier)
-                && identifier.TryGetComponent(out Pickupable pickupable))
-                {
-                    result.Add(pickupable);
-                }
-            });
-        }
-
-        public static List<string> SerializeReferences<T>(IEnumerable<T> references) where T : Component
-        {
-            List<string> result = new();
-
-            references.ForEach(reference =>
-            {
-                if (reference.TryGetComponent(out UniqueIdentifier identifier))
-                {
-                    result.Add(identifier.Id);
-                }
-            });
-
-            return result;
         }
 
         public static void GetNearestValidPowerRelay(Vector3 position, float range, Action<PowerRelay> callback, Func<PowerRelay, bool> validator = null, int timeout = 10)

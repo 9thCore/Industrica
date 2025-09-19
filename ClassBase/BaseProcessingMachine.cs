@@ -93,26 +93,25 @@ namespace Industrica.ClassBase
         }
     }
 
-    public abstract class BaseProcessingMachine<I, O, R, G, S> : BaseProcessingMachine
+    public abstract class BaseProcessingMachine<I, O, R, P, S> : BaseProcessingMachine
         where I : RecipeHandler.RecipeInput
         where O : RecipeHandler.RecipeOutput
         where R : RecipeHandler.Recipe<I, O>
-        where G : BaseProcessingMachine<I, O, R, G, S>.Group
-        where S : BaseProcessingMachine<I, O, R, G, S>.SerialisedGroup
+        where P : BaseProcessingMachine<I, O, R, P, S>.Process, new()
+        where S : BaseProcessingMachine<I, O, R, P, S>.SerialisedProcess, new()
     {
         protected I recipeInput;
-        protected readonly List<G> groups = new();
+        protected P currentProcess;
 
         public abstract void OnUpdate();
 
-        public abstract bool CanProcessGroups();
-        public abstract bool CanProcess(G group);
-        public abstract float GetProcessingSpeed(G group);
-        public abstract bool TryFinishProcessing(G group);
+        public abstract bool CanProcess();
+        public abstract float GetProcessingSpeed();
+        public abstract bool TryFinishProcessing();
 
         public abstract I GetRecipeInput();
         public abstract IEnumerable<R> GetRecipeStorage();
-        public abstract bool TryStartGroupCreation(R recipe);
+        public abstract bool TrySetupProcess(R recipe);
 
         public override void Start()
         {
@@ -135,28 +134,19 @@ namespace Industrica.ClassBase
         {
             OnUpdate();
 
-            if (groups.Count == 0
-                || !CanProcessGroups())
+            if (currentProcess == null
+                || !currentProcess.readyToProcess
+                || !CanProcess())
             {
                 return;
             }
 
-            for (int i = groups.Count - 1; i >= 0; i--)
+            if (currentProcess.timeRemaining > 0f)
             {
-                G group = groups[i];
-
-                if (!group.readyToProcess
-                    || !CanProcess(group))
-                {
-                    continue;
-                }
-
-                if (group.timeRemaining > 0f)
-                {
-                    group.timeRemaining -= DayNightCycle.main.deltaTime * GetProcessingSpeed(group);
-                }
-
-                FinishProcessing(group, i);
+                currentProcess.timeRemaining -= DayNightCycle.main.deltaTime * GetProcessingSpeed();
+            } else
+            {
+                FinishProcessing();
             }
         }
 
@@ -164,7 +154,7 @@ namespace Industrica.ClassBase
         {
             if (!WorthToLookupRecipe()
                 || !RecipeHandler.TryGetRecipe<I, O, R>(GetRecipeStorage(), recipeInput, out R recipe)
-                || !TryStartGroupCreation(recipe))
+                || !TrySetupProcess(recipe))
             {
                 return false;
             }
@@ -172,92 +162,91 @@ namespace Industrica.ClassBase
             return true;
         }
 
-        private void FinishProcessing(G group, int index)
+        private void FinishProcessing()
         {
-            if (group.timeRemaining > 0f
-                || !TryFinishProcessing(group))
+            if (currentProcess.timeRemaining > 0f
+                || !TryFinishProcessing())
             {
                 return;
             }
 
-            groups.RemoveAt(index);
-            while (CheckRecipe()) { }
+            currentProcess = null;
+            CheckRecipe();
         }
 
-        private void LoadGroups(IEnumerable<S> serializedGroups)
+        private void LoadCurrentProcess(S serialisedProcess)
         {
-            if (serializedGroups == null)
+            if (serialisedProcess == null)
             {
                 return;
             }
 
-            foreach (S serializedGroup in serializedGroups)
-            {
-                if (serializedGroup.TryDeserialise(out G group))
-                {
-                    groups.Add(group);
-                }
-            }
+            currentProcess = serialisedProcess.Deserialise();
         }
 
-        public abstract class Group
+        public abstract class Process
         {
             public bool readyToProcess = true;
             public float timeRemaining;
             public float timeTotal;
 
-            public abstract bool TrySerialise(out S serialisedGroup);
+            public virtual S Serialise()
+            {
+                return new()
+                {
+                    timeRemaining = timeRemaining,
+                    timeTotal = timeTotal,
+                };
+            }
         }
 
-        public abstract class SerialisedGroup
+        public abstract class SerialisedProcess
         {
             public float timeRemaining;
             public float timeTotal;
 
-            public abstract bool TryDeserialise(out G group);
+            public virtual P Deserialise()
+            {
+                return new()
+                {
+                    timeRemaining = timeRemaining,
+                    timeTotal = timeTotal
+                };
+            }
         }
 
         public abstract class ProcessingSaveData<D, C> : ComponentSaveData<D, C>
             where D : ProcessingSaveData<D, C>
-            where C : BaseProcessingMachine<I, O, R, G, S>
+            where C : BaseProcessingMachine<I, O, R, P, S>
         {
-            public List<S> groups;
+            public S currentProcess;
 
             public ProcessingSaveData(C component) : base(component) { }
 
             public override void CopyFromStorage(D data)
             {
-                groups = data.groups;
+                currentProcess = data.currentProcess;
             }
 
             public override void Load()
             {
-                Component.LoadGroups(groups);
+                Component.LoadCurrentProcess(currentProcess);
             }
 
             public override void Save()
             {
-                if (Component.groups.Count == 0)
+                if (Component.currentProcess == null)
                 {
-                    groups = null;
+                    currentProcess = null;
                     return;
                 }
 
-                groups = new();
-
-                foreach (G group in Component.groups)
-                {
-                    if (group.TrySerialise(out S serialisedGroup))
-                    {
-                        groups.Add(serialisedGroup);
-                    }
-                }
+                currentProcess = Component.currentProcess.Serialise();
             }
 
-            public bool ShouldSerializegroups()
+            public bool ShouldSerializeserialisedProcess()
             {
-                return groups != null
-                    && groups.Count > 0;
+                return currentProcess != null;
             }
         }
     }

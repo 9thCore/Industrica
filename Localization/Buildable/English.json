@@ -56,7 +56,7 @@
   "FullSubscript_IndustricaDrill": "Storage is full",
 
   "IndustricaSmeltery": "Industrial smeltery",
-  "Tooltip_IndustricaSmeltery": "Industrial grade machine capable of processing a wide range of materials.\nSupports automatically pumping items in - and out of - it.\nAutomatically moves resources which can be smelted together into its chamber, if it is empty.\nCan process multiple recipes at the same time.\n<b>Resources may not be, manually or otherwise, removed from the chamber until smelted.\nIf the base runs out of power, the smelter will turn off automatically</b>.",
+  "Tooltip_IndustricaSmeltery": "Industrial grade machine capable of processing a wide range of materials.\nSupports automatically pumping items in - and out of - it.\n<b>If the base runs out of power, the smelter will turn off automatically</b>.",
   "SmeltMeter_IndustricaSmeltery": "Smelted {0}%",
   "InfoHeat_IndustricaSmeltery": "Heat",
   "InfoNoHeat_IndustricaSmeltery": "Off",

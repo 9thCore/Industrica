@@ -130,16 +130,39 @@ namespace Industrica.Recipe.Handler
                 yield return SNUtil.TryGetItemPrefab(TechType, task);
 
                 GameObject prefab = task.Get();
-                if (prefab == null)
+                if (prefab == null
+                    || prefab.GetComponent<Pickupable>() == null)
                 {
-                    Plugin.Logger.LogWarning($"Could not find prefab of type {TechType} or {nameof(Pickupable)} on it, cannot create output.");
+                    Plugin.Logger.LogWarning($"Could not find prefab of type {TechType} or {nameof(Pickupable)} on it, skipping parts of the output.");
+                } else
+                {
+                    for (int i = 0; i < Count; i++)
+                    {
+                        GameObject instance = UWE.Utils.InstantiateDeactivated(prefab);
+                        callback(instance.GetComponent<Pickupable>());
+                    }
+                }
+            }
+
+            public IEnumerator RunOnInventoryItems(Action<InventoryItem> callback)
+            {
+                TaskResult<GameObject> task = new();
+                yield return SNUtil.TryGetItemPrefab(TechType, task);
+
+                GameObject prefab = task.Get();
+                if (prefab == null
+                    || prefab.GetComponent<Pickupable>() == null)
+                {
+                    Plugin.Logger.LogWarning($"Could not find prefab of type {TechType} or {nameof(Pickupable)} on it, skipping parts of the output.");
                     yield break;
                 }
-
-                for (int i = 0; i < Count; i++)
+                else
                 {
-                    GameObject instance = UWE.Utils.InstantiateDeactivated(prefab);
-                    callback(instance.GetComponent<Pickupable>());
+                    for (int i = 0; i < Count; i++)
+                    {
+                        GameObject instance = UWE.Utils.InstantiateDeactivated(prefab);
+                        callback(new InventoryItem(instance.GetComponent<Pickupable>()));
+                    }
                 }
             }
         }

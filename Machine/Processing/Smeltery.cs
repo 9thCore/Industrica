@@ -3,7 +3,6 @@ using Industrica.ClassBase;
 using Industrica.ClassBase.Modules.ProcessingMachine;
 using Industrica.Recipe.Handler;
 using Industrica.Save;
-using Industrica.UI.Bar;
 using Industrica.UI.UIData;
 using Industrica.Utility;
 using Nautilus.Utility;
@@ -18,12 +17,12 @@ namespace Industrica.Machine.Processing
         SmelteryRecipeHandler.Recipe.Input,
         SmelteryRecipeHandler.Recipe.Output,
         SmelteryRecipeHandler.Recipe,
-        Smeltery.SmelteryGroup,
-        Smeltery.SerialisedSmelteryGroup>
+        Smeltery.SmelteryProcess,
+        Smeltery.SerialisedSmelteryProcess>
     {
         public TextUIData heatInfoUIData;
         public BackedTextUIData noHeatUIData, lowHeatUIData, medHeatUIData, highHeatUIData;
-        public ProcessingMachineItemModule inputModule, chamberModule, temporaryOutputModule, outputModule;
+        public ProcessingMachineItemModule inputModule, temporaryOutputModule, outputModule;
 
         private SmelteryRecipeHandler.HeatLevel currentHeat = SmelteryRecipeHandler.HeatLevel.None;
         private SaveData saveData;
@@ -32,12 +31,6 @@ namespace Industrica.Machine.Processing
         {
             inputModule = AddProcessingItemModule<ProcessingMachineItemModule>();
             return inputModule;
-        }
-
-        public ProcessingMachineItemModule BeginChamberModuleSetup()
-        {
-            chamberModule = AddProcessingItemModule<ProcessingMachineItemModule>();
-            return chamberModule;
         }
 
         public ProcessingMachineItemModule BeginPreOutputModuleSetup()
@@ -128,34 +121,29 @@ namespace Industrica.Machine.Processing
                     break;
             }
         }
-        
-        public override bool CanProcessGroups() => IsPowered();
 
-        public override float GetProcessingSpeed(SmelteryGroup group)
+        public override float GetProcessingSpeed()
         {
-            return SmelteryRecipeHandler.GetSpeedMultiplier(currentHeat, group.requiredHeatLevel);
+            return SmelteryRecipeHandler.GetSpeedMultiplier(currentHeat, currentProcess.requiredHeatLevel);
         }
 
-        public override bool CanProcess(SmelteryGroup group)
+        public override bool CanProcess()
         {
-            return group.requiredHeatLevel <= currentHeat;
+            return currentProcess.requiredHeatLevel <= currentHeat
+                && IsPowered();
         }
 
-        public override bool TryFinishProcessing(SmelteryGroup group)
+        public override bool TryFinishProcessing()
         {
-            if (!outputModule.ItemsContainer.HasRoomFor(group.outputs))
+            if (!outputModule.ItemsContainer.HasRoomFor(temporaryOutputModule.ItemsContainer))
             {
                 return false;
             }
 
-            group.inputs.ForEach(pickupable =>
+            List<InventoryItem> outputs = new(temporaryOutputModule.ItemsContainer);
+            outputs.ForEach(inventoryItem =>
             {
-                chamberModule.ItemsContainer.RemoveItem(pickupable, true);
-                GameObject.Destroy(pickupable.gameObject);
-            });
-
-            group.outputs.ForEach(pickupable =>
-            {
+                Pickupable pickupable = inventoryItem.item;
                 temporaryOutputModule.ItemsContainer.RemoveItem(pickupable, true);
                 outputModule.ItemsContainer.UnsafeAdd(new InventoryItem(pickupable));
             });
@@ -168,13 +156,12 @@ namespace Industrica.Machine.Processing
             return new(inputModule.ItemsContainer);
         }
 
-        public override bool TryStartGroupCreation(SmelteryRecipeHandler.Recipe recipe)
+        public override bool TrySetupProcess(SmelteryRecipeHandler.Recipe recipe)
         {
             List<Pickupable> items = recipe.GetUsedItems(recipeInput).ToList();
             SmelteryRecipeHandler.Recipe.Output[] outputs = recipe.Outputs;
 
-            if (!chamberModule.ItemsContainer.HasRoomFor(items)
-                || !temporaryOutputModule.ItemsContainer.HasRoomFor(outputs))
+            if (!temporaryOutputModule.ItemsContainer.HasRoomFor(outputs))
             {
                 return false;
             }
@@ -204,7 +191,7 @@ namespace Industrica.Machine.Processing
             SmelteryRecipeHandler.HeatLevel requiredHeatLevel,
             float craftTime)
         {
-            SmelteryGroup group = new()
+            currentProcess = new()
             {
                 timeRemaining = craftTime,
                 timeTotal = craftTime,
@@ -212,28 +199,18 @@ namespace Industrica.Machine.Processing
                 readyToProcess = false
             };
 
-            groups.Add(group);
-
-            group.inputs.AddRange(items);
-
             foreach (Pickupable item in items)
             {
                 item.inventoryItem.container.RemoveItem(item.inventoryItem, true, false);
-                chamberModule.ItemsContainer.UnsafeAdd(item.inventoryItem);
+                GameObject.Destroy(item.gameObject);
             }
-
-            group.PrepareInputs();
 
             foreach (SmelteryRecipeHandler.Recipe.Output output in outputs)
             {
-                yield return output.RunOnItems(pickupable =>
-                {
-                    group.outputs.Add(pickupable);
-                    temporaryOutputModule.ItemsContainer.UnsafeAdd(new InventoryItem(pickupable));
-                });
+                yield return output.RunOnInventoryItems(temporaryOutputModule.ItemsContainer.UnsafeAdd);
             }
 
-            group.readyToProcess = true;
+            currentProcess.readyToProcess = true;
         }
 
         public void OnDestroy()
@@ -251,74 +228,27 @@ namespace Industrica.Machine.Processing
         public const float MediumHeatEnergyUsage = 1f;
         public const float HighHeatEnergyUsage = 2.5f;
 
-        public class SmelteryGroup : Group
+        public class SmelteryProcess : Process
         {
-            public readonly List<Pickupable> inputs = new();
-            public readonly List<Pickupable> outputs = new();
             public SmelteryRecipeHandler.HeatLevel requiredHeatLevel;
 
-            public void PrepareInputs()
+            public override SerialisedSmelteryProcess Serialise()
             {
-                inputs.ForEach(pickupable =>
-                {
-                    pickupable.gameObject.EnsureComponent<SmelteryItemBar>().group = this;
-                    pickupable.inventoryItem.isEnabled = false;
-                });
-            }
-
-            public override bool TrySerialise(out SerialisedSmelteryGroup serialisedGroup)
-            {
-                if (inputs == null
-                    || inputs.Count == 0
-                    || outputs == null
-                    || outputs.Count == 0)
-                {
-                    serialisedGroup = default;
-                    return false;
-                }
-
-                serialisedGroup = new()
-                {
-                    inputs = SNUtil.SerializeReferences(inputs),
-                    outputs = SNUtil.SerializeReferences(outputs),
-                    requiredHeatLevel = requiredHeatLevel,
-                    timeRemaining = timeRemaining,
-                    timeTotal = timeTotal
-                };
-
-                return true;
+                SerialisedSmelteryProcess serialisedProcess = base.Serialise();
+                serialisedProcess.requiredHeatLevel = requiredHeatLevel;
+                return serialisedProcess;
             }
         }
 
-        public class SerialisedSmelteryGroup : SerialisedGroup
+        public class SerialisedSmelteryProcess : SerialisedProcess
         {
-            public List<string> inputs;
-            public List<string> outputs;
             public SmelteryRecipeHandler.HeatLevel requiredHeatLevel;
 
-            public override bool TryDeserialise(out SmelteryGroup group)
+            public override SmelteryProcess Deserialise()
             {
-                if (inputs == null
-                    || inputs.Count == 0
-                    || outputs == null
-                    || outputs.Count == 0)
-                {
-                    group = default;
-                    return false;
-                }
-
-                group = new()
-                {
-                    requiredHeatLevel = requiredHeatLevel,
-                    timeRemaining = timeRemaining,
-                    timeTotal = timeTotal
-                };
-
-                SNUtil.RestoreItems(inputs, group.inputs);
-                SNUtil.RestoreItems(outputs, group.outputs);
-
-                group.PrepareInputs();
-                return true;
+                SmelteryProcess process = base.Deserialise();
+                process.requiredHeatLevel = requiredHeatLevel;
+                return process;
             }
         }
 
