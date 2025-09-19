@@ -78,11 +78,17 @@ namespace Industrica.Utility
             if (information.extraIcons.Count != 0)
             {
                 SetIcons(information.extraIcons);
+            } else
+            {
+                ResetIcons();
             }
 
             if (information.byproducts != null)
             {
                 SetByproducts(information.byproducts);
+            } else
+            {
+                ResetByproducts();
             }
         }
 
