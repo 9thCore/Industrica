@@ -1,13 +1,13 @@
 ﻿using Industrica.ClassBase;
 using Industrica.ClassBase.Addons.Machine;
-using Industrica.Utility;
+using Industrica.Utility.Smooth;
 using UnityEngine;
 
 namespace Industrica.Network.Wire.Output
 {
     public class LeverWireOutput : BaseMachine, IRelayPowerChangeListener
     {
-        private readonly SmoothValue indicatorTransition = new(0f, 0.125f);
+        private readonly FloatSmoothValue indicatorTransition = new(0f, 0.125f);
 
         public Renderer indicator1, indicator2;
         public GenericHandTarget target;

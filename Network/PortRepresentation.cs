@@ -1,5 +1,6 @@
 ﻿using Industrica.Network.BaseModule;
 using Industrica.Utility;
+using Industrica.Utility.Smooth;
 using Nautilus.Utility;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Industrica.Network
         public Constructable constructable;
         public BaseModuleProvider provider;
 
-        protected readonly SmoothValue hoverInterpolation = new(initialDuration: 0.25f);
+        protected readonly FloatSmoothValue hoverInterpolation = new(initialDuration: 0.25f);
         protected Transform interactable;
         protected GameObject interactableGO;
 
