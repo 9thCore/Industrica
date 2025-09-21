@@ -23,6 +23,7 @@ namespace Industrica.Register
             BuildableDrill.Register();
 
             BuildableSmeltery.Register();
+            BuildableCrusher.Register();
 
             BuildableElectricLever.Register();
             BuildableElectricOperator.Register();

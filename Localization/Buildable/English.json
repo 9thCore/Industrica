@@ -62,5 +62,8 @@
   "InfoNoHeat_IndustricaSmeltery": "Off",
   "InfoLowHeat_IndustricaSmeltery": "Low",
   "InfoMediumHeat_IndustricaSmeltery": "Med",
-  "InfoHighHeat_IndustricaSmeltery": "High"
+  "InfoHighHeat_IndustricaSmeltery": "High",
+
+  "IndustricaCrusher": "Industrial crusher",
+  "Tooltip_IndustricaCrusher": "Industrial grade machine capable of crushing a wide range of materials.\nSupports automatically pumping items in - and out of - it."
 }

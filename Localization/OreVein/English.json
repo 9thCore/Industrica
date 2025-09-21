@@ -14,6 +14,9 @@
   "IndustricaOreVeinResourceTitaniumCopper": "Titocupric mix",
   "Tooltip_IndustricaOreVeinResourceTitaniumCopper": "A mix of sediment, chunks of titanium and traces of copper.\n<b>Without significant processing, the copper cannot be extracted in any meaningful quantity</b>.",
 
+  "IndustricaCrushedResourceTitaniumCopper": "Crushed titocupric mix",
+  "Tooltip_IndustricaCrushedResourceTitaniumCopper": "A mix of sediment, small chunks of titanium and traces of copper, in crushed form.\n<b>Without further processing, the copper cannot be extracted in any meaningful quantity</b>.",
+
 
   "IndustricaOreVeinCopperSilver": "Ore vein",
 
@@ -22,6 +25,9 @@
 
   "IndustricaOreVeinResourceCopperSilver": "Wiric mix",
   "Tooltip_IndustricaOreVeinResourceCopperSilver": "A mix of sediment, chunks of copper and traces of silver.\n<b>Without significant processing, the silver cannot be extracted in any meaningful quantity</b>.",
+
+  "IndustricaCrushedResourceCopperSilver": "Crushed wiric mix",
+  "Tooltip_IndustricaCrushedResourceCopperSilver": "A mix of sediment, small chunks of copper and traces of silver, in crushed form.\n<b>Without further processing, the silver cannot be extracted in any meaningful quantity</b>.",
 
 
   "IndustricaOreVeinQuartzDiamond": "Ore vein",
@@ -32,6 +38,9 @@
   "IndustricaOreVeinResourceQuartzDiamond": "Silicarbonic mix",
   "Tooltip_IndustricaOreVeinResourceQuartzDiamond": "A mix of sediment, chunks of quartz and traces of diamonds.\n<b>Without significant processing, the diamonds cannot be extracted in any meaningful quantity</b>.",
 
+  "IndustricaCrushedResourceQuartzDiamond": "Crushed silicarbonic mix",
+  "Tooltip_IndustricaCrushedResourceQuartzDiamond": "A mix of sediment, small chunks of quartz and traces of diamond, in crushed form.\n<b>Without further processing, the diamonds cannot be extracted in any meaningful quantity</b>.",
+
 
   "IndustricaOreVeinSilverGold": "Ore vein",
 
@@ -40,6 +49,9 @@
 
   "IndustricaOreVeinResourceSilverGold": "Shinine mix",
   "Tooltip_IndustricaOreVeinResourceSilverGold": "A mix of sediment, chunks of silver and traces of gold.\n<b>Without significant processing, the gold cannot be extracted in any meaningful quantity</b>.",
+
+  "IndustricaCrushedResourceSilverGold": "Crushed shinine mix",
+  "Tooltip_IndustricaCrushedResourceSilverGold": "A mix of sediment, small chunks of silver and traces of gold, in crushed form.\n<b>Without further processing, the gold cannot be extracted in any meaningful quantity</b>.",
 
 
   "IndustricaOreVeinLeadUraninite": "Ore vein",
@@ -50,6 +62,9 @@
   "IndustricaOreVeinResourceLeadUraninite": "Radiatite mix",
   "Tooltip_IndustricaOreVeinResourceLeadUraninite": "A mix of sediment, chunks of lead and traces of uraninite.\n<b>Without significant processing, the uraninite cannot be extracted in any meaningful quantity</b>.",
 
+  "IndustricaCrushedResourceLeadUraninite": "Crushed radiatite mix",
+  "Tooltip_IndustricaCrushedResourceLeadUraninite": "A mix of sediment, small chunks of lead and traces of uraninite, in crushed form.\n<b>Without further processing, the uraninite cannot be extracted in any meaningful quantity</b>.",
+
 
   "IndustricaOreVeinMagnetiteLithium": "Ore vein",
 
@@ -58,6 +73,9 @@
 
   "IndustricaOreVeinResourceMagnetiteLithium": "Depositine mix",
   "Tooltip_IndustricaOreVeinResourceMagnetiteLithium": "A mix of sediment, chunks of magnetite and traces of lithium.\n<b>Without significant processing, the lithium cannot be extracted in any meaningful quantity</b>.",
+
+  "IndustricaCrushedResourceMagnetiteLithium": "Crushed depositine mix",
+  "Tooltip_IndustricaCrushedResourceMagnetiteLithium": "A mix of sediment, small chunks of magnetite and traces of lithium, in crushed form.\n<b>Without further processing, the lithium cannot be extracted in any meaningful quantity</b>.",
 
 
   "IndustricaOreVeinRubyKyanite": "Ore vein",
@@ -68,6 +86,9 @@
   "IndustricaOreVeinResourceRubyKyanite": "Crystallite mix",
   "Tooltip_IndustricaOreVeinResourceRubyKyanite": "A mix of sediment, chunks of ruby and traces of kyanite.\n<b>Without significant processing, the kyanite cannot be extracted in any meaningful quantity</b>.",
 
+  "IndustricaCrushedResourceRubyKyanite": "Crushed crystallite mix",
+  "Tooltip_IndustricaCrushedResourceRubyKyanite": "A mix of sediment, small chunks of ruby and traces of kyanite, in crushed form.\n<b>Without further processing, the kyanite cannot be extracted in any meaningful quantity</b>.",
+
 
   "IndustricaOreVeinLithiumNickel": "Ore vein",
 
@@ -77,6 +98,9 @@
   "IndustricaOreVeinResourceLithiumNickel": "Batterine mix",
   "Tooltip_IndustricaOreVeinResourceLithiumNickel": "A mix of sediment, chunks of lithium and traces of nickel.\n<b>Without significant processing, the nickel cannot be extracted in any meaningful quantity</b>.",
 
+  "IndustricaCrushedResourceLithiumNickel": "Crushed batterine mix",
+  "Tooltip_IndustricaCrushedResourceLithiumNickel": "A mix of sediment, small chunks of lithium and traces of nickel, in crushed form.\n<b>Without further processing, the nickel cannot be extracted in any meaningful quantity</b>.",
+
 
   "IndustricaOreVeinCrashPowderSulfur": "Ore vein",
 
@@ -84,5 +108,8 @@
   "Tooltip_IndustricaCoreSampleCrashPowderSulfur": "A sample extracted out of the ground.\nContains chunks of cave sulfur and traces of crystalline sulfur.",
 
   "IndustricaOreVeinResourceCrashPowderSulfur": "Sulfuric mix",
-  "Tooltip_IndustricaOreVeinResourceCrashPowderSulfur": "A mix of sediment, chunks of cave sulfur and traces of crystalline sulfur.\n<b>Without significant processing, the crystalline sulfur cannot be extracted in any meaningful quantity</b>."
+  "Tooltip_IndustricaOreVeinResourceCrashPowderSulfur": "A mix of sediment, chunks of cave sulfur and traces of crystalline sulfur.\n<b>Without significant processing, the crystalline sulfur cannot be extracted in any meaningful quantity</b>.",
+
+  "IndustricaCrushedResourceCrashPowderSulfur": "Crushed sulfuric mix",
+  "Tooltip_IndustricaCrushedResourceCrashPowderSulfur": "A mix of sediment, small chunks of cave sulfur and traces of crystalline sulfur, in crushed form.\n<b>Without further processing, the crystalline sulfur cannot be extracted in any meaningful quantity</b>."
 }

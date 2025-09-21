@@ -44,6 +44,17 @@ namespace Industrica.Item.Generic
         [CloneItem(TechType.SeaTreaderPoop, LargeWorldEntity.CellLevel.Near)]
         public static PrefabInfo Slag;
 
+        [CloneItem(TechType.Glass, LargeWorldEntity.CellLevel.Near)]
+        public static PrefabInfo CrushedResourceTitaniumCopper,
+            CrushedResourceCopperSilver,
+            CrushedResourceSilverGold,
+            CrushedResourceQuartzDiamond,
+            CrushedResourceMagnetiteLithium,
+            CrushedResourceLeadUraninite,
+            CrushedResourceCrashPowderSulfur,
+            CrushedResourceRubyKyanite,
+            CrushedResourceLithiumNickel;
+
         private static IEnumerable<FieldInfo> ItemDefinitions => typeof(ItemsBasic)
             .GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(info => info.FieldType == typeof(PrefabInfo));

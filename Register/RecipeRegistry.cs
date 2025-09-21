@@ -20,6 +20,7 @@ namespace Industrica.Register
 
             yield return FabricatorRecipes.Register(task);
             yield return SmelteryRecipes.Register(task);
+            yield return CrusherRecipes.Register(task);
 
             task.Status = "IndustricaLoading_Localization".Translate();
             yield return null;

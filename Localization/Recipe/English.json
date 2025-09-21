@@ -1,8 +1,6 @@
 {
-  "FabricatorMenu_IndustricaBasicProcessing": "Basic mix processing",
-  "TechCategoryIndustricaBasicProcessing": "Basic Mix Processing",
-
   "TechCategoryIndustricaSmelting": "Smelting",
+  "TechCategoryIndustricaCrushing": "Crushing",
 
   "IndustricaAlternativeRecipeOneResult": "{0}",
   "IndustricaAlternativeRecipeMultipleResults": "{0} (x{1})",

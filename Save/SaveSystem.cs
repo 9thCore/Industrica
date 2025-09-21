@@ -28,6 +28,7 @@ namespace Industrica.Save
         public SaveData<CoreSampleDrill.SaveData> coreSampleDrillSaveData = new();
         public SaveData<Drill.SaveData> drillSaveData = new();
         public SaveData<Smeltery.SaveData> smelterySaveData = new();
+        public SaveData<Crusher.SaveData> crusherSaveData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)
