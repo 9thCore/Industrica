@@ -25,13 +25,31 @@ namespace Industrica.Recipe
             RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceRubyKyanite.TechType, TechType.AluminumOxide);
             RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceLithiumNickel.TechType, TechType.Lithium);
             RegisterBasicMixProcessing(ItemsBasic.OreVeinResourceCrashPowderSulfur.TechType, TechType.CrashPowder);
+
+            task.Status = SmelteryLoadingKey.Translate(2, SmelteryRecipeSteps);
+            yield return null;
+
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceTitaniumCopper.TechType, TechType.Titanium);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceCopperSilver.TechType, TechType.Copper);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceSilverGold.TechType, TechType.Silver);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceQuartzDiamond.TechType, TechType.Quartz);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceLeadUraninite.TechType, TechType.Lead);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceMagnetiteLithium.TechType, TechType.Magnetite);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceRubyKyanite.TechType, TechType.AluminumOxide);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceLithiumNickel.TechType, TechType.Lithium);
+            RegisterCrushedProcessing(ItemsBasic.CrushedResourceCrashPowderSulfur.TechType, TechType.CrashPowder);
         }
 
         private static void RegisterBasicMixProcessing(TechType input, TechType output)
         {
             RegisterBasic(new ItemIngredient(input, 3), output, craftTime: 30f);
         }
-        
+
+        private static void RegisterCrushedProcessing(TechType input, TechType output)
+        {
+            RegisterBasic(new ItemIngredient(input, 3), output, craftTime: 25f);
+        }
+
         private static void RegisterBasic(ItemIngredient input, TechType output, int count = 1, float craftTime = 5f, List<RecipeUtil.IPrefabModifier> modifiers = null)
         {
             modifiers ??= new();
@@ -57,6 +75,6 @@ namespace Industrica.Recipe
         }
 
         public const string SmelteryLoadingKey = "IndustricaLoading_SmelteryRecipes";
-        public const int SmelteryRecipeSteps = 1;
+        public const int SmelteryRecipeSteps = 2;
     }
 }
