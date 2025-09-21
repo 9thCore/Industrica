@@ -114,6 +114,11 @@ namespace Industrica.ClassBase
             return ConsumeEnergy(energy * DayNightCycle.main.deltaTime, out consumed);
         }
 
+        public bool IsStorageOpen()
+        {
+            return transform == Player.main.GetPDA().target;
+        }
+
         // These two implement IScheduledUpdateBehaviour,
         // if the machine extends it.
         // (IExternalModule extends from IScheduledUpdateBehaviour)
