@@ -133,6 +133,11 @@ namespace Industrica.Machine.Processing
                 && IsPowered();
         }
 
+        public override void OnProgressProcess()
+        {
+            
+        }
+
         public override bool TryFinishProcessing()
         {
             if (!outputModule.ItemsContainer.HasRoomFor(temporaryOutputModule.ItemsContainer))
@@ -149,6 +154,11 @@ namespace Industrica.Machine.Processing
             });
 
             return true;
+        }
+
+        public override void OnFinishRecipe()
+        {
+            
         }
 
         public override SmelteryRecipeHandler.Recipe.Input GetRecipeInput()

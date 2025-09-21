@@ -106,8 +106,10 @@ namespace Industrica.ClassBase
         public abstract void OnUpdate();
 
         public abstract bool CanProcess();
+        public abstract void OnProgressProcess();
         public abstract float GetProcessingSpeed();
         public abstract bool TryFinishProcessing();
+        public abstract void OnFinishRecipe();
 
         public abstract I GetRecipeInput();
         public abstract IEnumerable<R> GetRecipeStorage();
@@ -144,6 +146,7 @@ namespace Industrica.ClassBase
             if (currentProcess.timeRemaining > 0f)
             {
                 currentProcess.timeRemaining -= DayNightCycle.main.deltaTime * GetProcessingSpeed();
+                OnProgressProcess();
             } else
             {
                 FinishProcessing();
@@ -171,6 +174,7 @@ namespace Industrica.ClassBase
             }
 
             currentProcess = null;
+            OnFinishRecipe();
             CheckRecipe();
         }
 
@@ -182,10 +186,12 @@ namespace Industrica.ClassBase
             }
 
             currentProcess = serialisedProcess.Deserialise();
+            OnProgressProcess();
         }
 
         public abstract class Process
         {
+            public TechType input, output;
             public bool readyToProcess = true;
             public float timeRemaining;
             public float timeTotal;
@@ -194,6 +200,8 @@ namespace Industrica.ClassBase
             {
                 return new()
                 {
+                    input = input,
+                    output = output,
                     timeRemaining = timeRemaining,
                     timeTotal = timeTotal,
                 };
@@ -202,6 +210,7 @@ namespace Industrica.ClassBase
 
         public abstract class SerialisedProcess
         {
+            public TechType input, output;
             public float timeRemaining;
             public float timeTotal;
 
@@ -209,6 +218,8 @@ namespace Industrica.ClassBase
             {
                 return new()
                 {
+                    input = input,
+                    output = output,
                     timeRemaining = timeRemaining,
                     timeTotal = timeTotal
                 };
