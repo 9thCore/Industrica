@@ -101,5 +101,59 @@ namespace Industrica.Utility
                 icon.layoutGroup.SetLayoutVertical();
             }
         }
+
+        public static Vector2 FromArbitraryCenter(this Vector2 offset, Vector2 center)
+        {
+            return center + offset;
+        }
+
+        public static Vector2 MirrorOffsetFromArbitraryCenter(this Vector2 offset, Vector2 center, Axis axis)
+        {
+            if (axis.HasFlag(Axis.Horizontally))
+            {
+                offset.x = -offset.x;
+            }
+
+            if (axis.HasFlag(Axis.Vertically))
+            {
+                offset.y = -offset.y;
+            }
+
+            return center + offset;
+        }
+
+        public static Vector2 FromStorageCenter(this Vector2 offset)
+        {
+            return Center + offset;
+        }
+
+        public static Vector2 MirrorOffsetFromStorageCenter(this Vector2 offset, Axis axis)
+        {
+            if (axis.HasFlag(Axis.Horizontally))
+            {
+                offset.x = -offset.x;
+            }
+
+            if (axis.HasFlag(Axis.Vertically))
+            {
+                offset.y = -offset.y;
+            }
+
+            return Center + offset;
+        }
+
+        public static readonly Vector2 Center = new(257.5f, 0f);
+        public static readonly Vector2 WorkingSpace = new(550f, 550f);
+        public static readonly Vector2 ProcessProgressBarSize = new(100f, 100f);
+
+        public static readonly Sprite SimpleGear = PathUtil.GetImage("UI/gear");
+
+        [Flags]
+        public enum Axis
+        {
+            Horizontally = 1,
+            Vertically = 2,
+            Both = Horizontally | Vertically
+        }
     }
 }
