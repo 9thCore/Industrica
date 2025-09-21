@@ -1,15 +1,18 @@
-﻿using Industrica.Save;
+﻿using Industrica.Machine.Mining;
+using Industrica.Save;
 using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Utility;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Industrica.World.OreVein
 {
-    public abstract class AbstractOreVein : WorldObject
+    public abstract class AbstractOreVein : MonoBehaviour, IFindableObject
     {
+        public bool alreadyUsed = false;
+
+        public Vector3 Position => transform.position;
         public float RangeSquared => Range * Range;
 
         public abstract TechType ResourceTechType { get; }
@@ -36,6 +39,16 @@ namespace Industrica.World.OreVein
             return prefab;
         }
 
+        public bool TryFindDrill()
+        {
+            return WorldUtil.TryFindNearestWorldObject(OreVeinHolder.Instance.AllDrills, transform.position, out _, DrillValidator);
+        }
+
+        private bool DrillValidator(WorldUtil.SearchHit<Drill> drillHit)
+        {
+            return RangeSquared >= drillHit.SquaredDistance;
+        }
+
         public static bool TryFindIntersecting(Vector3 position, out AbstractOreVein result)
         {
             return WorldUtil.TryFindNearestWorldObject(OreVeinHolder.Instance.AllOreVeins, position, out result, PointValidator);
@@ -60,6 +73,16 @@ namespace Industrica.World.OreVein
         public void OnDisable()
         {
             OreVeinHolder.Instance.AllOreVeins.Remove(this);
+        }
+
+        public void Start()
+        {
+            CheckValidity();
+        }
+
+        public void CheckValidity()
+        {
+            alreadyUsed = TryFindDrill();
         }
 
         public static readonly Sprite OreVeinSprite = SpriteManager.Get(TechType.LimestoneChunk);

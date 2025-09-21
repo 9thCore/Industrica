@@ -48,7 +48,7 @@
   "ActivateSubscript_IndustricaCoreSampleDrill": "Not currently drilling",
 
   "IndustricaDrill": "Drill",
-  "Tooltip_IndustricaDrill": "Drills into the ground and extracts rocks that may or may not contain chunks and traces of ores.\nHigh power consumption and time between extractions.",
+  "Tooltip_IndustricaDrill": "Drills into the ground and extracts rocks that may or may not contain chunks and traces of ores.\nHigh power consumption and time between extractions.\n<b>Will not be able to output any useful resources if there is already a drill for the given vein</b>.",
   "Invalid_IndustricaDrill": "Invalid placement",
   "InvalidSubscript_IndustricaDrill": "Requires terrain",
   "Working_IndustricaDrill": "Drilling",

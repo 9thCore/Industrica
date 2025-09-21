@@ -1,6 +1,7 @@
 ﻿using Industrica.ClassBase;
 using Industrica.Item.Generic;
 using Industrica.Save;
+using Industrica.World;
 using Industrica.World.OreVein;
 using System.Collections;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UWE;
 
 namespace Industrica.Machine.Mining
 {
-    public class Drill : BaseMachineExternal
+    public class Drill : BaseMachineExternal, IFindableObject
     {
         public StorageContainer storageContainer;
         public GenericHandTarget handTarget;
@@ -18,8 +19,10 @@ namespace Industrica.Machine.Mining
         private TechType resource = TechType.None;
         private SaveData data;
         private bool validPlacement = false;
+        private AbstractOreVein oreVein;
 
         public override float PowerRelaySearchRange => 20f;
+        public Vector3 Position => transform.position;
 
         public Drill WithStorageContainer(StorageContainer storageContainer)
         {
@@ -38,6 +41,20 @@ namespace Industrica.Machine.Mining
             colliders = GetComponentsInChildren<Collider>(true);
         }
 
+        public override void OnEnable()
+        {
+            base.OnEnable();
+
+            OreVeinHolder.Instance.AllDrills.Add(this);
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+
+            OreVeinHolder.Instance.AllDrills.Remove(this);
+        }
+
         public override void Start()
         {
             base.Start();
@@ -49,9 +66,11 @@ namespace Industrica.Machine.Mining
             handTarget.onHandHover = new();
             handTarget.onHandHover.AddListener(OnHandHover);
 
-            if (AbstractOreVein.TryFindIntersecting(transform.position, out AbstractOreVein oreVein))
+            if (AbstractOreVein.TryFindIntersecting(transform.position, out oreVein)
+                && !oreVein.alreadyUsed)
             {
                 resource = oreVein.ResourceTechType;
+                oreVein.alreadyUsed = true;
             } else
             {
                 resource = ItemsBasic.OreVeinResourceEmpty.TechType;
@@ -84,12 +103,15 @@ namespace Industrica.Machine.Mining
 
         public void OnDestroy()
         {
-            if (data == null)
+            if (oreVein != null)
             {
-                return;
+                oreVein.CheckValidity();
             }
 
-            data.Invalidate();
+            if (data != null)
+            {
+                data.Invalidate();
+            }
         }
 
         public void TryAddItem()

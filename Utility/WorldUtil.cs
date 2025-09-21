@@ -7,14 +7,14 @@ namespace Industrica.Utility
 {
     public static class WorldUtil
     {
-        public static bool TryFindNearestWorldObject<T>(ICollection<T> allWorldObjects, Vector3 position, out T result, Func<SearchHit<T>, bool> validator = null) where T : WorldObject
+        public static bool TryFindNearestWorldObject<T>(ICollection<T> allWorldObjects, Vector3 position, out T result, Func<SearchHit<T>, bool> validator = null) where T : IFindableObject
         {
-            result = null;
+            result = default;
             float currentBestDistance = float.MaxValue;
 
             foreach (T worldObject in allWorldObjects)
             {
-                float distance = Vector3.SqrMagnitude(worldObject.transform.position - position);
+                float distance = Vector3.SqrMagnitude(worldObject.Position - position);
 
                 if (distance > currentBestDistance)
                 {
@@ -98,7 +98,7 @@ namespace Industrica.Utility
             public abstract bool ValidEntitySlot(IEntitySlot entitySlot);
         }
 
-        public record SearchHit<T>(T WorldObject, float SquaredDistance) where T : WorldObject;
+        public record SearchHit<T>(T WorldObject, float SquaredDistance) where T : IFindableObject;
 
         public readonly struct PositionData
         {

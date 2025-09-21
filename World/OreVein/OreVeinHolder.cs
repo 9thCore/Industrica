@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Industrica.Machine.Mining;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Industrica.World.OreVein
@@ -21,5 +22,6 @@ namespace Industrica.World.OreVein
         }
 
         public readonly HashSet<AbstractOreVein> AllOreVeins = new();
+        public readonly HashSet<Drill> AllDrills = new();
     }
 }
