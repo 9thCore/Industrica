@@ -59,7 +59,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleSilverGold.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 5f;
+        public const float VeinRange = 9f;
         public const OreVeinType Vein = OreVeinType.SilverGold;
         public const OreVeinType VeinGuaranteed = OreVeinType.SilverGoldGuaranteed;
     }

@@ -44,7 +44,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleCopperSilver.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 5f;
+        public const float VeinRange = 10f;
         public const OreVeinType Vein = OreVeinType.CopperSilver;
         public const OreVeinType VeinGuaranteed = OreVeinType.CopperSilverGuaranteed;
     }

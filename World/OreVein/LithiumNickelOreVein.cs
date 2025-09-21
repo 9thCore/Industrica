@@ -35,7 +35,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleLithiumNickel.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 5f;
+        public const float VeinRange = 9f;
         public const OreVeinType Vein = OreVeinType.LithiumNickel;
         public const OreVeinType VeinGuaranteed = OreVeinType.LithiumNickelGuaranteed;
     }

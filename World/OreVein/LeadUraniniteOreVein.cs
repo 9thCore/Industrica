@@ -45,7 +45,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleLeadUraninite.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 3f;
+        public const float VeinRange = 7f;
         public const OreVeinType Vein = OreVeinType.LeadUraninite;
         public const OreVeinType VeinGuaranteed = OreVeinType.LeadUraniniteGuaranteed;
     }

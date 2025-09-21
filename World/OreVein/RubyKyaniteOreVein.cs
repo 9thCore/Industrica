@@ -34,7 +34,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleRubyKyanite.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 3f;
+        public const float VeinRange = 7f;
         public const OreVeinType Vein = OreVeinType.RubyKyanite;
         public const OreVeinType VeinGuaranteed = OreVeinType.RubyKyaniteGuaranteed;
     }

@@ -46,7 +46,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleQuartzDiamond.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 4f;
+        public const float VeinRange = 9f;
         public const OreVeinType Vein = OreVeinType.QuartzDiamond;
         public const OreVeinType VeinGuaranteed = OreVeinType.QuartzDiamondGuaranteed;
     }

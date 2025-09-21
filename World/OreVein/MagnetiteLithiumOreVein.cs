@@ -43,7 +43,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleMagnetiteLithium.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 4f;
+        public const float VeinRange = 8f;
         public const OreVeinType Vein = OreVeinType.MagnetiteLithium;
         public const OreVeinType VeinGuaranteed = OreVeinType.MagnetiteLithiumGuaranteed;
     }

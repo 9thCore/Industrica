@@ -34,7 +34,7 @@ namespace Industrica.World.OreVein
         public override TechType CoreSampleTechType => ItemsBasic.CoreSampleCrashPowderSulfur.TechType;
         public override float Range => VeinRange;
 
-        public const float VeinRange = 5f;
+        public const float VeinRange = 10f;
         public const OreVeinType Vein = OreVeinType.CrashPowderSulfur;
         public const OreVeinType VeinGuaranteed = OreVeinType.CrashPowderSulfurGuaranteed;
     }
