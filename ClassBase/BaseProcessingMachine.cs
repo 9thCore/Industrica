@@ -255,7 +255,7 @@ namespace Industrica.ClassBase
                 currentProcess = Component.currentProcess.Serialise();
             }
 
-            public bool ShouldSerializeserialisedProcess()
+            public bool ShouldSerializecurrentProcess()
             {
                 return currentProcess != null;
             }
