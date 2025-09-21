@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Industrica.UI.Inventory.Custom;
 using Industrica.Utility;
 
 namespace Industrica.Patch.Vanilla.UI
@@ -22,12 +23,15 @@ namespace Industrica.Patch.Vanilla.UI
         [HarmonyPostfix]
         public static void OnClosePDA()
         {
-            if (UICustomContainerHandler.Instance == null)
+            if (UICustomContainerHandler.Instance != null)
             {
-                return;
+                UICustomContainerHandler.Instance.Revert();
             }
 
-            UICustomContainerHandler.Instance.Revert();
+            if (UICustomDisplayHandler.Instance != null)
+            {
+                UICustomDisplayHandler.Instance.Revert();
+            }
         }
 
         [HarmonyPatch(nameof(uGUI_InventoryTab.Start))]
@@ -35,6 +39,7 @@ namespace Industrica.Patch.Vanilla.UI
         public static void Start(uGUI_InventoryTab __instance)
         {
             __instance.gameObject.EnsureComponent<UICustomContainerHandler>();
+            __instance.gameObject.EnsureComponent<UICustomDisplayHandler>();
         }
     }
 }
