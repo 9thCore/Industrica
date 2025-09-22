@@ -100,8 +100,6 @@ namespace Industrica.Buildable.Storage
             PrefabUtils.AddBasicComponents(prefab, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
             yield return CreateOutside(prefab, model, collision);
-
-            GameObjectUtil.SetupConstructableBounds(prefab);
         }
 
         private static IEnumerator CreateInside(GameObject prefab, GameObject model, GameObject collision)
