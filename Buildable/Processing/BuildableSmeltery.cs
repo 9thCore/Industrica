@@ -32,6 +32,10 @@ namespace Industrica.Buildable.Processing
         public static readonly Vector2 OutputContainerUIPosition = new Vector2(418f, 140f);
         public static readonly Vector2 ChamberContainerUIPosition = new Vector2((InputContainerUIPosition.x + OutputContainerUIPosition.x) / 2f, -148f);
 
+        public static readonly Vector3 PortCommonOffset = Vector3.up * -0.8f + Vector3.forward * -1.4f;
+        public static readonly Vector3 InputPortOffset = Vector3.right * -0.27f;
+        public static readonly Vector3 OutputPortOffset = -InputPortOffset;
+
         public const int Width = 3;
         public const int Height = 3;
         public const int PreWidth = 6;
@@ -136,8 +140,8 @@ namespace Industrica.Buildable.Processing
             TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: input,
-                position: Vector3.left * 2f,
-                rotation: Quaternion.identity,
+                position: InputPortOffset + PortCommonOffset,
+                rotation: Quaternion.Euler(0f, 0f, 90f),
                 PortType.Input);
 
             GameObject output = prefab.CreateChild(OutputRoot)
@@ -147,8 +151,8 @@ namespace Industrica.Buildable.Processing
             TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: output,
-                position: Vector3.right * 2f,
-                rotation: Quaternion.identity,
+                position: OutputPortOffset + PortCommonOffset,
+                rotation: Quaternion.Euler(0f, 0f, 270f),
                 PortType.Output);
 
             GameObject chamber = prefab.CreateChild(ChamberRoot)
