@@ -1,4 +1,7 @@
 ﻿using Industrica.Machine.Mining;
+using Industrica.Network;
+using Industrica.Network.Container.Provider.Item;
+using Industrica.Network.Pipe.Item;
 using Industrica.Utility;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
@@ -7,6 +10,7 @@ using Nautilus.Crafting;
 using Nautilus.Utility;
 using System.Linq;
 using UnityEngine;
+using static Industrica.Recipe.Handler.CrusherRecipeHandler.Recipe;
 
 namespace Industrica.Buildable.Mining
 {
@@ -46,6 +50,7 @@ namespace Industrica.Buildable.Mining
         private static void ModifyPrefab(GameObject go)
         {
             go.EnsureComponent<DelayedStart>();
+            go.EnsureComponent<StorageContainerProvider>();
 
             PrefabUtils.AddBasicComponents(go, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
 
@@ -67,6 +72,13 @@ namespace Industrica.Buildable.Mining
                 .WithHandTarget(go.EnsureComponent<GenericHandTarget>())
                 .WithStorageContainer(PrefabUtils.AddStorageContainer(go, "StorageRoot", "StorageRoot", Width, Height))
                 .GatherColliders();
+
+            TransferItemPort.CreatePort(
+                prefab: go,
+                root: go,
+                position: Vector3.up * 3.25f,
+                rotation: Quaternion.identity,
+                PortType.Output);
         }
     }
 }
