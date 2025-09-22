@@ -56,6 +56,9 @@ namespace Industrica.Buildable.Processing
 
         public static readonly Vector2 ProcessingUIPosition = new Vector2(0f, 200f).FromStorageCenter();
 
+        public static readonly Vector3 PortCommonOffset = Vector3.up * 1.95f + Vector3.forward * -0.23f;
+        public static readonly Vector3 InputPortOffset = Vector3.right * 0.64f;
+        public static readonly Vector3 OutputPortOffset = -InputPortOffset;
         public static ProcessPercentageTextInfo ProcessPercentage { get; private set; }
         public static ProcessProgressBarTextureInfo ProcessProgressBar { get; private set; }
         public static ProcessProgressBarTextureInfo ProcessProgressBarHint { get; private set; }
@@ -168,8 +171,8 @@ namespace Industrica.Buildable.Processing
             TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: input,
-                position: Vector3.left * 2f,
-                rotation: Quaternion.identity,
+                position: InputPortOffset + PortCommonOffset,
+                rotation: Quaternion.Euler(0f, 0f, 270f),
                 PortType.Input);
 
             GameObject output = prefab.CreateChild(OutputRoot)
@@ -179,8 +182,8 @@ namespace Industrica.Buildable.Processing
             TransferItemPort.CreatePort(
                 prefab: prefab,
                 root: output,
-                position: Vector3.right * 2f,
-                rotation: Quaternion.identity,
+                position: OutputPortOffset + PortCommonOffset,
+                rotation: Quaternion.Euler(0f, 0f, 90f),
                 PortType.Output);
 
             GameObject preOutput = prefab.CreateChild(PreOutputRoot)
