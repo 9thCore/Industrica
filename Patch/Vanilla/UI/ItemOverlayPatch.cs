@@ -11,12 +11,17 @@ namespace Industrica.Patch.Vanilla.UI
         {
             public static void Postfix(InventoryItem item, uGUI_ItemsContainer __instance)
             {
+                if (!__instance.items.TryGetValue(item, out uGUI_ItemIcon icon))
+                {
+                    return;
+                }
+
                 if (item.item.TryGetComponent(out OverlayHolder holder))
                 {
-                    holder.CreateOrUpdate(__instance.items[item]);
+                    holder.CreateOrUpdate(icon);
                 } else
                 {
-                    RemoveOverlay(__instance.items[item]);
+                    RemoveOverlay(icon);
                 }
             }
         }
