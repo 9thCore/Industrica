@@ -8,6 +8,5 @@
 
   "IndustricaWirePort_CannotDeconstructConnected": "Cannot deconstruct object while a wire is connected to a port.",
 
-  "IndustricaWire_DisabledByWire": "Force-disabled by wire",
   "IndustricaWire_PowerDisplay_InputNoConnection": "No connection"
 }

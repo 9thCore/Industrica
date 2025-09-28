@@ -2,11 +2,10 @@
 using Industrica.ClassBase.Addons.Machine;
 using Industrica.Network.Container;
 using Industrica.Network.Container.Provider;
-using UnityEngine;
 
 namespace Industrica.Network.Wire.Output
 {
-    public abstract class ContainerWireOutput<T> : BaseMachine, IRelayPowerChangeListener where T : class
+    public abstract class ContainerWireOutput<T> : BaseMachine, IRelayPowerChangeListener, ContainerUpdateEvent<T>.ISubscriber where T : class
     {
         private Container<T> container;
         public WirePort port;
@@ -22,16 +21,16 @@ namespace Industrica.Network.Wire.Output
             {
                 container = GetComponentInParent<ContainerProvider<T>>().Container;
             }
-            
-            container.OnUpdate += OnUpdate;
+
+            container.RegisterSubscriber(this);
         }
 
         public override void OnDisable()
         {
-            container.OnUpdate -= OnUpdate;
+            container.UnregisterSubscriber(this);
         }
 
-        private void OnUpdate(Container<T> container)
+        public void OnContainerUpdate(Container<T> container)
         {
             if (!IsPowered())
             {

@@ -1,7 +1,8 @@
 ﻿using Industrica.Network.Container;
 using Industrica.Network.Filter;
-using Industrica.Network.Systems;
+
 using Industrica.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Industrica.Network.Pipe
@@ -11,6 +12,7 @@ namespace Industrica.Network.Pipe
         internal TransferPort<T> connectedPort = null;
         internal Transform parent = null;
         internal PlacedTransferPipe<T> transferPipe = null;
+        private readonly List<ISubscriber> subscribers = new();
 
         public abstract Container<T> Container { get; }
         public abstract PipeType AllowedPipeType { get; }
@@ -49,6 +51,11 @@ namespace Industrica.Network.Pipe
             transferPipe = null;
             copy.Disconnect();
             connectedPort = null;
+
+            for (int i = 0; i < subscribers.Count; i++)
+            {
+                subscribers[i].OnDisconnect();
+            }
         }
 
         public void Connect(PlacedTransferPipe<T> pipe)
@@ -59,6 +66,11 @@ namespace Industrica.Network.Pipe
         public void Connect(TransferPort<T> port)
         {
             connectedPort = port;
+            
+            for (int i = 0; i < subscribers.Count; i++)
+            {
+                subscribers[i].OnConnect();
+            }
         }
 
         public bool ShouldBeInteractable(TransferPipe<T> pipe)
@@ -69,6 +81,22 @@ namespace Industrica.Network.Pipe
         public bool CanConnectTo(TransferPipe<T> pipe)
         {
             return pipe.ConnectedTo(this) || port.HasFlag(pipe.neededPort);
+        }
+
+        public void RegisterSubscriber(ISubscriber subscriber)
+        {
+            subscribers.Add(subscriber);
+        }
+
+        public void UnregisterSubscriber(ISubscriber subscriber)
+        {
+            subscribers.Remove(subscriber);
+        }
+
+        public interface ISubscriber
+        {
+            public void OnConnect();
+            public void OnDisconnect();
         }
     }
 }

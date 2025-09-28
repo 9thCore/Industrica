@@ -5,10 +5,11 @@ using Industrica.Network.Wire;
 using Industrica.Save;
 using Nautilus.Extensions;
 using System.Linq;
+using UnityEngine;
 
 namespace Industrica.Network.Pipe
 {
-    public abstract class TransferPump<T> : BaseMachine where T : class
+    public abstract class TransferPump<T> : BaseMachine, ContainerUpdateEvent<T>.ISubscriber where T : class
     {
         private PassthroughContainer<T> container;
         public PassthroughContainer<T> Container => container ??= new PassthroughContainer<T>(Input, Output);
@@ -26,11 +27,11 @@ namespace Industrica.Network.Pipe
         public abstract void CreateSave();
         public abstract void InvalidateSave();
 
-        public bool enabledPump = true;
         private NetworkFilter<T> insertFilter = null;
-        private float elapsedSinceLastPump = 0f;
-        // Because we want the pump to pump at the earliest possible moment, if it becomes possible to pump "midway" through a pumping interval
-        private bool queuedPump = false;
+        private float pumpTimeRemaining = 0f;
+        private Container<T> inputContainer;
+        private Container<T> outputContainer;
+        private int doPumpAt = -1;
 
         public GenericHandTarget handTarget;
         public WirePort port;
@@ -57,16 +58,51 @@ namespace Industrica.Network.Pipe
                 return;
             }
 
-            handTarget.onHandClick = new HandTargetEvent();
-            handTarget.onHandClick.AddListener(OnClick);
             handTarget.onHandHover = new HandTargetEvent();
             handTarget.onHandHover.AddListener(OnHover);
+
+            Input.RegisterSubscriber(new InputSubscriber(this));
+            Output.RegisterSubscriber(new OutputSubscriber(this));
+
+            port.OnCharge += OnCharge;
+
+            if (Input.connectedPort != null)
+            {
+                OnInputConnect();
+            }
+
+            if (Output.connectedPort != null)
+            {
+                OnOutputConnect();
+            }
+        }
+
+        private void OnCharge()
+        {
+            if (Enabled())
+            {
+                OnContainerUpdate(null);
+            }
         }
 
         public void Update()
         {
-            UpdateTimer();
-            TryPump();
+            if (doPumpAt == Time.frameCount)
+            {
+                TryPump();
+                doPumpAt = -1;
+                return;
+            }
+
+            if (pumpTimeRemaining > 0f)
+            {
+                pumpTimeRemaining -= DayNightCycle.main.deltaTime;
+
+                if (pumpTimeRemaining <= 0f)
+                {
+                    TryPump();
+                }
+            }
         }
 
         public void OnDestroy()
@@ -74,115 +110,161 @@ namespace Industrica.Network.Pipe
             InvalidateSave();
         }
 
-        private void UpdateTimer()
-        {
-            elapsedSinceLastPump += DayNightCycle.main.deltaTime;
-            if (elapsedSinceLastPump < PumpInterval)
-            {
-                return;
-            }
-
-            elapsedSinceLastPump -= PumpInterval;
-
-            queuedPump = true;
-        }
-
         private void TryPump()
         {
-            if (!queuedPump
-                || !Enabled()
-                || Input.connectedPort == null
-                || Output.connectedPort == null)
+            if (!ReadyToPump())
             {
                 return;
             }
 
-            if (TryConsumeEnergy(PumpEnergyUsage))
-            {
-                Pump();
-            }
-
-            queuedPump = false;
-        }
-
-        private void Pump()
-        {
-            insertFilter ??= new InsertableNetworkFilter<T>(Output.connectedPort.Container);
-            if (Input.connectedPort.TryExtract(insertFilter, out T value))
+            if (TryConsumeEnergy(PumpEnergyUsage)
+                && Input.connectedPort.TryExtract(insertFilter, out T value))
             {
                 Output.connectedPort.TryInsert(value);
+                pumpTimeRemaining = PumpInterval;
             }
         }
 
-        public bool Enabled()
+        private void OnEitherConnect()
         {
-            if (DisabledByWire())
-            {
-                return false;
-            }
-
-            return enabledPump;
+            TryPump();
         }
 
-        private bool DisabledByWire()
+        public void OnInputConnect()
+        {
+            inputContainer = Input.connectedPort.Container;
+            inputContainer.inputEvent.Register(this);
+
+            OnEitherConnect();
+        }
+
+        public void OnOutputConnect()
+        {
+            outputContainer = Output.connectedPort.Container;
+            outputContainer.outputEvent.Register(this);
+
+            insertFilter = new InsertableNetworkFilter<T>(outputContainer);
+
+            OnEitherConnect();
+        }
+
+        private void OnEitherDisconnect()
+        {
+            pumpTimeRemaining = 0f;
+        }
+
+        public void OnInputDisconnect()
+        {
+            if (Input.connectedPort == null
+                && inputContainer != null)
+            {
+                inputContainer.inputEvent.Unregister(this);
+                inputContainer = null;
+            }
+
+            OnEitherDisconnect();
+        }
+
+        public void OnOutputDisconnect()
+        {
+            if (Output.connectedPort == null
+                && outputContainer != null)
+            {
+                outputContainer.outputEvent.Unregister(this);
+                outputContainer = null;
+            }
+
+            OnEitherDisconnect();
+        }
+
+        public void OnContainerUpdate(Container<T> _)
+        {
+            doPumpAt = Time.frameCount + 1;
+        }
+
+        public bool ReadyToPump()
+        {
+            return Enabled()
+                && pumpTimeRemaining <= 0f
+                && Input.connectedPort != null
+                && Output.connectedPort != null;
+        }
+
+        private bool Enabled()
         {
             if (!port.Occupied)
             {
-                return false;
+                return true;
             }
 
-            return port.value == WirePort.WireDefault;
-        }
-
-        private void OnClick(HandTargetEventData data)
-        {
-            enabledPump = !enabledPump;
+            return port.value != WirePort.WireDefault;
         }
 
         private void OnHover(HandTargetEventData data)
         {
-            HandReticle.main.SetIcon(HandReticle.IconType.Hand);
-
-            string state = enabledPump switch
+            string state = Enabled() switch
             {
                 true => "Enabled",
                 false => "Disabled"
             };
 
-            HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaPump_Pumping{state}", true, GameInput.Button.LeftHand);
-
-            if (DisabledByWire())
-            {
-                HandReticle.main.SetText(HandReticle.TextType.HandSubscript, "IndustricaWire_DisabledByWire", true);
-            }
+            HandReticle.main.SetText(HandReticle.TextType.Hand, $"IndustricaPump_Pumping{state}", true);
         }
 
-        public const float PumpInterval = 5f;
-        public const float PumpEnergyUsage = 1f;
+        public const float PumpInterval = 1f;
+        public const float PumpEnergyUsage = 0.02f;
 
         public abstract class BaseSaveData<S, C> : ComponentSaveData<S, C> where S : BaseSaveData<S, C> where C : TransferPump<T>
         {
-            public float elapsedSinceLastPump;
-            public bool enabledPump;
+            public float pumpTimeRemaining;
 
             protected BaseSaveData(C component) : base(component) { }
 
             public override void CopyFromStorage(S data)
             {
-                elapsedSinceLastPump = data.elapsedSinceLastPump;
-                enabledPump = data.enabledPump;
+                pumpTimeRemaining = data.pumpTimeRemaining;
             }
 
             public override void Load()
             {
-                Component.elapsedSinceLastPump = elapsedSinceLastPump;
-                Component.enabledPump = enabledPump;
+                Component.pumpTimeRemaining = pumpTimeRemaining;
             }
 
             public override void Save()
             {
-                elapsedSinceLastPump = Component.elapsedSinceLastPump;
-                enabledPump = Component.enabledPump;
+                pumpTimeRemaining = Component.pumpTimeRemaining;
+            }
+        }
+
+        private abstract record Subscriber(TransferPump<T> Holder) : TransferPort<T>.ISubscriber
+        {
+            public abstract void OnConnect();
+            public abstract void OnDisconnect();
+        }
+
+        private record InputSubscriber(TransferPump<T> Holder) : Subscriber(Holder)
+        {
+            public override void OnConnect()
+            {
+                Holder.OnInputConnect();
+            }
+
+            public override void OnDisconnect()
+            {
+                Holder.OnInputDisconnect();
+            }
+        }
+
+        private record OutputSubscriber(TransferPump<T> Holder) : Subscriber(Holder)
+        {
+            public override void OnConnect()
+            {
+                Holder.OnOutputConnect();
+            }
+
+            public override void OnDisconnect()
+            {
+                Holder.OnOutputDisconnect();
             }
         }
     }
