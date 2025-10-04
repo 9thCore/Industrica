@@ -68,5 +68,8 @@
   "Tooltip_IndustricaCrusher": "Industrial grade machine capable of crushing a wide range of materials.\nSupports automatically pumping items in - and out of - it.",
 
   "IndustricaFluidTank": "Fluid tank",
-  "Tooltip_IndustricaFluidTank": "Fluid storage solution.\nCan store up to 5000 units of <b>one</b> fluid."
+  "Tooltip_IndustricaFluidTank": "Fluid storage solution.\nCan store up to 5000 units of <b>one</b> fluid.",
+
+  "IndustricaFluidPump": "Fluid pump",
+  "Tooltip_IndustricaFluidPump": "Utility that can pull up to 500mL of fluid from its input container and push it into its output container.\nConsumes 0.02 power on pump if some amount of fluid was able to be pumped, and will not pump if there is not enough power.\nMultiple pumps connected in series multiplies effective throughput.\nWill not pull that which it cannot insert into the output container."
 }
