@@ -1,0 +1,8 @@
+{
+  "Use_IndustricaFluidPipe": "Fluid pipe subtool | Cycle",
+
+  "IndustricaPipe_Fluid_Input": "Fluid input port",
+  "IndustricaPipe_Fluid_Output": "Fluid output port",
+
+  "IndustricaFluidPort_CannotDeconstructConnected": "Cannot deconstruct storage while a pipe is connected to a port."
+}

@@ -1,6 +1,8 @@
-﻿using Industrica.Machine.Mining;
+﻿using Industrica.Fluid;
+using Industrica.Machine.Mining;
 using Industrica.Machine.Processing;
 using Industrica.Network.Filter.Holder;
+using Industrica.Network.Pipe.Fluid;
 using Industrica.Network.Pipe.Item;
 using Industrica.Network.Wire;
 using Industrica.Operation;
@@ -19,16 +21,19 @@ namespace Industrica.Save
         public static SaveSystem Instance { get; private set; }
 
         public SaveData<PlacedItemTransferPipe.SaveData> placedItemTransferPipeData = new();
+        public SaveData<PlacedFluidTransferPipe.SaveData> placedFluidTransferPipeData = new();
         public SaveData<PlacedWire.SaveData> placedWireData = new();
         public SaveData<WirePort.SaveData> outputWirePortData = new();
         public SaveData<OperationWrapper.SaveData> operationWrapperSaveData = new();
         public SaveData<TransferItemPump.SaveData> physicalItemPumpSaveData = new();
+        public SaveData<TransferFluidPump.SaveData> physicalFluidPumpSaveData = new();
         public SaveData<WireTimer.SaveData> wireTimerSaveData = new();
         public SaveData<TechTypeNetworkFilterHolder.SaveData> techTypeFilterSaveData = new();
         public SaveData<CoreSampleDrill.SaveData> coreSampleDrillSaveData = new();
         public SaveData<Drill.SaveData> drillSaveData = new();
         public SaveData<Smeltery.SaveData> smelterySaveData = new();
         public SaveData<Crusher.SaveData> crusherSaveData = new();
+        public SaveData<FluidTank.SaveData> fluidTankSaveData = new();
 
         private IEnumerable<ISaveData> AllSaveData => typeof(SaveSystem)
             .GetFields(BindingFlags.Public | BindingFlags.Instance)

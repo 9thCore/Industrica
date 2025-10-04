@@ -1,3 +1,4 @@
 {
-  "IndustricaProcessPercentageFormat": "{0}%"
+  "IndustricaProcessPercentageFormat": "{0}%",
+  "IndustricaFluidStackFormat": "{0}/{1}mL of {2}"
 }

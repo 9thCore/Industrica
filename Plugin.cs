@@ -27,6 +27,7 @@ namespace Industrica
             InitializeLanguage();
             InitializeSave();
 
+            FluidRegistry.Register();
             ItemRegistry.Register();
             BuildableRegistry.Register();
             MiscRegistry.Register();
@@ -45,9 +46,11 @@ namespace Industrica
         {
             LanguageHandler.RegisterLocalizationFolder("Localization/Buildable");
             LanguageHandler.RegisterLocalizationFolder("Localization/Equipment");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Fluid");
             LanguageHandler.RegisterLocalizationFolder("Localization/Item");
             LanguageHandler.RegisterLocalizationFolder("Localization/Loading");
             LanguageHandler.RegisterLocalizationFolder("Localization/OreVein");
+            LanguageHandler.RegisterLocalizationFolder("Localization/Port/Fluid");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Generic");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Item");
             LanguageHandler.RegisterLocalizationFolder("Localization/Port/Wire");

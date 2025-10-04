@@ -65,5 +65,8 @@
   "InfoHighHeat_IndustricaSmeltery": "High",
 
   "IndustricaCrusher": "Industrial crusher",
-  "Tooltip_IndustricaCrusher": "Industrial grade machine capable of crushing a wide range of materials.\nSupports automatically pumping items in - and out of - it."
+  "Tooltip_IndustricaCrusher": "Industrial grade machine capable of crushing a wide range of materials.\nSupports automatically pumping items in - and out of - it.",
+
+  "IndustricaFluidTank": "Fluid tank",
+  "Tooltip_IndustricaFluidTank": "Fluid storage solution.\nCan store up to 5000 units of <b>one</b> fluid."
 }

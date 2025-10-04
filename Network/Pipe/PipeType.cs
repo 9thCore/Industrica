@@ -3,6 +3,7 @@
     public enum PipeType
     {
         None,
-        Item
+        Item,
+        Fluid
     }
 }

@@ -46,6 +46,7 @@ namespace Industrica.Network.Pipe
             string type = parent.AllowedPipeType switch
             {
                 PipeType.Item => "Item",
+                PipeType.Fluid => "Fluid",
                 _ => null
             };
 

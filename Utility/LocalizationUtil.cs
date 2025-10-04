@@ -40,6 +40,11 @@ namespace Industrica.Utility
             return Language.main.GetFormat(localisationKey, value1, value2);
         }
 
+        public static string Translate<T1, T2, T3>(this string localisationKey, T1 value1, T2 value2, T3 value3)
+        {
+            return Language.main.GetFormat(localisationKey, value1, value2, value3);
+        }
+
         public static string GetTooltipKey(this string localisationKey)
         {
             return $"Tooltip_{localisationKey}";

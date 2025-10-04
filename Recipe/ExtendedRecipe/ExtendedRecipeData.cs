@@ -9,6 +9,8 @@ namespace Industrica.Recipe.ExtendedRecipe
         public List<TechType> LinkedItems = new();
         public List<ItemIngredient> ItemIngredients = new();
         public List<ItemIngredient> ItemCatalysts = new();
+        public List<FluidIngredient> FluidIngredients = new();
+
         public int CraftAmount { get; set; }
         public float CraftTime { get; set; }
 
@@ -35,6 +37,7 @@ namespace Industrica.Recipe.ExtendedRecipe
             {
                 ItemIngredients = new(ItemIngredients),
                 ItemCatalysts = new(ItemCatalysts),
+                FluidIngredients = new(FluidIngredients),
                 CraftTime = CraftTime,
                 CraftAmount = CraftAmount,
                 LinkedItems = new(LinkedItems)
@@ -43,9 +46,13 @@ namespace Industrica.Recipe.ExtendedRecipe
 
         public static implicit operator RecipeData(ExtendedRecipeData extendedRecipeData)
         {
+            List<Ingredient> pdaIngredients = new();
+            pdaIngredients.AddRange(extendedRecipeData.ItemIngredients.Select(ingredient => (Ingredient)ingredient));
+            pdaIngredients.AddRange(extendedRecipeData.FluidIngredients.Select(ingredient => (Ingredient)ingredient));
+
             return new()
             {
-                Ingredients = new List<Ingredient>(extendedRecipeData.ItemIngredients.Select(ingredient => (Ingredient)ingredient)),
+                Ingredients = pdaIngredients,
                 craftAmount = extendedRecipeData.CraftAmount,
                 LinkedItems = extendedRecipeData.LinkedItems
             };

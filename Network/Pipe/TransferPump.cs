@@ -27,10 +27,10 @@ namespace Industrica.Network.Pipe
         public abstract void CreateSave();
         public abstract void InvalidateSave();
 
-        private NetworkFilter<T> insertFilter = null;
-        private float pumpTimeRemaining = 0f;
-        private Container<T> inputContainer;
-        private Container<T> outputContainer;
+        protected NetworkFilter<T> insertFilter = null;
+        protected float pumpTimeRemaining = 0f;
+        protected Container<T> inputContainer;
+        protected Container<T> outputContainer;
         private int doPumpAt = -1;
 
         public GenericHandTarget handTarget;
@@ -110,7 +110,7 @@ namespace Industrica.Network.Pipe
             InvalidateSave();
         }
 
-        private void TryPump()
+        protected virtual void TryPump()
         {
             if (!ReadyToPump())
             {

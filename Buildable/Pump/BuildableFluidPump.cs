@@ -1,0 +1,87 @@
+﻿using Industrica.Network;
+using Industrica.Network.Container.Provider.Fluid.Industrica;
+using Industrica.Network.Pipe.Fluid;
+using Industrica.Network.Wire;
+using Industrica.Utility;
+using Nautilus.Assets;
+using Nautilus.Assets.Gadgets;
+using Nautilus.Assets.PrefabTemplates;
+using Nautilus.Crafting;
+using Nautilus.Utility;
+using UnityEngine;
+
+namespace Industrica.Buildable.Pump
+{
+    internal class BuildableFluidPump
+    {
+        public static readonly Texture Texture = PathUtil.GetTexture("Pump/monitor");
+
+        public static PrefabInfo Info { get; private set; }
+        public static void Register()
+        {
+            Info = PrefabInfo
+                .WithTechType("IndustricaFluidPump", true)
+                .WithIcon(SpriteManager.Get(TechType.RepulsionCannon));
+
+            CustomPrefab prefab = new(Info);
+            CloneTemplate template = new(Info, "0782292e-d313-468a-8816-2adba65bfba3");
+
+            template.ModifyPrefab += (GameObject obj) =>
+            {
+                obj.EnsureComponent<DelayedStart>();
+
+                Renderer renderer = obj.GetComponentInChildren<Renderer>();
+
+                PrefabUtils.AddBasicComponents(obj, Info.ClassID, Info.TechType, LargeWorldEntity.CellLevel.Global);
+                PrefabUtils.AddConstructable(obj, Info.TechType, ConstructableFlags.Inside | ConstructableFlags.Wall, renderer.gameObject);
+
+                Vector3 offset = -Vector3.up * 0.25f;
+                obj.SetupConstructableBounds(offset: offset);
+
+                foreach (Transform child in obj.transform)
+                {
+                    child.position += offset;
+                }
+
+                Vector3 forward = Vector3.forward * 0.05f;
+
+                TransferFluidPort.CreatePort(
+                    prefab: obj,
+                    root: obj,
+                    Vector3.right * 0.4f + forward,
+                    Quaternion.Euler(0f, 0f, 270f),
+                    PortType.Input);
+
+                TransferFluidPort.CreatePort(
+                    prefab: obj,
+                    root: obj,
+                    Vector3.right * -0.4f + forward,
+                    Quaternion.Euler(0f, 0f, 90f),
+                    PortType.Output);
+
+                WirePort port = WirePort.CreatePort(
+                    prefab: obj,
+                    Vector3.up * -0.22f + forward,
+                    Quaternion.Euler(0f, 0f, 180f),
+                    PortType.Input);
+
+                obj.EnsureComponent<TransferFluidPump>().WithHandTarget(obj.EnsureComponent<GenericHandTarget>()).WithWirePort(port);
+                obj.EnsureComponent<FluidPumpContainerProvider>();
+
+                renderer.materials[0].SetFloat("_LightmapStrength", 1f);
+                renderer.materials[1].SetTexture("_Illum", Texture);
+                renderer.materials[1].SetTexture("_SpecTex", Texture);
+                renderer.materials[1].mainTexture = Texture;
+            };
+
+            prefab.SetRecipe(new RecipeData(
+                new Ingredient(TechType.Titanium, 2),
+                new Ingredient(TechType.WiringKit, 1)
+                ));
+            prefab.SetPdaGroupCategory(TechGroup.InteriorModules, TechCategory.InteriorModule);
+
+            prefab.SetGameObject(template);
+            prefab.Register();
+        }
+    }
+}

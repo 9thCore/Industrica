@@ -3,6 +3,7 @@ using Industrica.Buildable.Mining;
 using Industrica.Buildable.Processing;
 using Industrica.Buildable.Pump;
 using Industrica.Buildable.Storage;
+using Industrica.Buildable.Storage.Fluid;
 
 namespace Industrica.Register
 {
@@ -31,6 +32,9 @@ namespace Industrica.Register
             BuildableElectricTimer.Register();
 
             BuildableWeighedItemLocker.Register();
+
+            BuildableFluidTank.Register();
+            BuildableFluidPump.Register();
         }
     }
 }
